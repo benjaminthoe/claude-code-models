@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MacBook Air — Apple Style Product Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   APPLE.COM PRODUCT PAGE — Complete Replica Engine
+   ══════════════════════════════════════════════════════════ */
+:root {
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  --blue: #2997ff;
+  --gray-bg: #f5f5f7;
+  --dark-bg: #1d1d1f;
+  --text: #1d1d1f;
+  --text-light: #86868b;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-family: var(--font); -webkit-font-smoothing: antialiased; }
+body { background: #fff; color: var(--text); overflow-x: hidden; }
+img { display: block; max-width: 100%; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Typography (Apple scale) ─────────────────────────── */
+.headline-hero { font-size: clamp(48px, 7vw, 80px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.05; }
+.headline-section { font-size: clamp(32px, 4.5vw, 56px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+.headline-feature { font-size: clamp(24px, 3vw, 40px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.12; }
+.body-large { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.5; color: var(--text-light); }
+.body { font-size: 17px; line-height: 1.47; color: var(--text-light); }
+.label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); }
+.cta { font-size: 17px; color: var(--blue); display: inline-flex; align-items: center; gap: 4px; }
+.cta::after { content: '›'; font-size: 20px; }
+
+/* ── Scroll-triggered reveal ──────────────────────────── */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--ease-spring), transform 0.8s var(--ease-spring); }
+.reveal.vis { opacity: 1; transform: translateY(0); }
+.reveal.d1 { transition-delay: 0.08s; } .reveal.d2 { transition-delay: 0.16s; }
+.reveal.d3 { transition-delay: 0.24s; } .reveal.d4 { transition-delay: 0.32s; }
+.reveal.d5 { transition-delay: 0.40s; } .reveal.d6 { transition-delay: 0.48s; }
+
+/* ── Scale-on-scroll (product transforms) ─────────────── */
+.scroll-scale { transition: transform 0.1s linear, opacity 0.1s linear; will-change: transform, opacity; }
+
+/* ── Layout ───────────────────────────────────────────── */
+.section { padding: 100px 5vw; }
+.section-dark { background: var(--dark-bg); color: #fff; }
+.section-dark .body-large, .section-dark .body { color: rgba(255,255,255,0.6); }
+.section-dark .label { color: rgba(255,255,255,0.4); }
+.section-gray { background: var(--gray-bg); }
+.container { max-width: 980px; margin: 0 auto; }
+.text-center { text-align: center; }
+.flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* ══════════════════════════════════════════════════════════
+   HERO SECTION — full viewport, dark
+   ══════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: #000; color: #fff; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-product {
+  margin-top: 32px; max-width: 720px; width: 85%;
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.4));
+}
+.hero .body-large { color: rgba(255,255,255,0.6); margin-top: 12px; max-width: 500px; }
+.hero .cta-row { display: flex; gap: 24px; margin-top: 24px; }
+.hero .btn-blue {
+  padding: 12px 28px; border-radius: 100px; background: var(--blue);
+  color: #fff; font-size: 17px; font-weight: 500; text-decoration: none;
+}
+.hero .btn-outline {
+  padding: 12px 28px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; font-size: 17px; font-weight: 500; text-decoration: none;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STICKY PRODUCT + SCROLL TEXT SECTION
+   ══════════════════════════════════════════════════════════ */
+.sticky-wrap { position: relative; background: #000; color: #fff; }
+.sticky-canvas {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1; pointer-events: none;
+}
+.sticky-canvas img {
+  max-width: 600px; width: 70%;
+  filter: drop-shadow(0 40px 80px rgba(0,0,0,0.5));
+  transition: transform 0.6s var(--ease-spring), opacity 0.6s var(--ease-spring);
+}
+.scroll-panels { position: relative; z-index: 2; }
+.scroll-panel {
+  min-height: 90vh; display: flex; align-items: center;
+  justify-content: center; padding: 80px 20px;
+}
+.scroll-panel-inner { max-width: 500px; text-align: center; }
+.scroll-panel-inner .headline-section { color: #fff; }
+.scroll-panel-inner .body-large { color: rgba(255,255,255,0.55); margin-top: 12px; }
+
+/* ══════════════════════════════════════════════════════════
+   FULL-BLEED IMAGE SECTION
+   ══════════════════════════════════════════════════════════ */
+.fullbleed {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.fullbleed-img {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+}
+.fullbleed-img.kenburns { animation: kb 25s ease-in-out infinite alternate; }
+@keyframes kb { from { transform: scale(1); } to { transform: scale(1.06) translate(-0.5%, -0.3%); } }
+.fullbleed-overlay { position: absolute; inset: 0; z-index: 1; }
+.fullbleed-overlay.dark { background: rgba(0,0,0,0.45); }
+.fullbleed-overlay.gradient-up { background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 60%); }
+.fullbleed-overlay.gradient-down { background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent); }
+.fullbleed-overlay.vignette { background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.65) 100%); }
+.fullbleed-content { position: relative; z-index: 2; text-align: center; max-width: 700px; padding: 0 20px; }
+.fullbleed-content .headline-section { color: #fff; }
+.fullbleed-content .body-large { color: rgba(255,255,255,0.6); margin-top: 12px; }
+.fullbleed-content .label { color: var(--blue); }
+
+/* ══════════════════════════════════════════════════════════
+   BIG NUMBER (spec reveal)
+   ══════════════════════════════════════════════════════════ */
+.big-num {
+  font-size: clamp(64px, 12vw, 128px); font-weight: 800;
+  letter-spacing: -0.05em; line-height: 1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SPLIT LAYOUT (image left, text right or vice versa)
+   ══════════════════════════════════════════════════════════ */
+.split {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; min-height: 80vh;
+}
+.split-img img { width: 100%; border-radius: 16px; }
+.split-text { max-width: 440px; }
+.split-text .headline-feature { margin-bottom: 16px; }
+.split-text .body { margin-bottom: 16px; }
+@media (max-width: 768px) { .split { grid-template-columns: 1fr; gap: 32px; } }
+
+/* ══════════════════════════════════════════════════════════
+   FEATURE CARDS (3-up grid)
+   ══════════════════════════════════════════════════════════ */
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px; margin-top: 48px;
+}
+.card {
+  padding: 40px 32px; border-radius: 24px; text-align: center;
+  overflow: hidden; position: relative;
+}
+.card-dark { background: #161617; color: #fff; }
+.card-dark .body { color: rgba(255,255,255,0.5); }
+.card-light { background: var(--gray-bg); }
+.card-img { margin: -32px -32px 24px; }
+.card-img img { width: 100%; }
+.card .icon { font-size: 40px; margin-bottom: 16px; }
+.card .headline-feature { margin-bottom: 8px; }
+
+/* ══════════════════════════════════════════════════════════
+   COMPARISON BARS
+   ══════════════════════════════════════════════════════════ */
+.compare-bars { max-width: 700px; margin: 40px auto 0; }
+.compare-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.compare-label { width: 100px; text-align: right; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+.compare-track { flex: 1; height: 24px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
+.compare-bar { height: 100%; border-radius: 12px; width: 0%; transition: width 1.5s var(--ease-spring); }
+.compare-val { width: 50px; font-size: 14px; font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════
+   PRODUCT REFLECTION
+   ══════════════════════════════════════════════════════════ */
+.reflect { -webkit-box-reflect: below 6px linear-gradient(transparent, transparent 70%, rgba(255,255,255,0.05)); }
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════ */
+footer { padding: 60px 20px; text-align: center; font-size: 13px; color: var(--text-light); background: var(--gray-bg); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     1. HERO — Dark, centered product + title
+     ══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <p class="label reveal" style="color:rgba(255,255,255,0.4)">MacBook Air</p>
+  <h1 class="headline-hero reveal d1">Lean. Mean.<br>Dream machine.</h1>
+  <p class="body-large reveal d2">Now supercharged by M5.</p>
+  <div class="cta-row reveal d3">
+    <a href="#" class="btn-blue">Learn more</a>
+    <a href="#" class="btn-outline">Buy</a>
+  </div>
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/5a033f8d-43ac-42d3-8d02-02f899c5d2c4.png" class="hero-product reveal d4 scroll-scale reflect" id="hero-img" alt="MacBook Air">
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     2. STICKY PRODUCT — text panels scroll past pinned laptop
+     ══════════════════════════════════════════════════════════ -->
+<section class="sticky-wrap">
+  <div class="sticky-canvas">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3c61c3bd-04c1-4ccd-ac21-41459ecd156a.png" id="sticky-product" class="reflect" alt="MacBook Air">
+  </div>
+  <div class="scroll-panels">
+    <div class="scroll-panel">
+      <div class="scroll-panel-inner reveal">
+        <h2 class="headline-section">The most versatile<br>laptop ever made.</h2>
+        <p class="body-large">Incredibly thin. Unbelievably powerful. Built for everything you do.</p>
+      </div>
+    </div>
+    <div class="scroll-panel">
+      <div class="scroll-panel-inner reveal">
+        <h2 class="headline-section">Featherlight.<br>Heavylifter.</h2>
+        <p class="body-large">Just 1.24 kg. Yet it handles 4K video editing, 3D rendering, and AI workloads without breaking a sweat.</p>
+      </div>
+    </div>
+    <div class="scroll-panel">
+      <div class="scroll-panel-inner reveal">
+        <h2 class="headline-section">All-day battery.<br>All-night creativity.</h2>
+        <p class="body-large">Up to 18 hours of battery life. Go from morning meeting to midnight deadline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     3. DESIGN — color lineup (light bg)
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section-gray text-center">
+  <div class="container">
+    <p class="label reveal">Design</p>
+    <h2 class="headline-section reveal d1">Four stunning finishes.</h2>
+    <p class="body-large reveal d2" style="max-width:500px;margin:12px auto 40px">Sky Blue. Starlight. Silver. Midnight.<br>Pick the one that matches your vibe.</p>
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/a7214059-d166-46c5-882e-4af31676b7ef.png" class="reveal d3" style="max-width:800px;margin:0 auto;border-radius:16px" alt="Color lineup">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     4. CHIP/PERFORMANCE — dark bg, full-bleed macro + big number
+     ══════════════════════════════════════════════════════════ -->
+<section class="fullbleed" style="min-height:100vh">
+  <div class="fullbleed-img kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e6b4621c-c105-4e66-af7d-bd2aebd9ca08.png')"></div>
+  <div class="fullbleed-overlay dark"></div>
+  <div class="fullbleed-content">
+    <p class="label reveal" style="color:var(--blue)">M5 Chip</p>
+    <div class="big-num reveal d1" style="color:#fff" data-counter="9.5" data-suffix="x">9.5x</div>
+    <p class="body-large reveal d2" style="color:rgba(255,255,255,0.6)">faster than M1. AI workloads that fly.</p>
+    <a href="#" class="cta reveal d3" style="margin-top:16px">Learn more about M5</a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     5. PERFORMANCE BARS — comparison chart
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section-dark text-center">
+  <div class="container">
+    <p class="label reveal">Performance</p>
+    <h2 class="headline-section reveal d1" style="color:#fff">Power that speaks<br>for itself.</h2>
+    <div class="compare-bars reveal d2" id="perf-bars">
+      <div class="compare-row">
+        <div class="compare-label" style="color:rgba(255,255,255,0.5)">AI Tasks</div>
+        <div class="compare-track"><div class="compare-bar" style="background:var(--blue)" data-width="95%"></div></div>
+        <div class="compare-val" style="color:var(--blue)">9.5x</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-label" style="color:rgba(255,255,255,0.5)">Video Edit</div>
+        <div class="compare-track"><div class="compare-bar" style="background:#34c759" data-width="88%"></div></div>
+        <div class="compare-val" style="color:#34c759">4.2x</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-label" style="color:rgba(255,255,255,0.5)">Photo Edit</div>
+        <div class="compare-track"><div class="compare-bar" style="background:#ff9f0a" data-width="82%"></div></div>
+        <div class="compare-val" style="color:#ff9f0a">3.8x</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-label" style="color:rgba(255,255,255,0.5)">Gaming</div>
+        <div class="compare-track"><div class="compare-bar" style="background:#bf5af2" data-width="75%"></div></div>
+        <div class="compare-val" style="color:#bf5af2">2.5x</div>
+      </div>
+    </div>
+    <p class="body reveal d3" style="color:rgba(255,255,255,0.35);margin-top:16px">Compared to MacBook Air with M1</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     6. DISPLAY — full-bleed screen image
+     ══════════════════════════════════════════════════════════ -->
+<section class="fullbleed" style="min-height:80vh">
+  <div class="fullbleed-img kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/29546573-648a-4c2e-bef3-2d70d98b9aa0.png')"></div>
+  <div class="fullbleed-overlay vignette"></div>
+  <div class="fullbleed-content">
+    <p class="label reveal" style="color:var(--blue)">Display</p>
+    <h2 class="headline-section reveal d1" style="color:#fff">Liquid Retina.<br>Love at every pixel.</h2>
+    <p class="body-large reveal d2" style="color:rgba(255,255,255,0.6)">500 nits brightness. P3 wide color. True Tone.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     7. SPLIT — Lifestyle (person using laptop)
+     ══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="split">
+      <div class="split-img reveal"><img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/f59181b2-ed40-43b6-8deb-2398f5bb5280.png" alt="Lifestyle"></div>
+      <div class="split-text">
+        <p class="label reveal">Battery</p>
+        <h2 class="headline-feature reveal d1">Go all day.<br>And then some.</h2>
+        <p class="body reveal d2">Up to 18 hours of battery life means you can leave the charger at home. And when you need to charge, MagSafe gets you to 50% in just 30 minutes.</p>
+        <a href="#" class="cta reveal d3">Learn more about battery</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     8. KEYBOARD MACRO — full-bleed
+     ══════════════════════════════════════════════════════════ -->
+<section class="fullbleed" style="min-height:70vh">
+  <div class="fullbleed-img kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e7f3de15-2278-4b8f-a926-8d7cdfeb6429.png')"></div>
+  <div class="fullbleed-overlay gradient-down"></div>
+  <div class="fullbleed-content" style="align-self:flex-end;padding-bottom:60px">
+    <h2 class="headline-feature reveal" style="color:#fff">Magic Keyboard.<br>Backlit brilliance.</h2>
+    <p class="body reveal d1" style="color:rgba(255,255,255,0.55)">Full-height function keys. Touch ID. The best typing experience on a laptop.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     9. FEATURE CARDS — 3-up grid
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section-dark text-center">
+  <div class="container">
+    <h2 class="headline-section reveal" style="color:#fff">Even more reasons to love it.</h2>
+    <div class="card-grid">
+      <div class="card card-dark reveal d1">
+        <div class="icon">&#128247;</div>
+        <h3 class="headline-feature" style="color:#fff">1080p Camera</h3>
+        <p class="body" style="color:rgba(255,255,255,0.5)">Center Stage keeps you in frame. Desk View shows your workspace.</p>
+      </div>
+      <div class="card card-dark reveal d2">
+        <div class="icon">&#127911;</div>
+        <h3 class="headline-feature" style="color:#fff">Immersive Sound</h3>
+        <p class="body" style="color:rgba(255,255,255,0.5)">Four speakers with Spatial Audio and Dolby Atmos. Three-mic array.</p>
+      </div>
+      <div class="card card-dark reveal d3">
+        <div class="icon">&#128268;</div>
+        <h3 class="headline-feature" style="color:#fff">Connectivity</h3>
+        <p class="body" style="color:rgba(255,255,255,0.5)">MagSafe. Two Thunderbolt 4 ports. Wi-Fi 7. Bluetooth 6.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     10. THIN PROFILE — side view full-bleed
+     ══════════════════════════════════════════════════════════ -->
+<section class="fullbleed" style="min-height:80vh">
+  <div class="fullbleed-img" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3fe7864c-d39b-451d-af6d-a8de4d3736fc.png');background-color:#000"></div>
+  <div class="fullbleed-overlay dark"></div>
+  <div class="fullbleed-content">
+    <h2 class="headline-section reveal" style="color:#fff">Impossibly thin.<br>Incredibly capable.</h2>
+    <p class="body-large reveal d2" style="color:rgba(255,255,255,0.55)">11.3 mm thin. 1.24 kg light. With the power of M5 inside.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     11. PRICING — light bg
+     ══════════════════════════════════════════════════════════ -->
+<section class="section text-center" style="min-height:60vh;display:flex;align-items:center">
+  <div class="container">
+    <p class="label reveal">MacBook Air</p>
+    <h2 class="headline-section reveal d1">Starting at <span style="color:var(--blue)">HK$8,999</span></h2>
+    <p class="body reveal d2" style="margin-top:8px">Apple Trade In available. Free delivery.</p>
+    <div class="cta-row reveal d3" style="display:flex;gap:24px;justify-content:center;margin-top:24px">
+      <a href="#" class="btn-blue" style="background:var(--blue);color:#fff;padding:12px 28px;border-radius:100px;text-decoration:none;font-weight:500">Buy</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Copyright &copy; 2027 Apple Inc. All rights reserved.</p>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT — All scroll animations
+     ══════════════════════════════════════════════════════════ -->
+<script>
+/* 1. IntersectionObserver — reveal on scroll */
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('vis'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+/* 2. Counter animation on visibility */
+var counterObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (!e.isIntersecting) return;
+    var el = e.target, t = parseFloat(el.dataset.counter), suf = el.dataset.suffix || '', pre = el.dataset.prefix || '';
+    var dec = t % 1 !== 0, start = Date.now(), dur = 2000;
+    var iv = setInterval(function() {
+      var p = Math.min((Date.now() - start) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = pre + (dec ? (t * ease).toFixed(1) : Math.round(t * ease)) + suf;
+      if (p >= 1) clearInterval(iv);
+    }, 25);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('[data-counter]').forEach(function(el) { counterObs.observe(el); });
+
+/* 3. Comparison bars — animate width on visibility */
+var barObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (!e.isIntersecting) return;
+    var bars = e.target.querySelectorAll('.compare-bar');
+    bars.forEach(function(bar, i) {
+      setTimeout(function() { bar.style.width = bar.dataset.width; }, 200 + i * 200);
+    });
+    barObs.unobserve(e.target);
+  });
+}, { threshold: 0.3 });
+var perfBars = document.getElementById('perf-bars');
+if (perfBars) barObs.observe(perfBars);
+
+/* 4. Hero product — scale down + fade on scroll */
+var heroImg = document.getElementById('hero-img');
+if (heroImg) {
+  window.addEventListener('scroll', function() {
+    var scrollY = window.scrollY;
+    var vh = window.innerHeight;
+    var progress = Math.min(scrollY / vh, 1);
+    var scale = 1 - progress * 0.3;
+    var opacity = 1 - progress * 0.8;
+    heroImg.style.transform = 'scale(' + Math.max(scale, 0.7) + ') translateY(' + (-progress * 60) + 'px)';
+    heroImg.style.opacity = Math.max(opacity, 0.2);
+  }, { passive: true });
+}
+
+/* 5. Sticky product — transform based on scroll through panels */
+var stickyProduct = document.getElementById('sticky-product');
+var stickyWrap = document.querySelector('.sticky-wrap');
+if (stickyProduct && stickyWrap) {
+  window.addEventListener('scroll', function() {
+    var rect = stickyWrap.getBoundingClientRect();
+    var h = stickyWrap.offsetHeight;
+    var progress = Math.max(0, Math.min(1, -rect.top / (h - window.innerHeight)));
+    // Slowly shrink and slightly rotate as user reads text panels
+    var scale = 1 - progress * 0.2;
+    var rotateY = progress * 8;
+    var opacity = 1 - progress * 0.4;
+    stickyProduct.style.transform = 'scale(' + scale + ') perspective(1200px) rotateY(' + rotateY + 'deg)';
+    stickyProduct.style.opacity = opacity;
+  }, { passive: true });
+}
+</script>
+</body>
+</html>
