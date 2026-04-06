@@ -1,6 +1,6 @@
 import Cocoa
 import CoreAudio
-import Carbon
+import ApplicationServices
 
 // =============================================================================
 // SpeakerSwap v7 — Aggregate device for L/R swap + Option+Arrow hotkeys for volume
@@ -88,42 +88,73 @@ class SwapEngine {
         AudioObjectSetPropertyData(realDeviceID, &a, 0, nil, s, &m)
     }
 
-    // Cleanup stale aggregates
+    // On startup: if a stale aggregate is default, just note it — we'll reuse it in swap()
     func cleanupStale() {
+        let curDef = ca_defaultOutput()
+        let curUID = ca_getString(curDef, kAudioDevicePropertyDeviceUID) ?? ""
+        if curUID == "com.speakerswap.output" {
+            NSLog("[SpeakerSwap] Found stale aggregate as default — will reuse on swap")
+        }
+    }
+
+    // Only works with Audioengine 2+
+    let targetDeviceName = "Audioengine 2+"
+
+    /// Find Audioengine 2+ by name, regardless of which device is default
+    func findAudioengine() -> (id: AudioObjectID, uid: String)? {
         var ps: UInt32 = 0
         var pa = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDevices, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
         AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &pa, 0, nil, &ps)
         var devs = [AudioObjectID](repeating: 0, count: Int(ps) / MemoryLayout<AudioObjectID>.size)
         AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &pa, 0, nil, &ps, &devs)
-        let curDef = ca_defaultOutput()
         for d in devs {
-            let uid = ca_getString(d, kAudioDevicePropertyDeviceUID) ?? ""
-            guard uid.contains("speakerswap") else { continue }
-            if d == curDef {
-                for d2 in devs where d2 != d {
-                    let u2 = ca_getString(d2, kAudioDevicePropertyDeviceUID) ?? ""
-                    guard !u2.contains("speakerswap") else { continue }
-                    var sa = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyStreams, mScope: kAudioObjectPropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
-                    var ss: UInt32 = 0; AudioObjectGetPropertyDataSize(d2, &sa, 0, nil, &ss)
-                    guard ss > 0 else { continue }
-                    let nm = ca_getString(d2, kAudioObjectPropertyName) ?? ""
-                    if nm.contains("Virtual") || nm.contains("Teams") || nm.contains("WeMeet") { continue }
-                    ca_setDefaultOutput(d2); usleep(200_000); break
-                }
+            let name = ca_getString(d, kAudioObjectPropertyName) ?? ""
+            if name == targetDeviceName {
+                if let uid = ca_getString(d, kAudioDevicePropertyDeviceUID) { return (d, uid) }
             }
-            AudioHardwareDestroyAggregateDevice(d)
         }
+        return nil
     }
 
-    // Swap via aggregate device
     func swap() -> (Bool, String?) {
         guard !isSwapped else { return unswap() }
-        realDeviceID = ca_defaultOutput()
-        guard let uid = ca_getString(realDeviceID, kAudioDevicePropertyDeviceUID) else { return (false, "No UID") }
-        let name = realDeviceName
+
+        // Find Audioengine 2+ by scanning all devices (not just default)
+        guard let ae = findAudioengine() else {
+            return (false, "\(targetDeviceName) is not connected")
+        }
+        realDeviceID = ae.id
+        let uid = ae.uid
+
+        // Fixed UID so we reuse stale aggregates instead of accumulating them
+        let aggUID = "com.speakerswap.output"
+
+        // Check if aggregate with this UID already exists (from a previous crash)
+        var ps2: UInt32 = 0
+        var pa2 = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDevices, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+        AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &pa2, 0, nil, &ps2)
+        var allDevs = [AudioObjectID](repeating: 0, count: Int(ps2) / MemoryLayout<AudioObjectID>.size)
+        AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &pa2, 0, nil, &ps2, &allDevs)
+        for d in allDevs {
+            if ca_getString(d, kAudioDevicePropertyDeviceUID) == aggUID {
+                // Reuse existing aggregate
+                NSLog("[SpeakerSwap] Reusing existing aggregate ID=%d", d)
+                aggregateID = d
+                var ch2: [UInt32] = [2, 1]
+                var ca2 = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyPreferredChannelsForStereo, mScope: kAudioObjectPropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+                AudioObjectSetPropertyData(d, &ca2, 0, nil, UInt32(MemoryLayout<UInt32>.size * 2), &ch2)
+                usleep(200_000)
+                ca_setDefaultOutput(d)
+                usleep(300_000)
+                isSwapped = true
+                NSLog("[SpeakerSwap] ON (reused) real=%d agg=%d", realDeviceID, d)
+                return (true, nil)
+            }
+        }
+
         let desc: NSDictionary = [
-            kAudioAggregateDeviceUIDKey as String: "com.speakerswap.\(ProcessInfo.processInfo.processIdentifier)",
-            kAudioAggregateDeviceNameKey as String: "SpeakerSwap (\(name))",
+            kAudioAggregateDeviceUIDKey as String: aggUID,
+            kAudioAggregateDeviceNameKey as String: "SpeakerSwap (\(targetDeviceName))",
             kAudioAggregateDeviceSubDeviceListKey as String: [[kAudioSubDeviceUIDKey as String: uid]],
             kAudioAggregateDeviceMainSubDeviceKey as String: uid,
             kAudioAggregateDeviceClockDeviceKey as String: uid,
@@ -131,16 +162,24 @@ class SwapEngine {
             kAudioAggregateDeviceIsStackedKey as String: 0,
         ]
         var agg: AudioObjectID = 0
-        guard AudioHardwareCreateAggregateDevice(desc as CFDictionary, &agg) == noErr else { return (false, "Cannot create device") }
+        let status = AudioHardwareCreateAggregateDevice(desc as CFDictionary, &agg)
+        guard status == noErr else {
+            NSLog("[SpeakerSwap] Aggregate create failed: %d", status)
+            return (false, "Cannot create device (error \(status))")
+        }
 
         // Set swapped channel mapping
         var ch: [UInt32] = [2, 1]; let chSz = UInt32(MemoryLayout<UInt32>.size * 2)
         var ca = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyPreferredChannelsForStereo, mScope: kAudioObjectPropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
         AudioObjectSetPropertyData(agg, &ca, 0, nil, chSz, &ch)
 
+        usleep(300_000) // let aggregate fully initialize
         ca_setDefaultOutput(agg)
+        usleep(300_000) // let default switch take effect
+        // Verify it actually switched
+        let curDef = ca_defaultOutput()
+        NSLog("[SpeakerSwap] ON  real=%d agg=%d curDefault=%d match=%d", realDeviceID, agg, curDef, curDef == agg ? 1 : 0)
         aggregateID = agg; isSwapped = true
-        NSLog("[SpeakerSwap] ON  real=%d agg=%d", realDeviceID, agg)
         return (true, nil)
     }
 
@@ -180,38 +219,27 @@ class TestTone {
     func stop() { if let p = proc, p.isRunning { p.terminate() }; proc = nil }
 }
 
-// MARK: - Global Hotkeys (Carbon) — Option+Up/Down/M for volume
+// MARK: - Volume hotkeys via NSEvent (requires Accessibility permission)
 
 private var _eng: SwapEngine?
 
-// Carbon event handler
-private func hotkeyHandler(_ nextHandler: EventHandlerCallRef?, _ event: EventRef?, _ userData: UnsafeMutableRawPointer?) -> OSStatus {
-    guard let e = _eng, e.isSwapped else { return noErr }
-    var hotKeyID = EventHotKeyID()
-    GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID),
-                      nil, MemoryLayout<EventHotKeyID>.size, nil, &hotKeyID)
-    let step: Float32 = 1.0 / 16.0
-    switch hotKeyID.id {
-    case 1: e.setVolume(e.getVolume() + step)  // Option+Up = volume up
-    case 2: e.setVolume(e.getVolume() - step)  // Option+Down = volume down
-    case 3: e.toggleMute()                      // Option+M = mute
-    default: break
+func installKeyMonitor() {
+    // Request Accessibility if not yet granted
+    let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary
+    let trusted = AXIsProcessTrustedWithOptions(opts)
+    NSLog("[SpeakerSwap] Accessibility: %@", trusted ? "granted" : "not yet — keyboard volume won't work until granted")
+
+    // PageUp=116, PageDown=121
+    NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
+        guard let e = _eng, e.isSwapped else { return }
+        let step: Float32 = 1.0 / 16.0
+        switch event.keyCode {
+        case 116: e.setVolume(e.getVolume() + step)  // PageUp = volume up
+        case 121: e.setVolume(e.getVolume() - step)  // PageDown = volume down
+        default: break
+        }
     }
-    return noErr
-}
-
-func installHotkeys() {
-    let sig = OSType(0x53535753) // 'SSWS'
-    var spec = EventTypeSpec(eventClass: UInt32(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-    var handler: EventHandlerRef?
-    InstallEventHandler(GetApplicationEventTarget(), hotkeyHandler, 1, &spec, nil, &handler)
-
-    let optionKey = UInt32(optionKey)
-    var ref1: EventHotKeyRef?; var ref2: EventHotKeyRef?; var ref3: EventHotKeyRef?
-    RegisterEventHotKey(UInt32(kVK_UpArrow), optionKey, EventHotKeyID(signature: sig, id: 1), GetApplicationEventTarget(), 0, &ref1)
-    RegisterEventHotKey(UInt32(kVK_DownArrow), optionKey, EventHotKeyID(signature: sig, id: 2), GetApplicationEventTarget(), 0, &ref2)
-    RegisterEventHotKey(UInt32(kVK_ANSI_M), optionKey, EventHotKeyID(signature: sig, id: 3), GetApplicationEventTarget(), 0, &ref3)
-    NSLog("[SpeakerSwap] Hotkeys: Option+Up/Down/M for volume")
+    NSLog("[SpeakerSwap] Key monitor: PageUp/PageDown for volume")
 }
 
 // MARK: - App Delegate
@@ -222,12 +250,46 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let tone = TestTone()
     private var slider: NSSlider?
 
+    private var deviceListener: AudioObjectPropertyListenerBlock?
+
     func applicationDidFinishLaunching(_ n: Notification) {
         _eng = engine
         engine.cleanupStale()
         buildMenu()
-        installHotkeys()
-        if CommandLine.arguments.contains("--auto-swap") {
+        installKeyMonitor()
+        watchDeviceChanges()
+        // Auto-swap if Audioengine 2+ is already the default output
+        autoSwapIfAudioengine()
+    }
+
+    /// Auto-swap when Audioengine 2+ becomes default, auto-unswap when switching away
+    private func watchDeviceChanges() {
+        var addr = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDefaultOutputDevice,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain)
+        AudioObjectAddPropertyListenerBlock(
+            AudioObjectID(kAudioObjectSystemObject), &addr, .main
+        ) { [weak self] _, _ in
+            guard let self = self else { return }
+            let dev = ca_defaultOutput()
+            let name = ca_getString(dev, kAudioObjectPropertyName) ?? ""
+            // Ignore if we just set our own aggregate as default
+            if name.contains("SpeakerSwap") { return }
+            if name == self.engine.targetDeviceName && !self.engine.isSwapped {
+                // Switched TO Audioengine — auto-swap
+                self.doSwap()
+            } else if name != self.engine.targetDeviceName && self.engine.isSwapped {
+                // Switched AWAY from Audioengine — auto-unswap
+                self.doReset()
+            }
+            self.refreshUI()
+        }
+    }
+
+    private func autoSwapIfAudioengine() {
+        // Auto-swap if Audioengine 2+ is connected (even if not default)
+        if engine.findAudioengine() != nil {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.doSwap() }
         }
     }
@@ -245,13 +307,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         m.addItem(.separator())
 
         // Volume
-        m.addItem(withTitle: "Volume (Option+Up/Down):", action: nil, keyEquivalent: "").isEnabled = false
+        m.addItem(withTitle: "Volume (Fn+Up / Fn+Down):", action: nil, keyEquivalent: "").isEnabled = false
         let si = NSMenuItem()
         let sv = NSView(frame: NSRect(x: 0, y: 0, width: 240, height: 28))
         let sl = NSSlider(value: 0.5, minValue: 0, maxValue: 1, target: self, action: #selector(slid))
         sl.frame = NSRect(x: 18, y: 4, width: 204, height: 20); sl.isContinuous = true
         sv.addSubview(sl); si.view = sv; m.addItem(si); slider = sl
-        let mu = m.addItem(withTitle: "Mute / Unmute (Option+M)", action: #selector(doMute), keyEquivalent: ""); mu.target = self
+        let mu = m.addItem(withTitle: "Mute / Unmute (Option+M)", action: #selector(doMute), keyEquivalent: "m"); mu.target = self
         m.addItem(.separator())
 
         let sw = m.addItem(withTitle: "Swap Left <-> Right", action: #selector(doSwap), keyEquivalent: "s"); sw.target = self; sw.tag = 10

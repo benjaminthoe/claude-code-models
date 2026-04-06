@@ -58,7 +58,22 @@ class StudioHandler(http.server.SimpleHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(length)) if length > 0 else {}
 
-        if self.path == "/api/higgsfield/image":
+        if self.path == "/api/save-tony-photo":
+            import base64
+            fname = body.get("filename", "tony.jpg")
+            data = body.get("data", "")
+            # Strip data URI prefix
+            if "," in data:
+                data = data.split(",", 1)[1]
+            raw = base64.b64decode(data)
+            tony_dir = os.path.join(BASE, "assets", "tony")
+            os.makedirs(tony_dir, exist_ok=True)
+            fpath = os.path.join(tony_dir, fname)
+            with open(fpath, "wb") as f:
+                f.write(raw)
+            self._json_response({"saved": fpath, "size": len(raw)})
+
+        elif self.path == "/api/higgsfield/image":
             result = hf_request(body.get("model", "higgsfield-ai/soul/standard"), {
                 "prompt": body.get("prompt", ""),
                 "aspect_ratio": body.get("aspect_ratio", "16:9"),

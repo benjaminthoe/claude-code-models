@@ -43,7 +43,7 @@ swiftc -O \
     -framework Cocoa \
     -framework CoreAudio \
     -framework AudioToolbox \
-    -framework Carbon
+    -framework ApplicationServices
 echo "   Compiled."
 
 # Step 3: Create .app bundle

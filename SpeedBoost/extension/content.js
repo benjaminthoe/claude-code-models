@@ -6,11 +6,42 @@ let optimizedCount = 0;
 
 const PLACEHOLDER_IMG = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+// Detect if this is a video-focused page (YouTube, video players, etc.)
+function isVideoPage() {
+  const host = location.hostname;
+  const path = location.pathname;
+  // Known video sites
+  if (/youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com|twitch\.tv|netflix\.com|hulu\.com|disneyplus\.com|hbomax\.com|peacock|primevideo|crunchyroll|missav/i.test(host)) {
+    return true;
+  }
+  // Pages with /watch, /video, /play, /embed in URL
+  if (/\/(watch|video|play|embed|player|stream)/i.test(path)) {
+    return true;
+  }
+  return false;
+}
+
+// Check if an element is or is inside a video player
+function isPartOfVideoPlayer(el) {
+  let node = el;
+  for (let i = 0; i < 10 && node; i++) {
+    if (!node || node === document.body || node === document.documentElement) break;
+    const tag = (node.tagName || '').toLowerCase();
+    const cl = (node.className || '').toString().toLowerCase();
+    const id = (node.id || '').toLowerCase();
+    // Common video player containers
+    if (tag === 'video' || tag === 'audio') return true;
+    if (/player|video-js|plyr|jwplayer|flowplayer|mediaelement|html5-video|vjs-|mejs/i.test(cl + id)) return true;
+    if (node.querySelector && node.querySelector('video, .video-js, .plyr, [class*="player"]')) return true;
+    node = node.parentElement;
+  }
+  return false;
+}
+
 // ============================================================
 // Phase 1: Runs immediately at document_start
 // ============================================================
 function phase1_immediate() {
-  // Fetch settings, then apply what we can before DOM exists
   api.runtime.sendMessage({ type: 'getSettings' }, (s) => {
     settings = s || {
       enabled: true, blockAdsTrackers: true, lazyLoadImages: true,
@@ -22,7 +53,6 @@ function phase1_immediate() {
     if (!settings.enabled) return;
     if (settings.preconnectCDN) injectPreconnects();
     if (settings.cssPerformance) injectPerformanceCSS();
-    if (settings.blockAutoplay) injectAutoplayBlockCSS();
   });
 }
 
@@ -48,26 +78,13 @@ function injectPreconnects() {
 
 function injectPerformanceCSS() {
   const style = document.createElement('style');
+  // Only apply content-visibility to images far down the page, NEVER to video/iframe
   style.textContent = `
     html { scroll-behavior: smooth; }
-    * { scroll-margin-top: 80px; }
-    img, video, iframe {
-      content-visibility: auto;
-      contain-intrinsic-size: 300px 200px;
-    }
   `;
   const target = document.head || document.documentElement;
   if (target) target.appendChild(style);
   optimizedCount++;
-}
-
-function injectAutoplayBlockCSS() {
-  const style = document.createElement('style');
-  style.textContent = `
-    video[autoplay] { animation-play-state: paused !important; }
-  `;
-  const target = document.head || document.documentElement;
-  if (target) target.appendChild(style);
 }
 
 // ============================================================
@@ -76,12 +93,15 @@ function injectAutoplayBlockCSS() {
 function phase2_domReady() {
   if (!settings || !settings.enabled) return;
 
+  const videoPage = isVideoPage();
+
   if (settings.lazyLoadImages) setupImageLazyLoading();
-  if (settings.lazyLoadVideos) setupVideoLazyLoading();
+  // Only lazy-load videos on listing/gallery pages, NOT on video playback pages
+  if (settings.lazyLoadVideos && !videoPage) setupVideoLazyLoading();
   if (settings.removeOverlays) removeOverlays();
   if (settings.deferScripts) deferNonCriticalScripts();
-  if (settings.blockAutoplay) blockAutoplayVideos();
-  if (settings.domContainment) setupDOMContainment();
+  // Only block autoplay on non-video pages (don't break the main player)
+  if (settings.blockAutoplay && !videoPage) blockAutoplayVideos();
   if (settings.removeOverlays) setupMutationObserver();
 }
 
@@ -89,20 +109,22 @@ function setupImageLazyLoading() {
   const images = document.querySelectorAll('img[src]:not([loading="lazy"]):not([data-sb-lazy])');
   if (images.length === 0) return;
 
-  // Batch read phase
   const viewportHeight = window.innerHeight;
   const imagesToLazy = [];
 
   images.forEach((img) => {
+    // Never touch images inside video players (posters, thumbnails)
+    if (isPartOfVideoPlayer(img)) return;
     const rect = img.getBoundingClientRect();
-    // Skip images in or near the viewport
-    if (rect.bottom < viewportHeight + 200 && rect.top > -200) return;
+    // Skip images in or near the viewport (generous 500px margin)
+    if (rect.bottom < viewportHeight + 500 && rect.top > -500) return;
+    // Skip small images (likely icons, UI elements)
+    if (rect.width < 50 || rect.height < 50) return;
     imagesToLazy.push(img);
   });
 
   if (imagesToLazy.length === 0) return;
 
-  // Intersection Observer for restoring images
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -116,9 +138,8 @@ function setupImageLazyLoading() {
         observer.unobserve(img);
       }
     });
-  }, { rootMargin: '200px 0px', threshold: 0.01 });
+  }, { rootMargin: '300px 0px', threshold: 0.01 });
 
-  // Batch write phase
   requestAnimationFrame(() => {
     imagesToLazy.forEach((img) => {
       const realSrc = img.src;
@@ -134,8 +155,9 @@ function setupImageLazyLoading() {
 }
 
 function setupVideoLazyLoading() {
+  // Only lazy-load videos on pages with MANY videos (listings/feeds)
   const videos = document.querySelectorAll('video:not([data-sb-lazy])');
-  if (videos.length === 0) return;
+  if (videos.length < 3) return; // If few videos, don't touch them
 
   const viewportHeight = window.innerHeight;
 
@@ -157,21 +179,22 @@ function setupVideoLazyLoading() {
                 video.src = s.src;
               }
             });
-          } catch (e) { /* ignore parse errors */ }
+          } catch (e) { /* ignore */ }
           video.removeAttribute('data-sb-sources');
         }
         video.preload = 'metadata';
         observer.unobserve(video);
       }
     });
-  }, { rootMargin: '300px 0px', threshold: 0.01 });
+  }, { rootMargin: '500px 0px', threshold: 0.01 });
 
   videos.forEach((video) => {
+    // Never touch the main/primary video player
+    if (isPartOfVideoPlayer(video)) return;
     const rect = video.getBoundingClientRect();
-    // Skip videos in or near viewport
-    if (rect.bottom < viewportHeight + 300 && rect.top > -300) return;
+    // Very generous viewport check — skip anything remotely near viewport
+    if (rect.bottom < viewportHeight + 500 && rect.top > -500) return;
 
-    // Save sources
     const sources = [];
     const sourceEls = video.querySelectorAll('source');
     sourceEls.forEach((s) => {
@@ -195,13 +218,15 @@ function setupVideoLazyLoading() {
 }
 
 function removeOverlays() {
+  // Only target obvious ad/cookie overlays, NOT video player UI
   const selectors = [
-    '[class*="modal"]', '[class*="overlay"]', '[class*="popup"]',
-    '[class*="interstitial"]', '[class*="cookie"]', '[class*="consent"]',
-    '[class*="adblock"]', '[class*="subscribe"]', '[class*="newsletter-popup"]',
-    '[id*="modal"]', '[id*="overlay"]', '[id*="popup"]',
-    '[id*="interstitial"]', '[id*="cookie"]', '[id*="consent"]',
-    '[id*="adblock"]'
+    '[class*="cookie-banner"]', '[class*="cookie-consent"]',
+    '[class*="consent-banner"]', '[class*="consent-modal"]',
+    '[class*="interstitial"]', '[class*="adblock-notice"]',
+    '[class*="newsletter-popup"]', '[class*="subscribe-popup"]',
+    '[id*="cookie-banner"]', '[id*="cookie-consent"]',
+    '[id*="consent-banner"]', '[id*="interstitial"]',
+    '[id*="adblock-notice"]'
   ];
 
   const candidates = document.querySelectorAll(selectors.join(','));
@@ -209,14 +234,18 @@ function removeOverlays() {
   const viewportH = window.innerHeight;
 
   candidates.forEach((el) => {
+    // Never remove anything that contains a video player
+    if (el.querySelector('video, iframe[src*="youtube"], iframe[src*="vimeo"], iframe[src*="player"]')) return;
+    if (isPartOfVideoPlayer(el)) return;
+
     const style = window.getComputedStyle(el);
     const pos = style.position;
     const zIndex = parseInt(style.zIndex, 10);
 
-    if ((pos === 'fixed' || pos === 'absolute') && zIndex > 100) {
+    if ((pos === 'fixed' || pos === 'absolute') && zIndex > 500) {
       const rect = el.getBoundingClientRect();
-      const coversWidth = rect.width > viewportW * 0.3;
-      const coversHeight = rect.height > viewportH * 0.3;
+      const coversWidth = rect.width > viewportW * 0.5;
+      const coversHeight = rect.height > viewportH * 0.5;
 
       if (coversWidth && coversHeight) {
         el.remove();
@@ -225,36 +254,41 @@ function removeOverlays() {
     }
   });
 
-  // Unlock body scroll
+  // Unlock body scroll if locked by overlays
   if (document.body) {
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.height = '';
-    document.body.style.width = '';
-  }
-
-  // Remove any backdrop overlays
-  document.querySelectorAll('[class*="backdrop"]').forEach((el) => {
-    const style = window.getComputedStyle(el);
-    if (style.position === 'fixed' && parseFloat(style.opacity) < 1) {
-      el.remove();
-      optimizedCount++;
+    const bodyStyle = window.getComputedStyle(document.body);
+    if (bodyStyle.overflow === 'hidden' && !document.querySelector('[class*="cookie"], [class*="consent"]')) {
+      // Only unlock if there are no remaining overlays — avoid breaking modals the user opened
+    } else if (document.querySelectorAll('[class*="cookie-banner"], [class*="consent-modal"]').length === 0) {
+      document.body.style.overflow = '';
     }
-  });
+  }
 }
 
 function deferNonCriticalScripts() {
+  // Very conservative — only defer obvious non-critical scripts
   const nonCriticalPatterns = [
-    /social/i, /share/i, /widget/i, /chat/i, /comment/i,
-    /recommend/i, /newsletter/i, /subscribe/i, /notification/i,
-    /survey/i, /feedback/i, /beacon/i
+    /social-share/i, /share-button/i, /newsletter-widget/i,
+    /survey-monkey/i, /feedback-widget/i, /beacon\.min/i
+  ];
+
+  // Never defer scripts from the current domain or known player/framework scripts
+  const safePatterns = [
+    /jquery/i, /react/i, /vue/i, /angular/i, /player/i, /video/i,
+    /hls/i, /dash/i, /shaka/i, /plyr/i, /jwplayer/i, /flowplayer/i
   ];
 
   const scripts = document.querySelectorAll('script[src]:not([defer]):not([async])');
   scripts.forEach((script) => {
     const src = script.src;
-    const isNonCritical = nonCriticalPatterns.some((p) => p.test(src));
-    if (isNonCritical) {
+    // Don't touch same-origin scripts
+    try {
+      if (new URL(src).hostname === location.hostname) return;
+    } catch (e) { return; }
+    // Don't touch player/framework scripts
+    if (safePatterns.some((p) => p.test(src))) return;
+    // Only defer known non-critical
+    if (nonCriticalPatterns.some((p) => p.test(src))) {
       const clone = document.createElement('script');
       clone.src = src;
       clone.defer = true;
@@ -266,34 +300,17 @@ function deferNonCriticalScripts() {
 }
 
 function blockAutoplayVideos() {
+  // Only block autoplay on small/thumbnail videos, never the main player
   const videos = document.querySelectorAll('video[autoplay]');
   videos.forEach((video) => {
+    // Skip if this looks like a main player (large, or inside player container)
+    if (isPartOfVideoPlayer(video)) return;
+    const rect = video.getBoundingClientRect();
+    if (rect.width > 400 || rect.height > 300) return; // Likely main player
     video.removeAttribute('autoplay');
     video.pause();
     video.preload = 'metadata';
     optimizedCount++;
-  });
-
-  // Also handle iframes with autoplay
-  const iframes = document.querySelectorAll('iframe[src*="autoplay=1"], iframe[src*="autoplay=true"]');
-  iframes.forEach((iframe) => {
-    const src = iframe.src;
-    iframe.src = src
-      .replace(/autoplay=1/g, 'autoplay=0')
-      .replace(/autoplay=true/g, 'autoplay=false');
-    optimizedCount++;
-  });
-}
-
-function setupDOMContainment() {
-  const heavyContainers = document.querySelectorAll(
-    'main, article, section, .content, .post, .feed, .container, .wrapper, .grid, .list'
-  );
-  requestAnimationFrame(() => {
-    heavyContainers.forEach((el) => {
-      el.style.contain = 'layout style paint';
-      optimizedCount++;
-    });
   });
 }
 
@@ -320,7 +337,7 @@ function setupMutationObserver() {
           }
           const cl = (node.className || '').toString().toLowerCase();
           const id = (node.id || '').toLowerCase();
-          if (/modal|overlay|popup|interstitial|cookie|consent|adblock/.test(cl + id)) {
+          if (/cookie-banner|cookie-consent|consent-banner|interstitial|adblock-notice/.test(cl + id)) {
             hasNewOverlays = true;
           }
         }
@@ -339,20 +356,8 @@ function setupMutationObserver() {
 // ============================================================
 function phase3_loaded() {
   if (!settings || !settings.enabled) return;
-
-  if (settings.timerCleanup) cleanupTimers();
+  // Timer cleanup removed — too aggressive, breaks video players
   reportOptimizedCount();
-}
-
-function cleanupTimers() {
-  const originalSetInterval = window.setInterval;
-  window.setInterval = function(fn, delay, ...args) {
-    if (delay < 100) {
-      optimizedCount++;
-      return -1; // Suppress aggressive intervals (analytics heartbeats)
-    }
-    return originalSetInterval.call(window, fn, delay, ...args);
-  };
 }
 
 function reportOptimizedCount() {

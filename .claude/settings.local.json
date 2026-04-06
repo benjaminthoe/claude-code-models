@@ -52,7 +52,18 @@
       "Bash(do echo:*)",
       "Bash(1 done:*)",
       "Bash(lsof -ti:3848)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(AUTH=\"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" echo \"=== FINAL VIDEOS \\(V5-V7\\) ===\" for id in 9048a31b-b4d6-4457-a054-07cb2c93ab8c 8f48021c-aec2-4016-87aa-0149535c1ba0 30365f6b-2297-409e-9820-8be407206574)",
+      "Bash(do curl:*)",
+      "Bash(python3 -c \":*)",
+      "WebFetch(domain:www.mintlify.com)",
+      "WebFetch(domain:wavespeed.ai)",
+      "WebFetch(domain:higgsfield.ai)",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\" -X POST \"https://platform.higgsfield.ai/flux-pro/kontext/max/image-to-image\" -H \"Content-Type: application/json\" -H \"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" -d '{:*)",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\" -X POST \"https://platform.higgsfield.ai/higgsfield-ai/soul/standard\" -H \"Content-Type: application/json\" -H \"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" -d '{:*)",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\" -X POST \"https://platform.higgsfield.ai/nano-banana/pro/edit\" -H \"Content-Type: application/json\" -H \"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" -d '{:*)",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\" -X POST \"https://platform.higgsfield.ai/ai-face-swap\" -H \"Content-Type: application/json\" -H \"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" -d '{:*)",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\" -X GET \"https://platform.higgsfield.ai/requests/c677f5f9-5b07-4879-9cf9-d45bb38e5490/status\" -H \"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\")"
     ]
   }
 }
