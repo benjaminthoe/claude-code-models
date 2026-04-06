@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>iPhone AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--blue:#2997ff;--ease:cubic-bezier(0.16,1,0.3,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-family:var(--font);background:#000;color:#fff;-webkit-font-smoothing:antialiased}
+body{background:#000}
+img{display:block;max-width:100%}
+
+/* ══════════════════════════════════════════════
+   SCROLL-TRIGGERED FADE-UP
+   ══════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(50px);transition:opacity 0.9s var(--ease),transform 0.9s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal.d1{transition-delay:0.1s}.reveal.d2{transition-delay:0.2s}
+.reveal.d3{transition-delay:0.3s}.reveal.d4{transition-delay:0.4s}
+.reveal.d5{transition-delay:0.5s}.reveal.d6{transition-delay:0.6s}
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════════ */
+section{position:relative;overflow:hidden}
+.pad{padding:120px 5vw}
+.center{text-align:center;display:flex;flex-direction:column;align-items:center}
+.container{max-width:1080px;margin:0 auto;width:100%}
+
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY — Apple scale
+   ══════════════════════════════════════════════ */
+h1{font-size:clamp(48px,8vw,96px);font-weight:700;letter-spacing:-0.04em;line-height:1.05}
+h2{font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-0.03em;line-height:1.08}
+h3{font-size:clamp(24px,3vw,40px);font-weight:600;letter-spacing:-0.02em;line-height:1.15}
+.sub{font-size:clamp(18px,2vw,28px);color:rgba(255,255,255,0.6);font-weight:400;margin-top:12px;max-width:600px}
+.label{font-size:clamp(14px,1.2vw,18px);color:var(--blue);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+.small{font-size:14px;color:rgba(255,255,255,0.35);margin-top:16px}
+
+/* ══════════════════════════════════════════════
+   HERO — full viewport, centered
+   ══════════════════════════════════════════════ */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.hero-bg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.35)}
+.hero-content{position:relative;z-index:1;text-align:center;padding:0 20px}
+.hero .apple-logo{font-size:56px;margin-bottom:16px;opacity:0.9}
+
+/* ══════════════════════════════════════════════
+   STICKY PRODUCT SECTION
+   ══════════════════════════════════════════════ */
+.sticky-section{position:relative}
+.sticky-product{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;z-index:1}
+.sticky-product img{max-width:550px;width:70%;transition:transform 0.8s var(--ease),filter 0.8s var(--ease);filter:drop-shadow(0 40px 80px rgba(0,0,0,0.6))}
+.text-panels{position:relative;z-index:2}
+.text-panel{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:60px 20px}
+.text-panel-inner{max-width:500px;text-align:center}
+
+/* ══════════════════════════════════════════════
+   FULL-BLEED IMAGE SECTION
+   ══════════════════════════════════════════════ */
+.fullbleed{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.fullbleed-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;transition:transform 6s ease-out}
+.fullbleed-bg.kenburns{animation:kb 20s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.06) translate(-0.5%,-0.3%)}}
+.fullbleed::after{content:'';position:absolute;inset:0;z-index:1}
+.fullbleed.dim::after{background:rgba(0,0,0,0.45)}
+.fullbleed.gradient-up::after{background:linear-gradient(to bottom,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 50%,transparent 100%)}
+.fullbleed.gradient-down::after{background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.2) 50%,transparent 100%)}
+.fullbleed.vignette::after{background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.65) 100%)}
+.fullbleed-content{position:relative;z-index:2;text-align:center;padding:0 20px;max-width:800px}
+
+/* ══════════════════════════════════════════════
+   SPEC NUMBER (big reveal)
+   ══════════════════════════════════════════════ */
+.big-num{font-size:clamp(72px,12vw,140px);font-weight:800;letter-spacing:-0.05em;line-height:1}
+.blue{color:var(--blue)}
+
+/* ══════════════════════════════════════════════
+   FEATURE GRID
+   ══════════════════════════════════════════════ */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:48px;max-width:960px}
+.feat-card{padding:36px 28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:24px;text-align:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.feat-card .icon{font-size:36px;margin-bottom:16px}
+.feat-card h3{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:0}
+.feat-card p{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.6}
+
+/* ══════════════════════════════════════════════
+   PRICE SECTION
+   ══════════════════════════════════════════════ */
+.price{font-size:clamp(40px,6vw,64px);font-weight:700}
+.price .from{font-size:clamp(18px,2vw,24px);font-weight:400;color:rgba(255,255,255,0.5)}
+
+/* ══════════════════════════════════════════════
+   PARALLAX LAYERS
+   ══════════════════════════════════════════════ */
+[data-speed]{will-change:transform}
+
+/* ══════════════════════════════════════════════
+   PRODUCT REFLECTION
+   ══════════════════════════════════════════════ */
+.product-reflect{-webkit-box-reflect:below 8px linear-gradient(transparent,transparent 65%,rgba(255,255,255,0.06))}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════ */
+footer{padding:80px 20px;text-align:center;color:rgba(255,255,255,0.25);font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1: HERO
+     ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <div class="hero-content">
+    <div class="apple-logo reveal">&#63743;</div>
+    <h1 class="reveal d1">iPhone AI</h1>
+    <p class="sub reveal d2">Intelligence at your fingertips.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2: PRODUCT HERO — sticky with text panels
+     ══════════════════════════════════════════════ -->
+<section class="sticky-section" style="background:#000">
+  <div class="sticky-product">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4ada88f3-e623-46f3-9a93-67c20917dafe.png" class="product-reflect" id="hero-product" data-speed="0.3">
+  </div>
+  <div class="text-panels">
+    <div class="text-panel">
+      <div class="text-panel-inner reveal">
+        <h2>The most intelligent<br>iPhone ever.</h2>
+        <p class="sub">Powered by the A20 Neural chip. Designed for the age of AI.</p>
+      </div>
+    </div>
+    <div class="text-panel">
+      <div class="text-panel-inner reveal">
+        <h2>Beautiful.<br>By design.</h2>
+        <p class="sub">Titanium. Edge-to-edge display. Built to last a lifetime.</p>
+      </div>
+    </div>
+    <div class="text-panel">
+      <div class="text-panel-inner reveal">
+        <h2>Your AI.<br>Your privacy.</h2>
+        <p class="sub">Every computation happens on-device. Your data never leaves your phone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3: CHIP — full-bleed macro + big number
+     ══════════════════════════════════════════════ -->
+<section class="fullbleed dim" style="min-height:100vh">
+  <div class="fullbleed-bg kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/60600788-bbb4-4488-9491-1c6ac68505a4.png')"></div>
+  <div class="fullbleed-content">
+    <p class="label reveal">Neural Engine</p>
+    <div class="big-num blue reveal d1" data-counter="40" data-suffix=" TOPS">40 TOPS</div>
+    <p class="sub reveal d2">Forty trillion operations per second.<br>On-device AI that never sleeps.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4: CAMERA — macro background
+     ══════════════════════════════════════════════ -->
+<section class="fullbleed dim" style="min-height:100vh">
+  <div class="fullbleed-bg kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/de075255-e6d8-46b1-9fa2-45f5108f673e.png')"></div>
+  <div class="fullbleed-content">
+    <p class="label reveal">Camera System</p>
+    <h2 class="reveal d1">See the world in<br><span class="blue">48 megapixels.</span></h2>
+    <p class="sub reveal d2">Computational photography meets cinematic video.<br>Every frame is a masterpiece.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5: LIFESTYLE — person using phone
+     ══════════════════════════════════════════════ -->
+<section class="fullbleed vignette" style="min-height:100vh">
+  <div class="fullbleed-bg kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/94782565-e0a4-4a04-b2cf-f4064d70db3d.png')"></div>
+  <div class="fullbleed-content">
+    <h2 class="reveal">Designed for the way<br>you actually live.</h2>
+    <p class="sub reveal d2">All-day battery. Water resistant. Built to last.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6: FEATURES — glass cards
+     ══════════════════════════════════════════════ -->
+<section class="pad center" style="background:#000;min-height:100vh;justify-content:center">
+  <div class="container center">
+    <h2 class="reveal">Built for what's next.</h2>
+    <div class="feat-grid">
+      <div class="feat-card reveal d1"><div class="icon">&#129504;</div><h3>On-Device AI</h3><p>Private, fast, always available. Your AI never leaves your phone.</p></div>
+      <div class="feat-card reveal d2"><div class="icon">&#128247;</div><h3>Pro Camera</h3><p>48MP Fusion with 5x optical zoom and cinematic mode.</p></div>
+      <div class="feat-card reveal d3"><div class="icon">&#128267;</div><h3>All-Day Battery</h3><p>Up to 29 hours of video playback. Power that lasts.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7: BATTERY — edge profile + big number
+     ══════════════════════════════════════════════ -->
+<section class="fullbleed vignette" style="min-height:100vh">
+  <div class="fullbleed-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/1bf0bdda-9fae-4737-b786-69578c5fe844.png')"></div>
+  <div class="fullbleed-content">
+    <p class="label reveal">Battery Life</p>
+    <div class="big-num reveal d1" data-counter="29" data-suffix=" hours">29 hours</div>
+    <p class="sub reveal d2">The longest battery life ever in an iPhone.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8: PRICE
+     ══════════════════════════════════════════════ -->
+<section class="pad center" style="background:#000;min-height:80vh;justify-content:center">
+  <div class="container center">
+    <h2 class="reveal">iPhone AI</h2>
+    <div class="price reveal d2"><span class="from">From </span>$999</div>
+    <p class="small reveal d3">Available starting March 2027</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 9: ONE MORE THING
+     ══════════════════════════════════════════════ -->
+<section class="fullbleed dim" style="min-height:100vh">
+  <div class="fullbleed-bg kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4ada88f3-e623-46f3-9a93-67c20917dafe.png')"></div>
+  <div class="fullbleed-content">
+    <p style="font-size:28px;font-weight:500;color:rgba(255,255,255,0.5);font-style:italic" class="reveal">One more thing...</p>
+    <h2 style="margin-top:24px" class="reveal d3">The future is personal.</h2>
+    <p class="sub reveal d5">iPhone AI learns you. Adapts to you. Becomes yours.</p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2027 Apple Inc. All rights reserved.</p>
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT — IntersectionObserver + Parallax
+     ══════════════════════════════════════════════ -->
+<script>
+// 1. Scroll-triggered reveal animations
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target); // only trigger once
+    }
+  });
+}, {threshold:0.15, rootMargin:'0px 0px -50px 0px'});
+
+document.querySelectorAll('.reveal').forEach(function(el){
+  observer.observe(el);
+});
+
+// 2. Counter animation on visibility
+var counterObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      var el = entry.target;
+      var target = parseFloat(el.dataset.counter);
+      var suffix = el.dataset.suffix || '';
+      var prefix = el.dataset.prefix || '';
+      var dec = target % 1 !== 0;
+      var start = Date.now();
+      var dur = 2200;
+      var iv = setInterval(function(){
+        var p = Math.min((Date.now()-start)/dur, 1);
+        var ease = 1 - Math.pow(1-p, 3);
+        var v = target * ease;
+        el.textContent = prefix + (dec ? v.toFixed(1) : Math.round(v)) + suffix;
+        if(p >= 1) clearInterval(iv);
+      }, 25);
+      counterObserver.unobserve(el);
+    }
+  });
+}, {threshold:0.3});
+
+document.querySelectorAll('[data-counter]').forEach(function(el){
+  counterObserver.observe(el);
+});
+
+// 3. Parallax on scroll
+var parallaxEls = document.querySelectorAll('[data-speed]');
+if(parallaxEls.length){
+  window.addEventListener('scroll', function(){
+    var scrollY = window.scrollY;
+    parallaxEls.forEach(function(el){
+      var speed = parseFloat(el.dataset.speed);
+      var rect = el.getBoundingClientRect();
+      var offset = (scrollY - el.offsetTop) * speed;
+      el.style.transform = 'translateY(' + offset + 'px)';
+    });
+  }, {passive:true});
+}
+
+// 4. Sticky product transform on scroll
+var stickyProduct = document.getElementById('hero-product');
+if(stickyProduct){
+  var stickySection = stickyProduct.closest('.sticky-section');
+  window.addEventListener('scroll', function(){
+    if(!stickySection) return;
+    var rect = stickySection.getBoundingClientRect();
+    var sectionH = stickySection.offsetHeight;
+    var progress = Math.max(0, Math.min(1, -rect.top / (sectionH - window.innerHeight)));
+    // Scale down slightly as user scrolls through text panels
+    var scale = 1 - progress * 0.15;
+    var opacity = 1 - progress * 0.3;
+    stickyProduct.style.transform = 'scale(' + scale + ')';
+    stickyProduct.style.opacity = opacity;
+  }, {passive:true});
+}
+</script>
+</body>
+</html>

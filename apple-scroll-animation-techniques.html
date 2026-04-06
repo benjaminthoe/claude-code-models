@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple-Style Scroll Animation Techniques — Complete Reference</title>
+<style>
+/*
+ * ============================================================
+ *  APPLE-STYLE SCROLL ANIMATION TECHNIQUES
+ *  Complete, copy-paste-ready reference
+ *
+ *  Table of Contents
+ *  -----------------
+ *  1. Scroll-Controlled Image Sequence (Canvas)
+ *  2. Sticky Section with Swapping Text
+ *  3. Fade-Up on Scroll (Intersection Observer + CSS)
+ *  4. Product Image Scale/Transform on Scroll
+ *  5. Parallax Layers (Different Scroll Speeds)
+ *  6. Smooth Scroll Snap Between Sections
+ *  7. Number Counter on Scroll Visibility
+ *  8. CSS-Only Scroll-Driven Animations (No JS)
+ *  9. GSAP ScrollTrigger Pinned Timeline
+ * ============================================================
+ */
+
+/* ---- Global Reset & Base ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* Required: smooth native scroll for snap sections */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+               'Helvetica Neue', Arial, sans-serif;
+  background: #000;
+  color: #f5f5f7;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Section labels for this demo */
+.section-label {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1d1d1f;
+  color: #86868b;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-bottom: 1px solid #333;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+h2.demo-title {
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+  padding: 80px 24px 40px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #f5f5f7, #86868b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 1: Scroll-Controlled Image Sequence (Canvas)
+ *
+ *  HOW APPLE DOES IT:
+ *  - Pre-render 60-300 frames of a product rotating/opening
+ *  - Preload all frames as Image objects
+ *  - On scroll, calculate which frame to show based on
+ *    scroll percentage through the section
+ *  - Draw that frame to a <canvas> using drawImage()
+ *  - Use requestAnimationFrame for GPU-composited rendering
+ *
+ *  Apple's proprietary "Flow" technology uses:
+ *  - Delta-encoded JPG frames (only pixel diffs stored)
+ *  - WebGL fragment shaders for rendering
+ *  - Web Workers for frame reconstruction
+ *  - De Bruijn sequence packing for efficient lookup
+ *  - Separate JPG alpha masks for transparency
+ *
+ *  For production, you would host your own image sequence.
+ *  This demo uses placeholder colored frames to demonstrate
+ *  the exact mechanism without external dependencies.
+ * ============================================================ */
+
+#image-sequence-section {
+  position: relative;
+  height: 500vh; /* Scrollable area = 5 screens */
+  background: #000;
+}
+
+#image-sequence-section canvas {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.sequence-frame-counter {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(0,0,0,0.7);
+  color: #0af;
+  font-family: 'SF Mono', monospace;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sequence-frame-counter.visible {
+  opacity: 1;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 2: Sticky Section with Swapping Text
+ *
+ *  HOW APPLE DOES IT:
+ *  - Product image stays pinned (position: sticky)
+ *  - Text panels scroll past the pinned image
+ *  - Each text panel fades in/out at specific scroll positions
+ *  - CSS transforms + opacity transitions drive the motion
+ *  - The "stage" is a tall container; the sticky child
+ *    pins at top: 0 for the duration of the container scroll
+ * ============================================================ */
+
+#sticky-text-section {
+  position: relative;
+  background: #000;
+}
+
+.sticky-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400vh; /* Must be tall enough for all text panels */
+}
+
+.sticky-product {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticky-product .product-image {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #1a1a2e, #0a0a0f);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  box-shadow: 0 0 120px rgba(100, 100, 255, 0.15);
+  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+              box-shadow 0.6s ease;
+}
+
+.sticky-product .product-image.scale-up {
+  transform: scale(1.05);
+  box-shadow: 0 0 160px rgba(100, 100, 255, 0.25);
+}
+
+.sticky-text-panels {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-panel {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 60px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.text-panel.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-panel h3 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: #f5f5f7;
+}
+
+.text-panel p {
+  font-size: 21px;
+  color: #86868b;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.text-panel .feature-badge {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 20px;
+  border: 1px solid #424245;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #0071e3;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 3: Fade-Up on Scroll (Intersection Observer + CSS)
+ *
+ *  HOW APPLE DOES IT:
+ *  - Elements start invisible (opacity: 0) and shifted down
+ *  - IntersectionObserver watches for viewport entry
+ *  - When threshold is met, a class is added
+ *  - CSS transition handles the smooth fade + slide
+ *  - Apple typically uses: opacity, translateY, scale
+ *  - Staggered delays create a cascade effect
+ * ============================================================ */
+
+#fade-up-section {
+  padding: 120px 24px;
+  background: #000;
+}
+
+.fade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fade-card {
+  background: #1d1d1f;
+  border-radius: 20px;
+  padding: 48px 36px;
+  /* Initial hidden state */
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Stagger: each card delays slightly more */
+.fade-card:nth-child(2) { transition-delay: 0.1s; }
+.fade-card:nth-child(3) { transition-delay: 0.2s; }
+.fade-card:nth-child(4) { transition-delay: 0.3s; }
+.fade-card:nth-child(5) { transition-delay: 0.4s; }
+.fade-card:nth-child(6) { transition-delay: 0.5s; }
+
+/* Revealed state — added by Intersection Observer */
+.fade-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-card .icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.fade-card h4 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #f5f5f7;
+}
+
+.fade-card p {
+  font-size: 17px;
+  color: #86868b;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 4: Product Image Scale/Transform on Scroll
+ *
+ *  HOW APPLE DOES IT:
+ *  - Product starts small or zoomed out
+ *  - As user scrolls, scale and translateY are interpolated
+ *  - Uses CSS transform (GPU-composited, no layout thrash)
+ *  - The math: progress = clamp(0, scrolled / range, 1)
+ *  - Apply: scale(startScale + progress * (endScale - startScale))
+ *  - Apple adds subtle rotation and perspective for depth
+ * ============================================================ */
+
+#scale-transform-section {
+  height: 300vh;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.scale-product-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+}
+
+.scale-product {
+  width: 600px;
+  height: 400px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #f5f5f7;
+  /* Will be transformed by JS */
+  transform: scale(0.6) rotateX(15deg);
+  transition: none; /* JS drives this directly */
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  will-change: transform;
+}
+
+.scale-caption {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 80px;
+  pointer-events: none;
+}
+
+.scale-caption h3 {
+  font-size: 56px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scale-caption h3.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 5: Parallax Layers (Different Scroll Speeds)
+ *
+ *  HOW APPLE DOES IT:
+ *  - Multiple absolutely-positioned layers
+ *  - Each layer moves at a different rate relative to scroll
+ *  - Background layers move slower (further away = less motion)
+ *  - Foreground elements move faster or at 1:1
+ *  - Uses translateY with a speed multiplier
+ *  - CSS transform: translateY(scrollPosition * speed)
+ *  - Apple keeps speeds subtle (0.2x to 0.8x range)
+ * ============================================================ */
+
+#parallax-section {
+  position: relative;
+  height: 200vh;
+  overflow: hidden;
+  background: #000;
+}
+
+.parallax-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.parallax-layer.bg {
+  background: radial-gradient(ellipse at 50% 30%, #1a1a3e 0%, #000 70%);
+}
+
+.parallax-layer.stars {
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 80% 50%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 50% 10%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.5), transparent);
+}
+
+.parallax-layer.mid {
+  font-size: 200px;
+  opacity: 0.15;
+}
+
+.parallax-layer.front {
+  flex-direction: column;
+  gap: 16px;
+}
+
+.parallax-layer.front h3 {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.parallax-layer.front p {
+  font-size: 24px;
+  color: #86868b;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 6: Smooth Scroll Snap Between Sections
+ *
+ *  HOW APPLE DOES IT:
+ *  - scroll-snap-type: y mandatory on the container
+ *  - scroll-snap-align: start on each section
+ *  - Each section is exactly 100vh
+ *  - Content within sections uses flexbox centering
+ *  - Combines with fade/scale animations per section
+ *  - CSS scroll-snap is native, no JS needed for the snap
+ * ============================================================ */
+
+#snap-section {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  /* Hide scrollbar for clean look (Apple style) */
+  scrollbar-width: none;
+}
+
+#snap-section::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-panel {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.snap-panel:nth-child(1) {
+  background: linear-gradient(180deg, #000 0%, #0a0a2e 100%);
+}
+.snap-panel:nth-child(2) {
+  background: linear-gradient(180deg, #0a0a2e 0%, #1a0a2e 100%);
+}
+.snap-panel:nth-child(3) {
+  background: linear-gradient(180deg, #1a0a2e 0%, #2e0a1a 100%);
+}
+.snap-panel:nth-child(4) {
+  background: linear-gradient(180deg, #2e0a1a 0%, #000 100%);
+}
+
+.snap-panel h3 {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.snap-panel p {
+  font-size: 21px;
+  color: #86868b;
+  max-width: 600px;
+  text-align: center;
+}
+
+.snap-indicator {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.snap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #424245;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.snap-dot.active {
+  background: #f5f5f7;
+  transform: scale(1.5);
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 7: Number Counter on Scroll Visibility
+ *
+ *  HOW APPLE DOES IT:
+ *  - Stats/numbers start at 0
+ *  - IntersectionObserver triggers when section is visible
+ *  - JavaScript animates from 0 to target using easing
+ *  - requestAnimationFrame for smooth 60fps counting
+ *  - Apple uses ease-out curve (fast start, slow end)
+ *  - Numbers format with commas and optional suffix (K, M, x)
+ * ============================================================ */
+
+#counter-section {
+  padding: 120px 24px;
+  background: #000;
+}
+
+.counter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.counter-item {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.counter-value {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #f5f5f7;
+  font-variant-numeric: tabular-nums;
+  /* Prevent layout shift during counting */
+  min-width: 200px;
+  display: inline-block;
+}
+
+.counter-label {
+  font-size: 17px;
+  color: #86868b;
+  margin-top: 8px;
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 8: CSS-Only Scroll-Driven Animations
+ *  (No JavaScript — uses native CSS scroll-timeline/view())
+ *
+ *  BROWSER SUPPORT: Chrome 115+, Edge 115+
+ *  Firefox: behind flag  |  Safari: not yet
+ *
+ *  These use the new CSS Scroll-Driven Animations spec:
+ *  - animation-timeline: scroll() — tied to scroll position
+ *  - animation-timeline: view()  — tied to element visibility
+ *  - animation-range — control when animation starts/ends
+ * ============================================================ */
+
+#css-only-section {
+  padding: 0;
+  background: #000;
+}
+
+/* --- 8A: Reading Progress Bar (CSS Only) --- */
+.css-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #0071e3, #bf5af2);
+  transform-origin: 0 50%;
+  z-index: 1000;
+  animation: grow-progress auto linear;
+  animation-timeline: scroll(root);
+}
+
+@keyframes grow-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* --- 8B: Fade-In on View (CSS Only) --- */
+.css-fade-item {
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  animation: css-fade-in linear both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 40%;
+}
+
+@keyframes css-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- 8C: Slide from Left (CSS Only) --- */
+.css-slide-left {
+  animation: css-slide-from-left linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+@keyframes css-slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- 8D: Scale Up on View (CSS Only) --- */
+.css-scale-up {
+  animation: css-scale-entrance linear both;
+  animation-timeline: view();
+  animation-range: entry 20% cover 50%;
+}
+
+@keyframes css-scale-entrance {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- 8E: Text Color Reveal (CSS Only) --- */
+.css-text-reveal {
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+  padding: 100px 24px;
+  background: linear-gradient(
+    to right,
+    #f5f5f7 0%, #f5f5f7 50%,
+    #333 50%, #333 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-color-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 50%;
+}
+
+@keyframes text-color-reveal {
+  from { background-position: 100% 0; }
+  to   { background-position: 0% 0; }
+}
+
+/* --- 8F: Parallax via CSS scroll() (CSS Only) --- */
+.css-parallax-container {
+  height: 200vh;
+  position: relative;
+}
+
+.css-parallax-slow {
+  animation: parallax-slow linear both;
+  animation-timeline: scroll(root block);
+}
+
+@keyframes parallax-slow {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-100px); }
+}
+
+.css-parallax-fast {
+  animation: parallax-fast linear both;
+  animation-timeline: scroll(root block);
+}
+
+@keyframes parallax-fast {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-300px); }
+}
+
+/* Progressive enhancement: fallback for unsupported browsers */
+@supports not (animation-timeline: scroll()) {
+  .css-fade-item,
+  .css-slide-left,
+  .css-scale-up {
+    opacity: 1;
+    transform: none;
+  }
+  .css-progress-bar {
+    display: none;
+  }
+  .css-text-reveal {
+    background: none;
+    -webkit-text-fill-color: #f5f5f7;
+    color: #f5f5f7;
+  }
+}
+
+
+/* ============================================================
+ *  TECHNIQUE 9: Spacer & Footer
+ * ============================================================ */
+
+.spacer-section {
+  height: 60vh;
+  background: #000;
+}
+
+.code-note {
+  background: #1d1d1f;
+  border-left: 3px solid #0071e3;
+  padding: 20px 24px;
+  margin: 0 auto 40px;
+  max-width: 900px;
+  border-radius: 0 12px 12px 0;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  color: #86868b;
+  line-height: 1.8;
+}
+
+.code-note code {
+  color: #bf5af2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sticky-stage { grid-template-columns: 1fr; }
+  .sticky-product { height: 50vh; }
+  .text-panel { padding: 0 24px; }
+  .counter-grid { grid-template-columns: repeat(2, 1fr); }
+  .counter-value { font-size: 48px; }
+  h2.demo-title { font-size: 32px; }
+  .parallax-layer.front h3 { font-size: 40px; }
+  .snap-panel h3 { font-size: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Reading progress bar (CSS-only, Technique 8A) -->
+<div class="css-progress-bar"></div>
+
+<!-- ============================================================
+     TECHNIQUE 1: Scroll-Controlled Image Sequence (Canvas)
+     ============================================================ -->
+<div class="section-label">Technique 1 — Scroll-Controlled Image Sequence (Canvas)</div>
+
+<h2 class="demo-title">Image Sequence on Scroll</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> Pre-render 60-300 frames. Preload as Image objects.
+  On scroll, calculate <code>frameIndex = floor(scrollFraction * frameCount)</code>.
+  Draw to <code>&lt;canvas&gt;</code> via <code>drawImage()</code> inside <code>requestAnimationFrame()</code>.<br><br>
+  Apple's "Flow" technology compresses frames using delta-encoding (only pixel diffs between frames),
+  reconstructs via Web Workers + WebGL + De Bruijn sequence packing.
+  For production, replace the generated frames below with your own JPG/WebP sequence.
+</div>
+
+<section id="image-sequence-section">
+  <canvas id="sequence-canvas"></canvas>
+</section>
+<div class="sequence-frame-counter" id="frame-counter">Frame: 0 / 0</div>
+
+
+<!-- ============================================================
+     TECHNIQUE 2: Sticky Section with Swapping Text
+     ============================================================ -->
+<div class="section-label">Technique 2 — Sticky Image + Scrolling Text Panels</div>
+
+<h2 class="demo-title">Pinned Product, Flowing Story</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> Product image uses <code>position: sticky; top: 0</code>.
+  Text panels are stacked vertically, each <code>100vh</code> tall.
+  <code>IntersectionObserver</code> detects which panel is in view and toggles an <code>.active</code> class.
+  CSS transitions handle opacity + translateY.
+</div>
+
+<section id="sticky-text-section">
+  <div class="sticky-stage">
+    <div class="sticky-product">
+      <div class="product-image" id="sticky-product-img">
+        <!-- Replace with your product image/3D render -->
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs>
+            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea"/>
+              <stop offset="100%" style="stop-color:#764ba2"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="40" width="160" height="120" rx="12" fill="url(#g1)"/>
+          <rect x="70" y="160" width="60" height="8" rx="4" fill="#424245"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sticky-text-panels">
+      <div class="text-panel" data-panel="0">
+        <h3>Supercharged Performance</h3>
+        <p>The all-new chip delivers unprecedented speed and efficiency, transforming every workflow into an effortless experience.</p>
+        <span class="feature-badge">Up to 2x faster</span>
+      </div>
+      <div class="text-panel" data-panel="1">
+        <h3>All-Day Battery Life</h3>
+        <p>An advanced power architecture gives you up to 22 hours of battery life. Work all day without reaching for a charger.</p>
+        <span class="feature-badge">22 hours</span>
+      </div>
+      <div class="text-panel" data-panel="2">
+        <h3>Stunning Display</h3>
+        <p>A brilliant Liquid Retina XDR display with ProMotion. Every pixel is precisely tuned for professional color accuracy.</p>
+        <span class="feature-badge">120Hz ProMotion</span>
+      </div>
+      <div class="text-panel" data-panel="3">
+        <h3>Pro Connectivity</h3>
+        <p>Thunderbolt 5, Wi-Fi 7, and MagSafe. Connect to everything you need with the most advanced ports ever on a notebook.</p>
+        <span class="feature-badge">Thunderbolt 5</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 3: Fade-Up on Scroll (Intersection Observer + CSS)
+     ============================================================ -->
+<div class="section-label">Technique 3 — Fade-Up on Scroll (IntersectionObserver + CSS)</div>
+
+<h2 class="demo-title">Features That Fade In</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> Elements start with <code>opacity: 0; transform: translateY(60px)</code>.
+  <code>IntersectionObserver</code> with <code>threshold: 0.15</code> adds class <code>.revealed</code>.
+  CSS transition handles the animation. Staggered <code>transition-delay</code> per child creates cascade.
+</div>
+
+<section id="fade-up-section">
+  <div class="fade-grid">
+    <div class="fade-card">
+      <div class="icon">&#9889;</div>
+      <h4>Lightning Fast</h4>
+      <p>Harness the power of next-generation silicon for tasks that used to take minutes.</p>
+    </div>
+    <div class="fade-card">
+      <div class="icon">&#128274;</div>
+      <h4>Private by Design</h4>
+      <p>Your data stays on-device. Hardware-level encryption protects every file and message.</p>
+    </div>
+    <div class="fade-card">
+      <div class="icon">&#127912;</div>
+      <h4>Creative Tools</h4>
+      <p>Pro-grade apps for video, music, and design come built right in, ready to create.</p>
+    </div>
+    <div class="fade-card">
+      <div class="icon">&#127760;</div>
+      <h4>Connected Everywhere</h4>
+      <p>Wi-Fi 7 and 5G keep you connected at incredible speeds, wherever you are.</p>
+    </div>
+    <div class="fade-card">
+      <div class="icon">&#9881;&#65039;</div>
+      <h4>Developer Ready</h4>
+      <p>Xcode, Docker, and your entire toolchain run natively with zero compromise.</p>
+    </div>
+    <div class="fade-card">
+      <div class="icon">&#127793;</div>
+      <h4>Carbon Neutral</h4>
+      <p>100% recycled materials and renewable energy in every step of production.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 4: Product Image Scale/Transform on Scroll
+     ============================================================ -->
+<div class="section-label">Technique 4 — Product Scale + Transform on Scroll Position</div>
+
+<h2 class="demo-title">The Device, Revealed</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> Calculate <code>progress = clamp(0, scrolled / range, 1)</code>.
+  Interpolate: <code>scale(0.6 + progress * 0.4)</code> and <code>rotateX(15 - progress * 15)</code>.
+  Use <code>will-change: transform</code> for GPU compositing. No layout thrash.
+</div>
+
+<section id="scale-transform-section">
+  <div class="scale-product-container">
+    <div class="scale-product" id="scale-product">
+      MacBook Pro
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 5: Parallax Layers (Different Scroll Speeds)
+     ============================================================ -->
+<div class="section-label">Technique 5 — Parallax Layers with Different Scroll Speeds</div>
+
+<h2 class="demo-title">Depth Through Motion</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> Multiple absolutely-positioned layers.
+  Each layer: <code>transform: translateY(scrollOffset * speedMultiplier)</code>.
+  Background = 0.1x speed. Stars = 0.3x. Text = 0.5x. Foreground = 1x.
+  All via <code>will-change: transform</code> for GPU compositing.
+</div>
+
+<section id="parallax-section">
+  <div class="parallax-viewport">
+    <div class="parallax-layer bg" data-speed="0.1"></div>
+    <div class="parallax-layer stars" data-speed="0.3"></div>
+    <div class="parallax-layer mid" data-speed="0.5">&#11088;</div>
+    <div class="parallax-layer front" data-speed="0.8">
+      <h3>Beyond the Surface</h3>
+      <p>Every layer moves at its own pace</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 6: Smooth Scroll Snap Between Sections
+     ============================================================ -->
+<div class="section-label">Technique 6 — Scroll Snap Sections</div>
+
+<section id="snap-section">
+  <div class="snap-panel">
+    <h3>Designed for Everyone</h3>
+    <p>A unified experience that adapts to how you work, play, and create. Scroll down to explore.</p>
+    <div class="snap-indicator">
+      <div class="snap-dot active" data-index="0"></div>
+      <div class="snap-dot" data-index="1"></div>
+      <div class="snap-dot" data-index="2"></div>
+      <div class="snap-dot" data-index="3"></div>
+    </div>
+  </div>
+  <div class="snap-panel">
+    <h3>Work Without Limits</h3>
+    <p>Run dozens of apps simultaneously. Compile code while rendering 4K video. No compromise.</p>
+    <div class="snap-indicator">
+      <div class="snap-dot" data-index="0"></div>
+      <div class="snap-dot active" data-index="1"></div>
+      <div class="snap-dot" data-index="2"></div>
+      <div class="snap-dot" data-index="3"></div>
+    </div>
+  </div>
+  <div class="snap-panel">
+    <h3>Create at the Speed of Thought</h3>
+    <p>Neural Engine powers intelligent features that anticipate what you need before you ask.</p>
+    <div class="snap-indicator">
+      <div class="snap-dot" data-index="0"></div>
+      <div class="snap-dot" data-index="1"></div>
+      <div class="snap-dot active" data-index="2"></div>
+      <div class="snap-dot" data-index="3"></div>
+    </div>
+  </div>
+  <div class="snap-panel">
+    <h3>The Future Is Personal</h3>
+    <p>Apple Intelligence understands your context. Private, powerful, and uniquely yours.</p>
+    <div class="snap-indicator">
+      <div class="snap-dot" data-index="0"></div>
+      <div class="snap-dot" data-index="1"></div>
+      <div class="snap-dot" data-index="2"></div>
+      <div class="snap-dot active" data-index="3"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 7: Number Counter on Scroll Visibility
+     ============================================================ -->
+<div class="section-label">Technique 7 — Animated Number Counter on Scroll</div>
+
+<h2 class="demo-title">By the Numbers</h2>
+
+<div class="code-note">
+  <strong>How Apple does it:</strong> <code>IntersectionObserver</code> triggers counting.
+  <code>requestAnimationFrame</code> loop with ease-out: <code>progress = 1 - (1 - t)^3</code>.
+  Format with <code>Intl.NumberFormat</code> for locale-aware commas.
+  Numbers use <code>font-variant-numeric: tabular-nums</code> to prevent layout jitter.
+</div>
+
+<section id="counter-section">
+  <div class="counter-grid">
+    <div class="counter-item">
+      <div class="counter-value" data-target="18" data-suffix="h">0h</div>
+      <div class="counter-label">Battery Life</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-value" data-target="3500000" data-suffix="">0</div>
+      <div class="counter-label">Apps Available</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-value" data-target="40" data-suffix="%">0%</div>
+      <div class="counter-label">Faster CPU</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-value" data-target="120" data-suffix="Hz">0Hz</div>
+      <div class="counter-label">Refresh Rate</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECHNIQUE 8: CSS-Only Scroll-Driven Animations
+     ============================================================ -->
+<div class="section-label">Technique 8 — CSS-Only Scroll-Driven Animations (No JavaScript)</div>
+
+<h2 class="demo-title">Pure CSS — No JS Required</h2>
+
+<div class="code-note">
+  <strong>How it works:</strong> Uses the CSS Scroll-Driven Animations specification.<br>
+  <code>animation-timeline: view()</code> ties animation to element visibility.<br>
+  <code>animation-timeline: scroll()</code> ties animation to scroll position.<br>
+  <code>animation-range: entry 10% cover 40%</code> controls when animation plays.<br>
+  <strong>Browser support:</strong> Chrome 115+, Edge 115+. Firefox behind flag. Safari not yet.<br>
+  Use <code>@supports (animation-timeline: scroll())</code> for progressive enhancement.
+</div>
+
+<section id="css-only-section" style="padding: 60px 24px; min-height: 200vh;">
+
+  <!-- 8B: Fade items -->
+  <div style="max-width: 900px; margin: 0 auto 80px;">
+    <div class="css-fade-item" style="background: #1d1d1f; padding: 40px; border-radius: 16px; margin-bottom: 40px;">
+      <h4 style="font-size: 24px; margin-bottom: 8px;">CSS Fade In (view() timeline)</h4>
+      <p style="color: #86868b;">This element fades in purely with CSS as it enters the viewport. No JavaScript needed.</p>
+    </div>
+
+    <div class="css-slide-left" style="background: #1d1d1f; padding: 40px; border-radius: 16px; margin-bottom: 40px;">
+      <h4 style="font-size: 24px; margin-bottom: 8px;">CSS Slide from Left</h4>
+      <p style="color: #86868b;">Slides in from the left using animation-timeline: view() and translateX.</p>
+    </div>
+
+    <div class="css-scale-up" style="background: #1d1d1f; padding: 40px; border-radius: 16px; margin-bottom: 40px;">
+      <h4 style="font-size: 24px; margin-bottom: 8px;">CSS Scale Up on View</h4>
+      <p style="color: #86868b;">Scales from 50% to 100% as it enters the viewport. Pure CSS animation-range.</p>
+    </div>
+  </div>
+
+  <!-- 8E: Text color reveal -->
+  <div class="css-text-reveal">
+    The future of animation is CSS-native.
+  </div>
+
+  <div style="height: 60vh;"></div>
+</section>
+
+
+<!-- Spacer for scroll room -->
+<div class="spacer-section"></div>
+
+
+<!-- ============================================================
+     ALL JAVASCRIPT
+     Every technique's JS is here, clearly separated.
+     ============================================================ -->
+<script>
+/* ============================================================
+ *  TECHNIQUE 1 — Image Sequence on Scroll (Canvas)
+ *
+ *  FOR PRODUCTION: Replace generateFrames() with real images:
+ *
+ *  const currentFrame = (index) =>
+ *    `./frames/${index.toString().padStart(4, '0')}.jpg`;
+ *
+ *  Apple's actual URL pattern looks like:
+ *  https://www.apple.com/.../anim/sequence/large/0001.jpg
+ *
+ *  This demo generates colored frames programmatically
+ *  so it works without any external image files.
+ * ============================================================ */
+(function() {
+  const canvas = document.getElementById('sequence-canvas');
+  const ctx = canvas.getContext('2d');
+  const section = document.getElementById('image-sequence-section');
+  const frameCounter = document.getElementById('frame-counter');
+
+  const FRAME_COUNT = 120;  // Number of frames in your sequence
+  const frames = [];
+  let currentFrameIndex = 0;
+
+  // --- Canvas sizing ---
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawFrame(currentFrameIndex);
+  }
+
+  // --- Generate placeholder frames (REPLACE WITH REAL IMAGES) ---
+  // For production, preload real images:
+  //
+  //   const images = [];
+  //   const frameCount = 148;
+  //   for (let i = 0; i < frameCount; i++) {
+  //     const img = new Image();
+  //     img.src = `./frames/${i.toString().padStart(4, '0')}.jpg`;
+  //     images.push(img);
+  //   }
+  //
+  // Then in drawFrame:  ctx.drawImage(images[index], 0, 0, canvas.width, canvas.height);
+
+  function generateFrames() {
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const progress = i / (FRAME_COUNT - 1);
+      frames.push({
+        // Simulate a product rotating by shifting hue
+        hue: Math.floor(progress * 260 + 200) % 360,
+        rotation: progress * 360,
+        scale: 0.5 + Math.sin(progress * Math.PI) * 0.3,
+        yOffset: Math.sin(progress * Math.PI * 2) * 50
+      });
+    }
+  }
+
+  function drawFrame(index) {
+    const frame = frames[index];
+    if (!frame) return;
+
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Clear
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw product representation
+    ctx.save();
+    ctx.translate(cx, cy + frame.yOffset);
+    ctx.rotate((frame.rotation * Math.PI) / 180);
+
+    const size = Math.min(w, h) * 0.35 * frame.scale;
+
+    // Glow
+    const glow = ctx.createRadialGradient(0, 0, size * 0.3, 0, 0, size * 1.5);
+    glow.addColorStop(0, `hsla(${frame.hue}, 80%, 60%, 0.3)`);
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.fillRect(-size * 1.5, -size * 1.5, size * 3, size * 3);
+
+    // Product shape (rounded rect)
+    const r = size * 0.15;
+    ctx.beginPath();
+    ctx.roundRect(-size / 2, -size / 3, size, size * 0.66, r);
+    ctx.fillStyle = `hsl(${frame.hue}, 60%, 25%)`;
+    ctx.fill();
+
+    // Screen area
+    const padding = size * 0.06;
+    ctx.beginPath();
+    ctx.roundRect(
+      -size / 2 + padding,
+      -size / 3 + padding,
+      size - padding * 2,
+      size * 0.66 - padding * 2,
+      r * 0.6
+    );
+    const screenGrad = ctx.createLinearGradient(0, -size / 3, 0, size / 3);
+    screenGrad.addColorStop(0, `hsl(${frame.hue}, 70%, 15%)`);
+    screenGrad.addColorStop(1, `hsl(${(frame.hue + 40) % 360}, 70%, 10%)`);
+    ctx.fillStyle = screenGrad;
+    ctx.fill();
+
+    ctx.restore();
+
+    // Frame info
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.font = '14px SF Mono, monospace';
+    ctx.fillText(`Frame ${index + 1} / ${FRAME_COUNT}`, 24, h - 24);
+  }
+
+  // --- Scroll handler ---
+  function onScroll() {
+    const rect = section.getBoundingClientRect();
+    const sectionTop = -rect.top;
+    const sectionHeight = section.offsetHeight - window.innerHeight;
+    const scrollFraction = Math.max(0, Math.min(1, sectionTop / sectionHeight));
+    const frameIndex = Math.min(
+      FRAME_COUNT - 1,
+      Math.floor(scrollFraction * FRAME_COUNT)
+    );
+
+    if (frameIndex !== currentFrameIndex) {
+      currentFrameIndex = frameIndex;
+      requestAnimationFrame(() => drawFrame(currentFrameIndex));
+    }
+
+    // Show/hide frame counter
+    if (sectionTop >= 0 && sectionTop <= sectionHeight) {
+      frameCounter.classList.add('visible');
+      frameCounter.textContent = `Frame: ${currentFrameIndex + 1} / ${FRAME_COUNT}`;
+    } else {
+      frameCounter.classList.remove('visible');
+    }
+  }
+
+  // --- Init ---
+  generateFrames();
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 2 — Sticky Section with Swapping Text
+ *
+ *  Uses IntersectionObserver to detect which text panel
+ *  is currently in view and toggles the .active class.
+ * ============================================================ */
+(function() {
+  const panels = document.querySelectorAll('.text-panel');
+  const productImg = document.getElementById('sticky-product-img');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Deactivate all panels, then activate this one
+        panels.forEach(p => p.classList.remove('active'));
+        entry.target.classList.add('active');
+
+        // Optionally scale the product image
+        productImg.classList.add('scale-up');
+        setTimeout(() => productImg.classList.remove('scale-up'), 600);
+      }
+    });
+  }, {
+    // Trigger when 40% of the panel is visible
+    threshold: 0.4,
+    // Negative margin shrinks the observation area to center of viewport
+    rootMargin: '-20% 0px -20% 0px'
+  });
+
+  panels.forEach(panel => observer.observe(panel));
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 3 — Fade-Up on Scroll (Intersection Observer)
+ *
+ *  Watches .fade-card elements. When 15% visible, adds .revealed.
+ *  unobserve() after reveal so it only triggers once.
+ * ============================================================ */
+(function() {
+  const cards = document.querySelectorAll('.fade-card');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target); // Only animate once
+      }
+    });
+  }, {
+    threshold: 0.15
+  });
+
+  cards.forEach(card => observer.observe(card));
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 4 — Product Scale/Transform on Scroll
+ *
+ *  Calculates scroll progress through the section.
+ *  Interpolates scale (0.6 -> 1.0) and rotateX (15 -> 0).
+ *  Uses requestAnimationFrame for smooth updates.
+ * ============================================================ */
+(function() {
+  const section = document.getElementById('scale-transform-section');
+  const product = document.getElementById('scale-product');
+  let ticking = false;
+
+  function updateTransform() {
+    const rect = section.getBoundingClientRect();
+    const sectionTop = -rect.top;
+    const sectionHeight = section.offsetHeight - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, sectionTop / sectionHeight));
+
+    // Interpolate values
+    const scale = 0.6 + progress * 0.4;           // 0.6 -> 1.0
+    const rotateX = 15 - progress * 15;             // 15deg -> 0deg
+    const translateY = (1 - progress) * 50;          // 50px -> 0px
+    const shadowBlur = 40 + progress * 60;           // 40px -> 100px
+    const shadowOpacity = 0.3 + progress * 0.3;      // 0.3 -> 0.6
+
+    product.style.transform =
+      `scale(${scale}) rotateX(${rotateX}deg) translateY(${translateY}px)`;
+    product.style.boxShadow =
+      `0 ${shadowBlur}px ${shadowBlur * 2}px rgba(100, 100, 255, ${shadowOpacity})`;
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateTransform);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  updateTransform();
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 5 — Parallax Layers
+ *
+ *  Each layer has data-speed attribute (0.1 = slow, 1.0 = fast).
+ *  On scroll, translateY = scrollOffset * speed.
+ *  Uses requestAnimationFrame to batch DOM writes.
+ * ============================================================ */
+(function() {
+  const section = document.getElementById('parallax-section');
+  const layers = section.querySelectorAll('.parallax-layer[data-speed]');
+  let ticking = false;
+
+  function updateParallax() {
+    const rect = section.getBoundingClientRect();
+    const sectionTop = -rect.top;
+
+    layers.forEach(layer => {
+      const speed = parseFloat(layer.dataset.speed);
+      const yOffset = sectionTop * speed;
+      layer.style.transform = `translateY(${yOffset}px)`;
+    });
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  updateParallax();
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 6 — Scroll Snap (dot indicator update)
+ *
+ *  The snap behavior is 100% CSS (scroll-snap-type).
+ *  JS only updates the active dot indicators here.
+ * ============================================================ */
+(function() {
+  const snapContainer = document.getElementById('snap-section');
+  if (!snapContainer) return;
+
+  // Use IntersectionObserver inside the snap container to detect visible panel
+  const panels = snapContainer.querySelectorAll('.snap-panel');
+  const allDots = snapContainer.querySelectorAll('.snap-dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const panel = entry.target;
+        const index = Array.from(panels).indexOf(panel);
+
+        // Update all dot indicators across all panels
+        allDots.forEach(dot => {
+          dot.classList.toggle('active',
+            parseInt(dot.dataset.index) === index
+          );
+        });
+      }
+    });
+  }, {
+    root: snapContainer,
+    threshold: 0.6
+  });
+
+  panels.forEach(panel => observer.observe(panel));
+})();
+
+
+/* ============================================================
+ *  TECHNIQUE 7 — Number Counter on Scroll Visibility
+ *
+ *  IntersectionObserver triggers the count animation.
+ *  requestAnimationFrame loop with ease-out cubic easing.
+ *  Formats numbers with locale-aware separators.
+ * ============================================================ */
+(function() {
+  const counterElements = document.querySelectorAll('.counter-value');
+  const DURATION = 2000; // Animation duration in ms
+  const formatter = new Intl.NumberFormat();
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || '';
+    const startTime = performance.now();
+
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / DURATION, 1);
+      const easedProgress = easeOutCubic(progress);
+      const currentValue = Math.floor(easedProgress * target);
+
+      el.textContent = formatter.format(currentValue) + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = formatter.format(target) + suffix;
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.5
+  });
+
+  counterElements.forEach(el => observer.observe(el));
+})();
+
+
+/* ============================================================
+ *  BONUS: GSAP ScrollTrigger Reference
+ *  (Uncomment and include GSAP CDN to use)
+ *
+ *  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+ *  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+ *
+ *  gsap.registerPlugin(ScrollTrigger);
+ *
+ *  // --- Pin a section while timeline plays ---
+ *  const tl = gsap.timeline({
+ *    scrollTrigger: {
+ *      trigger: '.pinned-section',
+ *      pin: true,
+ *      start: 'top top',
+ *      end: '+=3000',    // Pin for 3000px of scroll
+ *      scrub: 1,          // Smooth scrubbing (1s lag)
+ *      markers: true      // Debug markers (remove in production)
+ *    }
+ *  });
+ *  tl.to('.product', { scale: 1, rotateX: 0, duration: 1 })
+ *    .to('.headline', { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
+ *    .to('.description', { opacity: 1, y: 0, duration: 0.5 }, '-=0.2');
+ *
+ *  // --- Batch animate cards on enter ---
+ *  ScrollTrigger.batch('.card', {
+ *    onEnter: (elements) => {
+ *      gsap.to(elements, {
+ *        opacity: 1,
+ *        y: 0,
+ *        duration: 0.8,
+ *        stagger: 0.15
+ *      });
+ *    },
+ *    start: 'top 90%'
+ *  });
+ *
+ *  // --- Parallax background ---
+ *  gsap.to('.parallax-bg', {
+ *    scrollTrigger: {
+ *      trigger: '.hero',
+ *      start: 'top top',
+ *      end: 'bottom top',
+ *      scrub: true
+ *    },
+ *    y: 300,
+ *    ease: 'none'
+ *  });
+ *
+ *  // --- Horizontal scroll gallery ---
+ *  const sections = gsap.utils.toArray('.panel');
+ *  gsap.to(sections, {
+ *    xPercent: -100 * (sections.length - 1),
+ *    ease: 'none',
+ *    scrollTrigger: {
+ *      trigger: '.gallery-container',
+ *      pin: true,
+ *      scrub: 1,
+ *      snap: 1 / (sections.length - 1),
+ *      end: () => '+=' + document.querySelector('.gallery-container').offsetWidth
+ *    }
+ *  });
+ * ============================================================ */
+</script>
+
+</body>
+</html>
