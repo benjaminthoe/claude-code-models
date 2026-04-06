@@ -24,9 +24,9 @@
       <option value="xiaomi">Xiaomi / Lei Jun</option>
       <option value="light">Light Clean</option>
     </select>
-    <button class="tb-btn" onclick="exportHTML()" title="Export as shareable HTML">&#128196; HTML</button>
-    <button class="tb-btn" onclick="exportPPTX()" title="Export as PowerPoint">&#128202; PPTX</button>
-    <button class="tb-btn" onclick="exportVideo()" title="Export as video">&#127916; Video</button>
+    <button class="tb-btn" onclick="exportHTML()" title="Export as shareable HTML">&#128196; Export HTML</button>
+    <button class="tb-btn" onclick="exportPPTX()" title="Export as PowerPoint">&#128202; Export PPTX</button>
+    <button class="tb-btn" onclick="toggleHistory()" title="View history" id="history-btn">&#128218; History</button>
     <div class="hf-status" id="hf-status" title="Higgsfield AI">&#9679; AI Ready</div>
   </div>
 </header>
@@ -35,12 +35,21 @@
 <main id="app">
   <!-- Left: Chat Panel -->
   <section id="chat-panel">
+    <!-- History drawer (hidden by default) -->
+    <div id="history-drawer" class="hidden">
+      <div class="history-header">
+        <strong>History</strong>
+        <button class="history-close" onclick="toggleHistory()">&#10005;</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+
     <div id="chat-messages">
       <div class="msg system">
         <div class="msg-content">
           <strong>PPT Studio</strong><br>
-          Tell me what presentation to create. I'll research the topic, design cinematic slides, and generate AI visuals.<br><br>
-          <span style="color:var(--text3)">Try: "Create an Apple-style product launch for a new AI phone" or "Make a Xiaomi Lei Jun keynote for a flagship laptop"</span>
+          Tell me what presentation to create. I'll design cinematic slides with Apple/Xiaomi-level quality.<br><br>
+          <span style="color:var(--text3)">Try: "Create an Apple-style product launch" or "Make a Xiaomi Lei Jun keynote"</span>
         </div>
       </div>
     </div>

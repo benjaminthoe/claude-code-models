@@ -42,14 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const settings = result.settings || {};
       settings.enabled = enabled;
       api.storage.local.set({ settings });
-
-      // Enable/disable declarativeNetRequest ruleset
-      if (api.declarativeNetRequest && api.declarativeNetRequest.updateEnabledRulesets) {
-        api.declarativeNetRequest.updateEnabledRulesets({
-          enableRulesetIds: enabled && settings.blockAdsTrackers ? ['block_rules'] : [],
-          disableRulesetIds: enabled && settings.blockAdsTrackers ? [] : ['block_rules']
-        });
-      }
     });
   });
 
@@ -63,14 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = result.settings || {};
         settings[key] = checkbox.checked;
         api.storage.local.set({ settings });
-
-        // Special handling for ad blocker toggle
-        if (key === 'blockAdsTrackers' && api.declarativeNetRequest) {
-          api.declarativeNetRequest.updateEnabledRulesets({
-            enableRulesetIds: checkbox.checked && settings.enabled ? ['block_rules'] : [],
-            disableRulesetIds: checkbox.checked && settings.enabled ? [] : ['block_rules']
-          });
-        }
       });
     });
   });

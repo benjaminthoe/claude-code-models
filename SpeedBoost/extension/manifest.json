@@ -4,8 +4,6 @@
   "version": "1.0.0",
   "description": "Dramatically speed up page loading by blocking ads/trackers, lazy-loading media, and optimizing DOM performance.",
   "permissions": [
-    "declarativeNetRequest",
-    "declarativeNetRequestFeedback",
     "storage",
     "activeTab"
   ],
@@ -35,14 +33,5 @@
     "48": "images/icon-48.png",
     "96": "images/icon-96.png",
     "128": "images/icon-128.png"
-  },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "block_rules",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
   }
 }

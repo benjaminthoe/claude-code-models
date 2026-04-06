@@ -147,6 +147,44 @@ html, body {
   font-size: 11px; color: var(--text3);
 }
 
+/* ── History Drawer ─────────────────────────────────── */
+#history-drawer {
+  border-bottom: 1px solid var(--border); overflow-y: auto; max-height: 45%;
+}
+#history-drawer.hidden { display: none; }
+.history-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
+  background: var(--bg2); position: sticky; top: 0; z-index: 1;
+}
+.history-close {
+  background: none; border: none; color: var(--text3); font-size: 16px; cursor: pointer;
+  padding: 2px 6px; border-radius: 4px;
+}
+.history-close:hover { background: var(--surface2); color: var(--text); }
+#history-list { padding: 8px; }
+.history-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 4px;
+  transition: background 0.15s;
+}
+.history-item:hover { background: var(--surface2); }
+.history-item.active { background: var(--surface2); border-left: 3px solid var(--accent); }
+.history-item .hi-icon { font-size: 18px; flex-shrink: 0; }
+.history-item .hi-info { flex: 1; min-width: 0; }
+.history-item .hi-title {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.history-item .hi-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.history-item .hi-actions { display: flex; gap: 4px; }
+.history-item .hi-btn {
+  background: none; border: none; color: var(--text3); font-size: 12px;
+  cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.history-item .hi-btn:hover { background: var(--surface); color: var(--text); }
+#history-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
 /* ── Loading Spinner ─────────────────────────────────── */
 .spinner {
   display: inline-block; width: 14px; height: 14px;

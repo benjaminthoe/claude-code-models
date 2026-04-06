@@ -5,122 +5,142 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
 <style>
-:root{--bg:#000;--text:#fff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.3);--blue:#0071e3;--font:'Inter',-apple-system,sans-serif;--ease:cubic-bezier(0.16,1,0.3,1)}
+:root{--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--blue:#2997ff;--ease:cubic-bezier(0.16,1,0.3,1)}
 *{box-sizing:border-box;margin:0;padding:0}
 .reveal-viewport{background:#000!important;font-family:var(--font)!important}
-.reveal{font-family:var(--font)!important;color:var(--text)}
+.reveal{font-family:var(--font)!important;color:#fff}
 .reveal .slides{text-align:center}
-.reveal .slides section{padding:60px 80px;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
-.reveal h1,.reveal h2,.reveal h3{font-family:var(--font)!important;color:var(--text);text-transform:none;letter-spacing:-0.03em;font-weight:700;line-height:1.08}
-.reveal p{color:var(--text2);line-height:1.5}
-.reveal .progress{height:2px}.reveal .progress span{background:var(--blue)}
-.reveal .controls{color:rgba(255,255,255,0.12)}
+.reveal .slides section{padding:0;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;position:relative}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--font)!important;color:#fff;text-transform:none;letter-spacing:-0.025em;font-weight:700;line-height:1.08;position:relative;z-index:2}
+.reveal p{color:rgba(255,255,255,0.7);line-height:1.5;position:relative;z-index:2}
+.reveal .progress span{background:var(--blue)}
+.reveal .controls{color:rgba(255,255,255,0.1)}
 
-/* Apple-specific */
-.apple-logo{font-size:56px;opacity:0.9;margin-bottom:24px}
+/* ── Full-bleed background image ────────────────────── */
+.bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center}
+.bg.dim::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.45)}
+.bg.dim-heavy::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.65)}
+.bg.gradient-bottom::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.3) 40%,transparent 70%)}
+.bg.gradient-top::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 50%,transparent 100%)}
+.bg.vignette::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.7) 100%)}
+.bg.kenburns{animation:kb 30s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08) translate(-1%,-0.5%)}}
+
+/* ── Floating product image ─────────────────────────── */
+.product{position:relative;z-index:2;max-width:480px;width:70%;filter:drop-shadow(0 40px 80px rgba(0,0,0,0.6));-webkit-box-reflect:below 6px linear-gradient(transparent,transparent 70%,rgba(255,255,255,0.06))}
+.product.glow{filter:drop-shadow(0 40px 80px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(41,151,255,0.15))}
+.product.lg{max-width:600px;width:80%}
+
+/* ── Text styles ────────────────────────────────────── */
 .hero-title{font-size:80px;font-weight:700;letter-spacing:-0.04em}
-.hero-sub{font-size:28px;color:var(--text2);font-weight:400;margin-top:16px}
+.hero-sub{font-size:28px;color:rgba(255,255,255,0.65);font-weight:400;margin-top:12px;max-width:600px}
+.section-label{font-size:16px;color:var(--blue);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px}
 .big-number{font-size:120px;font-weight:800;letter-spacing:-0.05em;line-height:1}
 .blue{color:var(--blue)}
-.spec-label{font-size:20px;color:var(--text2);font-weight:500;margin-top:8px;text-transform:uppercase;letter-spacing:0.06em}
-.product-img{max-width:500px;width:80%;border-radius:16px;filter:drop-shadow(0 30px 60px rgba(0,0,0,0.8));-webkit-box-reflect:below 8px linear-gradient(transparent,transparent 65%,rgba(255,255,255,0.06))}
-.feature-row{display:flex;gap:32px;max-width:900px;margin-top:40px}
-.feature-box{flex:1;text-align:center;padding:28px 20px}
-.feature-box .icon{font-size:36px;margin-bottom:14px}
-.feature-box h3{font-size:18px;font-weight:700;margin-bottom:6px}
-.feature-box p{font-size:14px;color:var(--text2)}
-.omt{font-size:32px;font-weight:500;color:var(--text2);font-style:italic}
-.price{font-size:48px;font-weight:700}
-.price .from{font-size:22px;font-weight:400;color:var(--text2)}
+.spec-label{font-size:18px;color:rgba(255,255,255,0.5);font-weight:500;margin-top:8px;text-transform:uppercase;letter-spacing:0.06em}
+.small-note{font-size:14px;color:rgba(255,255,255,0.35);margin-top:12px;max-width:500px}
+.omt{font-size:32px;font-weight:500;color:rgba(255,255,255,0.5);font-style:italic}
 
-/* Animations */
-[data-anim]{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
-[data-anim].a{opacity:1!important;transform:translateY(0)!important}
-[data-anim="scale"]{transform:scale(0.92);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
-[data-anim="scale"].a{transform:scale(1)!important}
+/* ── Feature row ────────────────────────────────────── */
+.feat-row{display:flex;gap:24px;max-width:960px;margin-top:36px;position:relative;z-index:2}
+.feat-box{flex:1;padding:28px 20px;background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;text-align:center}
+.feat-box .icon{font-size:32px;margin-bottom:12px}
+.feat-box h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.feat-box p{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5}
+
+/* ── Price ───────────────────────────────────────────── */
+.price{font-size:52px;font-weight:700}
+.price .from{font-size:22px;font-weight:400;color:rgba(255,255,255,0.5)}
+
+/* ── Animations ──────────────────────────────────────── */
+[data-a]{opacity:0;transform:translateY(30px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+[data-a].v{opacity:1;transform:translateY(0)}
+[data-a="scale"]{transform:scale(0.92);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+[data-a="scale"].v{opacity:1;transform:scale(1)}
 .counter{display:inline-block}
 </style>
 </head>
 <body>
 <div class="reveal"><div class="slides">
 
-<!-- 1: Apple Logo + Title -->
-<section data-transition="fade">
-  <div class="apple-logo" data-anim>&#63743;</div>
-  <h1 class="hero-title" data-anim data-delay="0.3">iPhone AI</h1>
-  <p class="hero-sub" data-anim data-delay="0.6">Intelligence at your fingertips.</p>
+<!-- 1: TITLE — Abstract space bg + Apple logo + product name -->
+<section>
+  <div class="bg dim" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <div style="font-size:56px;margin-bottom:20px;position:relative;z-index:2" data-a>&#63743;</div>
+  <h1 class="hero-title" data-a data-d="0.2">iPhone AI</h1>
+  <p class="hero-sub" data-a data-d="0.5">Intelligence at your fingertips.</p>
 </section>
 
-<!-- 2: Product Hero -->
+<!-- 2: HERO PRODUCT — floating phone on dark -->
 <section data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
-  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3212ec12-80be-4278-9208-a44a417593db.png" class="product-img" data-id="hero-product" data-anim="scale">
+  <div class="bg" style="background:#000"></div>
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4ada88f3-e623-46f3-9a93-67c20917dafe.png" class="product glow lg" data-a="scale" data-id="hero-phone">
 </section>
 
-<!-- 3: Bold Statement -->
-<section data-transition="fade">
-  <h2 style="font-size:56px;max-width:800px" data-anim>The most intelligent<br>iPhone ever.</h2>
-  <p style="font-size:20px;max-width:600px;margin-top:20px" data-anim data-delay="0.4">Powered by the A20 Neural chip. Designed for the age of AI.</p>
+<!-- 3: STATEMENT — phone smaller + text, auto-animate morph -->
+<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.0">
+  <div class="bg gradient-top" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <h2 style="font-size:52px;max-width:800px;margin-bottom:32px" data-a>The most intelligent<br>iPhone ever.</h2>
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4ada88f3-e623-46f3-9a93-67c20917dafe.png" class="product" style="max-width:320px" data-id="hero-phone">
+  <p class="small-note" data-a data-d="0.6">Powered by the A20 Neural chip. Designed for the age of AI.</p>
 </section>
 
-<!-- 4: Chip Spec Reveal -->
-<section data-transition="slide">
-  <p class="spec-label" data-anim>Neural Engine</p>
-  <div class="big-number blue counter" data-anim data-delay="0.2" data-count="40" data-suffix=" TOPS">0</div>
-  <p style="font-size:18px;color:var(--text2);margin-top:12px;max-width:500px" data-anim data-delay="0.5">40 trillion operations per second. On-device AI that never sleeps.</p>
+<!-- 4: CHIP — macro close-up as full-bleed bg + number overlay -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/60600788-bbb4-4488-9491-1c6ac68505a4.png')"></div>
+  <div class="section-label" data-a>Neural Engine</div>
+  <div class="big-number blue counter" data-a data-d="0.2" data-count="40" data-suffix=" TOPS">0</div>
+  <p style="font-size:20px;margin-top:12px;max-width:500px" data-a data-d="0.5">Forty trillion operations per second.<br>On-device AI that never sleeps.</p>
 </section>
 
-<!-- 5: Camera -->
-<section data-transition="fade" style="background:radial-gradient(ellipse at center,#0a0a18,#000)">
-  <p class="spec-label" data-anim>Camera System</p>
-  <h2 style="font-size:52px;margin-top:12px" data-anim data-delay="0.2">See the world<br>in <span class="blue">48 megapixels</span>.</h2>
-  <p style="font-size:18px;color:var(--text2);margin-top:16px;max-width:550px" data-anim data-delay="0.5">Computational photography meets cinematic video. Every frame is a masterpiece.</p>
+<!-- 5: CAMERA — macro camera module as bg + specs -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/de075255-e6d8-46b1-9fa2-45f5108f673e.png')"></div>
+  <div class="section-label" data-a>Camera System</div>
+  <h2 style="font-size:56px" data-a data-d="0.2">See the world in<br><span class="blue">48 megapixels.</span></h2>
+  <p style="font-size:18px;max-width:520px;margin-top:16px" data-a data-d="0.5">Computational photography meets cinematic video.<br>Every frame is a masterpiece.</p>
 </section>
 
-<!-- 6: Features Grid -->
-<section data-transition="slide">
-  <h2 style="font-size:40px" data-anim>Built for what's next.</h2>
-  <div class="feature-row" data-anim-stagger>
-    <div class="feature-box"><div class="icon">&#129504;</div><h3>On-Device AI</h3><p>Private, fast, always available. Your AI never leaves your phone.</p></div>
-    <div class="feature-box"><div class="icon">&#128247;</div><h3>Pro Camera</h3><p>48MP Fusion camera with 5x optical zoom and cinematic mode.</p></div>
-    <div class="feature-box"><div class="icon">&#128267;</div><h3>All-Day Battery</h3><p>Up to 29 hours of video playback. Power that lasts.</p></div>
+<!-- 6: LIFESTYLE — person using phone, full-bleed -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/94782565-e0a4-4a04-b2cf-f4064d70db3d.png')"></div>
+  <h2 style="font-size:44px;max-width:700px" data-a>Designed for the way<br>you actually live.</h2>
+  <p style="font-size:18px;max-width:500px;margin-top:14px" data-a data-d="0.4">All-day battery. Water resistant. Built to last.</p>
+</section>
+
+<!-- 7: FEATURES — glass cards on abstract bg -->
+<section>
+  <div class="bg dim-heavy" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <h2 style="font-size:40px;margin-bottom:8px" data-a>Built for what's next.</h2>
+  <div class="feat-row" data-a-stagger>
+    <div class="feat-box"><div class="icon">&#129504;</div><h3>On-Device AI</h3><p>Private, fast, always available. Your AI never leaves your phone.</p></div>
+    <div class="feat-box"><div class="icon">&#128247;</div><h3>Pro Camera</h3><p>48MP Fusion with 5x optical zoom and cinematic mode.</p></div>
+    <div class="feat-box"><div class="icon">&#128267;</div><h3>All-Day Battery</h3><p>Up to 29 hours of video playback. Power that lasts.</p></div>
   </div>
 </section>
 
-<!-- 7: Battery Number -->
-<section data-transition="slide">
-  <p class="spec-label" data-anim>Battery Life</p>
-  <div class="big-number counter" data-anim data-delay="0.2" data-count="29" data-suffix=" hours">0</div>
-  <p style="font-size:18px;color:var(--text2);margin-top:12px" data-anim data-delay="0.5">The longest battery life ever in an iPhone.</p>
+<!-- 8: BATTERY — phone edge profile as bg + big number -->
+<section>
+  <div class="bg vignette" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/1bf0bdda-9fae-4737-b786-69578c5fe844.png')"></div>
+  <div class="section-label" data-a>Battery Life</div>
+  <div class="big-number counter" data-a data-d="0.2" data-count="29" data-suffix=" hours">0</div>
+  <p style="font-size:18px;margin-top:12px" data-a data-d="0.5">The longest battery life ever in an iPhone.</p>
 </section>
 
-<!-- 8: Comparison -->
-<section data-transition="slide">
-  <h2 style="font-size:36px;margin-bottom:36px" data-anim>A generational leap.</h2>
-  <div style="display:flex;gap:40px;max-width:700px" data-anim-stagger>
-    <div style="flex:1;text-align:center">
-      <div style="font-size:48px;font-weight:800;color:var(--text3)">A18</div>
-      <div style="font-size:14px;color:var(--text3);margin-top:4px">Previous Gen</div>
-    </div>
-    <div style="font-size:36px;font-weight:300;color:var(--text3);display:flex;align-items:center">&#8594;</div>
-    <div style="flex:1;text-align:center">
-      <div class="big-number blue" style="font-size:48px">A20</div>
-      <div style="font-size:14px;color:var(--blue);margin-top:4px">2x faster neural engine</div>
-    </div>
-  </div>
+<!-- 9: PRICE — product on abstract -->
+<section>
+  <div class="bg dim-heavy" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <h2 style="font-size:36px;margin-bottom:20px" data-a>iPhone AI</h2>
+  <div class="price" data-a data-d="0.3"><span class="from">From </span>$999</div>
+  <p class="small-note" data-a data-d="0.6">Available starting March 2027</p>
 </section>
 
-<!-- 9: Price -->
-<section data-transition="fade">
-  <h2 style="font-size:36px;margin-bottom:24px" data-anim>iPhone AI</h2>
-  <div class="price" data-anim data-delay="0.3"><span class="from">From </span>$999</div>
-  <p style="font-size:16px;color:var(--text3);margin-top:16px" data-anim data-delay="0.6">Available starting March 2027</p>
-</section>
-
-<!-- 10: One More Thing -->
-<section data-transition="fade">
-  <p class="omt" data-anim>One more thing...</p>
-  <h2 style="font-size:52px;margin-top:24px" data-anim data-delay="0.8">The future is personal.</h2>
-  <p style="font-size:20px;color:var(--text2);margin-top:16px;max-width:600px" data-anim data-delay="1.2">iPhone AI learns you. Adapts to you. Becomes yours.</p>
+<!-- 10: ONE MORE THING — dramatic -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4ada88f3-e623-46f3-9a93-67c20917dafe.png')"></div>
+  <p class="omt" data-a>One more thing...</p>
+  <h2 style="font-size:52px;margin-top:20px;max-width:700px" data-a data-d="0.8">The future is personal.</h2>
+  <p style="font-size:20px;margin-top:14px;max-width:550px" data-a data-d="1.2">iPhone AI learns you. Adapts to you. Becomes yours.</p>
 </section>
 
 </div></div>
@@ -128,29 +148,36 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
-function animateSlide(s){
+function anim(s){
   if(!s)return;
-  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
-    s.querySelectorAll('[data-anim]').forEach((el,i)=>{
-      el.style.transitionDelay=(parseFloat(el.dataset.delay||0)+i*0.05)+'s';
-      el.classList.add('a');
-    });
-    s.querySelectorAll('[data-anim-stagger]').forEach(c=>{
-      gsap.from(c.children,{opacity:0,y:30,scale:0.96,duration:0.8,stagger:0.12,ease:'power2.out',delay:0.4});
-    });
-    s.querySelectorAll('[data-count]').forEach(el=>{
-      const t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'';
-      const d=t%1!==0;el.textContent=pre+'0'+suf;
-      const o={v:0};
-      gsap.to(o,{v:t,duration:2,ease:'power2.out',delay:0.5,onUpdate:()=>{el.textContent=pre+(d?o.v.toFixed(1):Math.round(o.v))+suf}});
-    });
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    var els=s.querySelectorAll('[data-a]');
+    for(var i=0;i<els.length;i++){
+      els[i].style.transitionDelay=(parseFloat(els[i].dataset.d||0)+i*0.04)+'s';
+      els[i].classList.add('v');
+    }
+    // Stagger feature boxes
+    var stg=s.querySelectorAll('[data-a-stagger]');
+    for(var j=0;j<stg.length;j++){
+      gsap.from(stg[j].children,{opacity:0,y:30,scale:0.96,duration:0.9,stagger:0.12,ease:'power2.out',delay:0.4});
+    }
+    // Counters
+    var ctrs=s.querySelectorAll('[data-count]');
+    for(var k=0;k<ctrs.length;k++){
+      (function(el){
+        var t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'',dec=t%1!==0;
+        el.textContent=pre+'0'+suf;
+        var o={v:0};
+        gsap.to(o,{v:t,duration:2.2,ease:'power2.out',delay:0.5,onUpdate:function(){el.textContent=pre+(dec?o.v.toFixed(1):Math.round(o.v))+suf}});
+      })(ctrs[k]);
+    }
   })});
 }
-function resetSlide(s){if(!s)return;s.querySelectorAll('[data-anim]').forEach(el=>{el.classList.remove('a');el.style.transitionDelay='0s'})}
-Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'fade',transitionSpeed:'slow',width:1280,height:720,margin:0,autoAnimateEasing:'cubic-bezier(0.16,1,0.3,1)',autoAnimateDuration:1.0}).then(()=>{
-  setTimeout(()=>animateSlide(Reveal.getCurrentSlide()),400);
-  Reveal.on('slidechanged',e=>{if(e.previousSlide)resetSlide(e.previousSlide);setTimeout(()=>animateSlide(e.currentSlide),80)});
-  Reveal.on('autoanimate',e=>{setTimeout(()=>animateSlide(e.currentSlide),150)});
+function reset(s){if(!s)return;var els=s.querySelectorAll('[data-a]');for(var i=0;i<els.length;i++){els[i].classList.remove('v');els[i].style.transitionDelay='0s'}}
+Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'fade',transitionSpeed:'slow',width:1280,height:720,margin:0,autoAnimateEasing:'cubic-bezier(0.16,1,0.3,1)',autoAnimateDuration:1.0}).then(function(){
+  setTimeout(function(){anim(Reveal.getCurrentSlide())},400);
+  Reveal.on('slidechanged',function(e){if(e.previousSlide)reset(e.previousSlide);setTimeout(function(){anim(e.currentSlide)},80)});
+  Reveal.on('autoanimate',function(e){setTimeout(function(){anim(e.currentSlide)},150)});
 });
 </script>
 </body></html>

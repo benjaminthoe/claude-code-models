@@ -1,127 +1,152 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
 <style>
-:root{--bg:#0a0a0f;--text:#fff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.3);--orange:#ff6b00;--blue:#2196f3;--font:'Inter',sans-serif;--ease:cubic-bezier(0.16,1,0.3,1)}
+:root{--font:'Inter',-apple-system,sans-serif;--orange:#ff6a00;--blue:#2196f3;--ease:cubic-bezier(0.16,1,0.3,1)}
 *{box-sizing:border-box;margin:0;padding:0}
-.reveal-viewport{background:var(--bg)!important;font-family:var(--font)!important}
-.reveal{font-family:var(--font)!important;color:var(--text)}
+.reveal-viewport{background:#050508!important;font-family:var(--font)!important}
+.reveal{font-family:var(--font)!important;color:#fff}
 .reveal .slides{text-align:center}
-.reveal .slides section{padding:60px 80px;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center}
-.reveal h1,.reveal h2{font-family:var(--font)!important;color:var(--text);text-transform:none;letter-spacing:-0.03em;font-weight:800;line-height:1.1}
+.reveal .slides section{padding:0;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;position:relative}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--font)!important;color:#fff;text-transform:none;letter-spacing:-0.03em;font-weight:800;line-height:1.1;position:relative;z-index:2}
+.reveal p{color:rgba(255,255,255,0.6);line-height:1.5;position:relative;z-index:2}
 .reveal .progress span{background:var(--orange)}
-.reveal .controls{color:rgba(255,255,255,0.12)}
+.reveal .controls{color:rgba(255,255,255,0.1)}
 
-.xi-logo{font-size:48px;font-weight:900;color:var(--orange);margin-bottom:20px;letter-spacing:-0.04em}
-.hero-title{font-size:72px}
-.hero-sub{font-size:24px;color:var(--text2);font-weight:400;margin-top:14px}
-.big-num{font-size:100px;font-weight:900;letter-spacing:-0.05em;line-height:1}
+.bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center}
+.bg.dim::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.5)}
+.bg.dim-heavy::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.65)}
+.bg.gradient-bottom::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,0.95) 0%,rgba(5,5,8,0.3) 50%,transparent 100%)}
+.bg.vignette::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(5,5,8,0.75) 100%)}
+.bg.kenburns{animation:kb 25s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.06) translate(-0.5%,-0.3%)}}
+.bg.warm-glow::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%,rgba(255,106,0,0.1) 0%,transparent 60%),rgba(0,0,0,0.4)}
+
+.product{position:relative;z-index:2;max-width:420px;width:65%;filter:drop-shadow(0 30px 60px rgba(0,0,0,0.6));-webkit-box-reflect:below 6px linear-gradient(transparent,transparent 65%,rgba(255,255,255,0.05))}
+.product.glow-orange{filter:drop-shadow(0 30px 60px rgba(0,0,0,0.5)) drop-shadow(0 0 50px rgba(255,106,0,0.2))}
+.product.lg{max-width:550px;width:75%}
+
+.xi-logo{font-size:44px;font-weight:900;color:var(--orange);letter-spacing:-0.04em;position:relative;z-index:2}
+.hero-title{font-size:72px;position:relative;z-index:2}
+.hero-sub{font-size:22px;color:rgba(255,255,255,0.5);margin-top:12px;position:relative;z-index:2}
+.section-label{font-size:15px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;position:relative;z-index:2}
+.big-num{font-size:100px;font-weight:900;letter-spacing:-0.05em;line-height:1;position:relative;z-index:2}
 .orange{color:var(--orange)}
-.spec-row{display:flex;gap:24px;max-width:900px;margin-top:36px;width:100%}
-.spec-card{flex:1;padding:28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;text-align:center}
-.spec-card .num{font-size:36px;font-weight:800}
-.spec-card .label{font-size:13px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
-.bench-row{display:flex;flex-direction:column;gap:16px;max-width:700px;width:100%;margin-top:32px}
-.bench-item{display:flex;align-items:center;gap:16px}
-.bench-label{width:140px;text-align:right;font-size:14px;color:var(--text2);font-weight:600}
-.bench-bar-wrap{flex:1;height:28px;background:rgba(255,255,255,0.06);border-radius:14px;overflow:hidden}
-.bench-bar{height:100%;border-radius:14px;transition:width 1.5s var(--ease)}
-.bench-val{font-size:14px;font-weight:700;width:60px}
-.product-img{max-width:400px;width:70%;border-radius:20px;filter:drop-shadow(0 20px 50px rgba(255,107,0,0.2))}
-.price-tag{font-size:72px;font-weight:900}
-.price-old{font-size:28px;text-decoration:line-through;color:var(--text3);margin-right:16px}
 
-[data-anim]{opacity:0;transform:translateY(28px);transition:opacity 0.9s var(--ease),transform 0.9s var(--ease)}
-[data-anim].a{opacity:1!important;transform:translateY(0)!important}
-[data-anim="scale"]{transform:scale(0.9)}
-[data-anim="scale"].a{transform:scale(1)!important}
+.spec-row{display:flex;gap:20px;max-width:960px;width:100%;padding:0 40px;position:relative;z-index:2}
+.spec-card{flex:1;padding:24px 16px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;text-align:center}
+.spec-card .num{font-size:32px;font-weight:800}
+.spec-card .label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
+
+.bench-row{display:flex;flex-direction:column;gap:14px;max-width:680px;width:100%;margin-top:28px;position:relative;z-index:2}
+.bench-item{display:flex;align-items:center;gap:14px}
+.bench-label{width:130px;text-align:right;font-size:13px;color:rgba(255,255,255,0.5);font-weight:600}
+.bench-bar-wrap{flex:1;height:26px;background:rgba(255,255,255,0.05);border-radius:13px;overflow:hidden}
+.bench-bar{height:100%;border-radius:13px;width:0%;transition:width 1.8s var(--ease)}
+.bench-val{font-size:13px;font-weight:700;width:55px}
+
+.price-tag{font-size:72px;font-weight:900;position:relative;z-index:2}
+.price-old{font-size:26px;text-decoration:line-through;color:rgba(255,255,255,0.25);margin-right:14px}
+
+[data-a]{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+[data-a].v{opacity:1;transform:translateY(0)}
+[data-a="scale"]{transform:scale(0.9);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+[data-a="scale"].v{opacity:1;transform:scale(1)}
 </style>
 </head>
 <body>
 <div class="reveal"><div class="slides">
 
-<!-- 1: Xiaomi Title -->
-<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 80%,#1a0a00,var(--bg))">
-  <div class="xi-logo" data-anim>Xiaomi</div>
-  <h1 class="hero-title" data-anim data-delay="0.3">Xiaomi 16 Ultra</h1>
-  <p class="hero-sub" data-anim data-delay="0.6">Redefining what's possible.</p>
+<!-- 1: TITLE — warm gradient bg + Xiaomi logo -->
+<section>
+  <div class="bg warm-glow" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/f73abbb2-7b95-424c-b892-323012a871e1.png')"></div>
+  <div class="xi-logo" data-a>Xiaomi</div>
+  <h1 class="hero-title" data-a data-d="0.3">Xiaomi 16 Ultra</h1>
+  <p class="hero-sub" data-a data-d="0.6">Redefining what's possible.</p>
 </section>
 
-<!-- 2: Product Hero -->
-<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 60%,#1a0800,var(--bg))">
-  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/79114d70-53e6-4bc2-8892-edf077da6f8f.png" class="product-img" data-anim="scale">
+<!-- 2: HERO PRODUCT — flagship phone floating -->
+<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
+  <div class="bg" style="background:radial-gradient(ellipse at 50% 60%,#1a0800,#050508)"></div>
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/26de5d86-e43a-469e-aa9a-bced84de34d2.png" class="product glow-orange lg" data-a="scale" data-id="xi-phone">
 </section>
 
-<!-- 3: Design Statement -->
-<section data-transition="slide">
-  <h2 style="font-size:48px" data-anim>Precision-Engineered.<br><span class="orange">Obsessively Refined.</span></h2>
-  <p style="font-size:18px;color:var(--text2);max-width:550px;margin-top:16px" data-anim data-delay="0.4">Titanium frame. Nano-texture ceramic back. IP69 water resistance.</p>
+<!-- 3: DESIGN — phone smaller + statement, morph -->
+<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.0">
+  <div class="bg dim-heavy" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/f73abbb2-7b95-424c-b892-323012a871e1.png')"></div>
+  <h2 style="font-size:48px;margin-bottom:24px" data-a>Precision-Engineered.<br><span class="orange">Obsessively Refined.</span></h2>
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/26de5d86-e43a-469e-aa9a-bced84de34d2.png" class="product" style="max-width:280px" data-id="xi-phone">
+  <p style="font-size:16px;margin-top:16px;max-width:500px" data-a data-d="0.5">Titanium frame. Nano-texture ceramic back. IP69 water resistance.</p>
 </section>
 
-<!-- 4: Camera Spec -->
-<section data-transition="slide">
-  <p style="font-size:16px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em" data-anim>Leica Optics</p>
-  <div class="big-num orange counter" data-anim data-delay="0.2" data-count="200" data-suffix="MP">0</div>
-  <p style="font-size:14px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:8px" data-anim data-delay="0.4">1-inch Type Sensor</p>
-  <p style="font-size:18px;color:var(--text2);max-width:500px;margin-top:16px" data-anim data-delay="0.6">The largest sensor ever in a smartphone. 8K video. Cinematic Leica color science.</p>
+<!-- 4: CAMERA SPEC — camera macro bg + big number -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/de075255-e6d8-46b1-9fa2-45f5108f673e.png')"></div>
+  <div class="section-label" data-a>Leica Optics</div>
+  <div class="big-num orange counter" data-a data-d="0.2" data-count="200" data-suffix="MP">0</div>
+  <p style="font-size:13px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:8px" data-a data-d="0.4">1-inch Type Sensor</p>
+  <p style="font-size:17px;max-width:480px;margin-top:14px" data-a data-d="0.6">The largest sensor ever in a smartphone.<br>8K video. Cinematic Leica color science.</p>
 </section>
 
-<!-- 5: Benchmark Bars -->
-<section data-transition="slide">
-  <h2 style="font-size:36px;margin-bottom:8px" data-anim>Performance <span class="orange">Benchmark</span></h2>
-  <p style="font-size:14px;color:var(--text3);margin-bottom:16px" data-anim data-delay="0.2">AnTuTu v11 Score</p>
-  <div class="bench-row" data-anim-bench>
-    <div class="bench-item"><div class="bench-label">Xiaomi 16 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--orange)" data-width="95%"></div></div><div class="bench-val orange">2.8M</div></div>
-    <div class="bench-item"><div class="bench-label">Galaxy S26 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--blue)" data-width="82%"></div></div><div class="bench-val" style="color:var(--blue)">2.4M</div></div>
-    <div class="bench-item"><div class="bench-label">iPhone AI Pro</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--text3)" data-width="78%"></div></div><div class="bench-val" style="color:var(--text3)">2.3M</div></div>
+<!-- 5: CAMERA DEMO — lifestyle photo-taking shot as bg -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/5cd21b99-6966-44b1-b927-bcae24a3c1f8.png')"></div>
+  <h2 style="font-size:44px;max-width:650px" data-a>Every photo.<br>A Leica masterpiece.</h2>
+  <p style="font-size:16px;margin-top:12px;max-width:450px" data-a data-d="0.4">Computational photography that captures light, mood, and emotion.</p>
+</section>
+
+<!-- 6: BENCHMARK — dark bg with animated bars -->
+<section>
+  <div class="bg dim-heavy" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/d91ccaf3-338c-4309-a31d-2dc9e5bf064a.png')"></div>
+  <h2 style="font-size:36px;margin-bottom:6px" data-a>Performance <span class="orange">Benchmark</span></h2>
+  <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:12px" data-a data-d="0.2">AnTuTu v11</p>
+  <div class="bench-row" data-a-bench>
+    <div class="bench-item"><div class="bench-label">Xiaomi 16 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="background:var(--orange)" data-width="95%"></div></div><div class="bench-val orange">2.8M</div></div>
+    <div class="bench-item"><div class="bench-label">Galaxy S26 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="background:var(--blue)" data-width="82%"></div></div><div class="bench-val" style="color:var(--blue)">2.4M</div></div>
+    <div class="bench-item"><div class="bench-label">iPhone AI Pro</div><div class="bench-bar-wrap"><div class="bench-bar" style="background:rgba(255,255,255,0.3)" data-width="78%"></div></div><div class="bench-val" style="color:rgba(255,255,255,0.4)">2.3M</div></div>
   </div>
 </section>
 
-<!-- 6: Spec Grid -->
-<section data-transition="slide">
-  <h2 style="font-size:36px;margin-bottom:8px" data-anim>Specs That Matter</h2>
-  <div class="spec-row" data-anim-stagger>
+<!-- 7: SPECS GRID — chip bg + glass cards -->
+<section>
+  <div class="bg dim-heavy kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/60600788-bbb4-4488-9491-1c6ac68505a4.png')"></div>
+  <h2 style="font-size:34px;margin-bottom:6px" data-a>Specs That Matter</h2>
+  <div class="spec-row" style="margin-top:24px" data-a-stagger>
     <div class="spec-card"><div class="num orange">6.9"</div><div class="label">2K LTPO OLED</div></div>
-    <div class="spec-card"><div class="num orange">24GB</div><div class="label">LPDDR5X RAM</div></div>
-    <div class="spec-card"><div class="num orange">1TB</div><div class="label">UFS 5.0 Storage</div></div>
+    <div class="spec-card"><div class="num orange">24GB</div><div class="label">LPDDR5X</div></div>
+    <div class="spec-card"><div class="num orange">1TB</div><div class="label">UFS 5.0</div></div>
   </div>
-  <div class="spec-row" style="margin-top:16px" data-anim-stagger>
+  <div class="spec-row" style="margin-top:14px" data-a-stagger>
     <div class="spec-card"><div class="num">SD 8 Gen 4</div><div class="label">3nm Processor</div></div>
     <div class="spec-card"><div class="num">5500mAh</div><div class="label">Silicon-Carbon</div></div>
     <div class="spec-card"><div class="num">IP69</div><div class="label">Dust & Water</div></div>
   </div>
 </section>
 
-<!-- 7: Charging -->
-<section data-transition="slide">
-  <p style="font-size:16px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em" data-anim>Charging Speed</p>
-  <div class="big-num counter" data-anim data-delay="0.2" data-count="120" data-suffix="W">0</div>
-  <p style="font-size:20px;color:var(--text2);margin-top:12px" data-anim data-delay="0.5">0 to 100% in 19 minutes.</p>
+<!-- 8: CHARGING — abstract bg + big number -->
+<section>
+  <div class="bg warm-glow" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/581dea37-f5fe-4b53-89b8-16086c342829.png')"></div>
+  <div class="section-label" data-a>Charging Speed</div>
+  <div class="big-num counter" data-a data-d="0.2" data-count="120" data-suffix="W">0</div>
+  <p style="font-size:20px;margin-top:10px" data-a data-d="0.5">0 to 100% in 19 minutes.</p>
 </section>
 
-<!-- 8: AI Features -->
-<section data-transition="slide">
-  <h2 style="font-size:36px" data-anim>AI-Powered <span class="orange">Intelligence</span></h2>
-  <div class="spec-row" style="margin-top:32px" data-anim-stagger>
-    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#129504;</div><h3 style="font-size:16px;font-weight:700">AI Assistant</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">On-device LLM. Private. Instant.</p></div>
-    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#128247;</div><h3 style="font-size:16px;font-weight:700">AI Photography</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">Real-time scene optimization.</p></div>
-    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#127912;</div><h3 style="font-size:16px;font-weight:700">AI Create</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">Generate, edit, transform.</p></div>
-  </div>
+<!-- 9: PRICE — product + dramatic reveal -->
+<section>
+  <div class="bg dim" style="background:radial-gradient(ellipse at 50% 70%,#1a0600,#050508)"></div>
+  <h2 style="font-size:30px;margin-bottom:20px" data-a>Xiaomi 16 Ultra</h2>
+  <div data-a data-d="0.4"><span class="price-old">$1,299</span><span class="price-tag orange counter" data-count="999" data-prefix="$">0</span></div>
+  <p style="font-size:15px;color:rgba(255,255,255,0.3);margin-top:14px" data-a data-d="0.8">Starting price. Flagship experience.</p>
 </section>
 
-<!-- 9: Price Reveal -->
-<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 70%,#1a0600,var(--bg))">
-  <h2 style="font-size:32px;margin-bottom:24px" data-anim>Xiaomi 16 Ultra</h2>
-  <div data-anim data-delay="0.5"><span class="price-old">$1,299</span><span class="price-tag orange counter" data-count="999" data-prefix="$">0</span></div>
-  <p style="font-size:16px;color:var(--text3);margin-top:16px" data-anim data-delay="0.8">Starting price. Flagship experience.</p>
-</section>
-
-<!-- 10: Closing -->
-<section data-transition="fade">
-  <h2 style="font-size:48px" data-anim>Make technology<br><span class="orange">accessible to everyone.</span></h2>
-  <p style="font-size:18px;color:var(--text2);margin-top:20px" data-anim data-delay="0.5">— Lei Jun</p>
+<!-- 10: CLOSING — cityscape bg + mission statement -->
+<section>
+  <div class="bg dim kenburns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/f73abbb2-7b95-424c-b892-323012a871e1.png')"></div>
+  <h2 style="font-size:48px" data-a>Make technology<br><span class="orange">accessible to everyone.</span></h2>
+  <p style="font-size:18px;margin-top:18px" data-a data-d="0.5">— Lei Jun</p>
 </section>
 
 </div></div>
@@ -129,34 +154,40 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
-function animateSlide(s){
+function anim(s){
   if(!s)return;
-  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
-    s.querySelectorAll('[data-anim]').forEach((el,i)=>{
-      el.style.transitionDelay=(parseFloat(el.dataset.delay||0)+i*0.05)+'s';
-      el.classList.add('a');
-    });
-    s.querySelectorAll('[data-anim-stagger]').forEach(c=>{
-      gsap.from(c.children,{opacity:0,y:24,scale:0.96,duration:0.7,stagger:0.1,ease:'power2.out',delay:0.3});
-    });
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    var els=s.querySelectorAll('[data-a]');
+    for(var i=0;i<els.length;i++){els[i].style.transitionDelay=(parseFloat(els[i].dataset.d||0)+i*0.04)+'s';els[i].classList.add('v')}
+    var stg=s.querySelectorAll('[data-a-stagger]');
+    for(var j=0;j<stg.length;j++){gsap.from(stg[j].children,{opacity:0,y:24,scale:0.96,duration:0.8,stagger:0.1,ease:'power2.out',delay:0.3})}
     // Benchmark bars
-    s.querySelectorAll('[data-anim-bench]').forEach(c=>{
-      c.querySelectorAll('.bench-bar').forEach((bar,i)=>{
-        setTimeout(()=>{bar.style.width=bar.dataset.width},400+i*200);
-      });
-    });
-    s.querySelectorAll('[data-count]').forEach(el=>{
-      const t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'';
-      const d=t%1!==0;el.textContent=pre+'0'+suf;
-      const o={v:0};
-      gsap.to(o,{v:t,duration:1.8,ease:'power2.out',delay:0.5,onUpdate:()=>{el.textContent=pre+(d?o.v.toFixed(1):Math.round(o.v))+suf}});
-    });
+    var bench=s.querySelectorAll('[data-a-bench]');
+    for(var b=0;b<bench.length;b++){
+      var bars=bench[b].querySelectorAll('.bench-bar');
+      for(var bi=0;bi<bars.length;bi++){(function(bar,delay){setTimeout(function(){bar.style.width=bar.dataset.width},delay)})(bars[bi],500+bi*250)}
+    }
+    // Counters
+    var ctrs=s.querySelectorAll('[data-count]');
+    for(var k=0;k<ctrs.length;k++){
+      (function(el){
+        var t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'',dec=t%1!==0;
+        el.textContent=pre+'0'+suf;
+        var o={v:0};
+        gsap.to(o,{v:t,duration:2,ease:'power2.out',delay:0.5,onUpdate:function(){el.textContent=pre+(dec?o.v.toFixed(1):Math.round(o.v))+suf}});
+      })(ctrs[k]);
+    }
   })});
 }
-function resetSlide(s){if(!s)return;s.querySelectorAll('[data-anim]').forEach(el=>{el.classList.remove('a');el.style.transitionDelay='0s'});s.querySelectorAll('.bench-bar').forEach(b=>{b.style.width='0%'})}
-Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'slide',transitionSpeed:'default',width:1280,height:720,margin:0}).then(()=>{
-  setTimeout(()=>animateSlide(Reveal.getCurrentSlide()),400);
-  Reveal.on('slidechanged',e=>{if(e.previousSlide)resetSlide(e.previousSlide);setTimeout(()=>animateSlide(e.currentSlide),80)});
+function reset(s){
+  if(!s)return;
+  var els=s.querySelectorAll('[data-a]');for(var i=0;i<els.length;i++){els[i].classList.remove('v');els[i].style.transitionDelay='0s'}
+  var bars=s.querySelectorAll('.bench-bar');for(var j=0;j<bars.length;j++){bars[j].style.width='0%'}
+}
+Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'slide',transitionSpeed:'default',width:1280,height:720,margin:0,autoAnimateEasing:'cubic-bezier(0.16,1,0.3,1)',autoAnimateDuration:1.0}).then(function(){
+  setTimeout(function(){anim(Reveal.getCurrentSlide())},400);
+  Reveal.on('slidechanged',function(e){if(e.previousSlide)reset(e.previousSlide);setTimeout(function(){anim(e.currentSlide)},80)});
+  Reveal.on('autoanimate',function(e){setTimeout(function(){anim(e.currentSlide)},150)});
 });
 </script>
 </body></html>

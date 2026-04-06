@@ -87,6 +87,78 @@ function injectPerformanceCSS() {
   optimizedCount++;
 }
 
+// Ad/tracker domain list for script-based blocking
+const AD_DOMAINS = [
+  'google-analytics.com', 'googletagmanager.com', 'doubleclick.net',
+  'googlesyndication.com', 'connect.facebook.net', 'pixel.facebook.com',
+  'ads.twitter.com', 'amazon-adsystem.com', 'adnxs.com', 'criteo.com',
+  'taboola.com', 'outbrain.com', 'hotjar.com', 'bat.bing.com',
+  'cdn.mxpnl.com', 'segment.io', 'quantserve.com', 'scorecardresearch.com',
+  'popads.net', 'exoclick.com', 'juicyads.com', 'trafficjunky.com',
+  'clickadu.com', 'propellerads.com', 'adsterra.com'
+];
+
+function blockAdsAndTrackers() {
+  // Remove existing ad/tracker scripts
+  const scripts = document.querySelectorAll('script[src]');
+  scripts.forEach((script) => {
+    const src = script.src.toLowerCase();
+    if (AD_DOMAINS.some((d) => src.includes(d))) {
+      script.remove();
+      optimizedCount++;
+    }
+  });
+
+  // Remove ad iframes
+  const iframes = document.querySelectorAll('iframe[src]');
+  iframes.forEach((iframe) => {
+    const src = iframe.src.toLowerCase();
+    if (AD_DOMAINS.some((d) => src.includes(d))) {
+      iframe.remove();
+      optimizedCount++;
+    }
+  });
+
+  // Remove tracking pixels (1x1 images from ad domains)
+  const imgs = document.querySelectorAll('img[src]');
+  imgs.forEach((img) => {
+    const src = img.src.toLowerCase();
+    if (AD_DOMAINS.some((d) => src.includes(d))) {
+      if (img.width <= 2 || img.height <= 2 || img.naturalWidth <= 2) {
+        img.remove();
+        optimizedCount++;
+      }
+    }
+  });
+
+  // Block new ad scripts from being added via MutationObserver
+  const adObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.tagName === 'SCRIPT' && node.src) {
+          const src = node.src.toLowerCase();
+          if (AD_DOMAINS.some((d) => src.includes(d))) {
+            node.remove();
+            optimizedCount++;
+          }
+        }
+        if (node.tagName === 'IFRAME' && node.src) {
+          const src = node.src.toLowerCase();
+          if (AD_DOMAINS.some((d) => src.includes(d))) {
+            node.remove();
+            optimizedCount++;
+          }
+        }
+      }
+    }
+  });
+
+  if (document.body) {
+    adObserver.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
 // ============================================================
 // Phase 2: Runs at DOMContentLoaded
 // ============================================================
@@ -95,6 +167,7 @@ function phase2_domReady() {
 
   const videoPage = isVideoPage();
 
+  if (settings.blockAdsTrackers) blockAdsAndTrackers();
   if (settings.lazyLoadImages) setupImageLazyLoading();
   // Only lazy-load videos on listing/gallery pages, NOT on video playback pages
   if (settings.lazyLoadVideos && !videoPage) setupVideoLazyLoading();

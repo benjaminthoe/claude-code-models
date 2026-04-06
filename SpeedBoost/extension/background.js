@@ -26,30 +26,6 @@ api.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Track blocked requests count
-function updateBlockedCount() {
-  if (api.declarativeNetRequest && api.declarativeNetRequest.getMatchedRules) {
-    api.declarativeNetRequest.getMatchedRules({}, (details) => {
-      if (details && details.rulesMatchedInfo) {
-        api.storage.local.get('blockedCount', (result) => {
-          const newCount = (result.blockedCount || 0) + details.rulesMatchedInfo.length;
-          api.storage.local.set({ blockedCount: newCount });
-        });
-      }
-    });
-  }
-}
-
-// Use alarms for periodic updates (survives service worker suspension)
-if (api.alarms) {
-  api.alarms.create('updateBlockedCount', { periodInMinutes: 0.5 });
-  api.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === 'updateBlockedCount') {
-      updateBlockedCount();
-    }
-  });
-}
-
 // Message hub
 api.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
@@ -61,18 +37,15 @@ api.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     case 'updateSettings':
       api.storage.local.set({ settings: message.settings }, () => {
-        // Toggle declarativeNetRequest ruleset based on ad blocking setting
-        if (api.declarativeNetRequest && api.declarativeNetRequest.updateEnabledRulesets) {
-          const enableIds = message.settings.blockAdsTrackers && message.settings.enabled
-            ? ['block_rules'] : [];
-          const disableIds = message.settings.blockAdsTrackers && message.settings.enabled
-            ? [] : ['block_rules'];
-          api.declarativeNetRequest.updateEnabledRulesets({
-            enableRulesetIds: enableIds,
-            disableRulesetIds: disableIds
-          });
-        }
         sendResponse({ success: true });
+      });
+      return true;
+
+    case 'updateBlockedCount':
+      api.storage.local.get('blockedCount', (result) => {
+        const newCount = (result.blockedCount || 0) + (message.count || 0);
+        api.storage.local.set({ blockedCount: newCount });
+        sendResponse({ count: newCount });
       });
       return true;
 
