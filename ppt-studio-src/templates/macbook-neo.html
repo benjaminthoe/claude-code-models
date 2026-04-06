@@ -3,464 +3,469 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MacBook Air — M5</title>
+<title>MacBook Neo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<!-- GSAP + ScrollTrigger (the production-ready equivalent of Apple's proprietary engine) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
+/* ══════════════════════════════════════════════════════════════════════
+   APPLE PRODUCT PAGE — Definitive Replica Engine
+   Matches: apple.com/hk/macbook-neo structure, typography, layout, motion
+   ══════════════════════════════════════════════════════════════════════ */
 :root {
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  --blue: #2997ff;
-  --gray: #86868b;
-  --dark: #1d1d1f;
-  --light-bg: #f5f5f7;
+  --f:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text',sans-serif;
+  --blue:#2997ff;--gray:#86868b;--dark:#1d1d1f;--light:#f5f5f7;
+  --max:980px;--max-w:1440px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-family: var(--font); -webkit-font-smoothing: antialiased; }
-body { background: #000; color: #fff; overflow-x: hidden; }
-img { display: block; max-width: 100%; }
-a { color: var(--blue); text-decoration: none; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--f);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
+body{background:#fff;color:var(--dark);overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
 
-/* ── Typography ───────────────────────────────────────── */
-.t-hero { font-size: clamp(52px, 8vw, 96px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.04; }
-.t-section { font-size: clamp(36px, 5vw, 64px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.06; }
-.t-feature { font-size: clamp(24px, 3vw, 40px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.12; }
-.t-body { font-size: clamp(17px, 1.6vw, 21px); line-height: 1.52; }
-.t-small { font-size: 14px; line-height: 1.47; }
-.t-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
-.muted { opacity: 0.55; }
-.blue { color: var(--blue); }
-
-/* ── Utility ──────────────────────────────────────────── */
-.center { text-align: center; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
-.w-full { width: 100%; }
-.mt-sm { margin-top: 12px; }
-.mt-md { margin-top: 24px; }
-.mt-lg { margin-top: 48px; }
-
-/* ── Buttons ──────────────────────────────────────────── */
-.btn { display: inline-block; padding: 12px 28px; border-radius: 100px; font-size: 17px; font-weight: 500; }
-.btn-blue { background: var(--blue); color: #fff; }
-.btn-outline { border: 1.5px solid rgba(255,255,255,0.3); color: #fff; }
-.cta-row { display: flex; gap: 16px; justify-content: center; margin-top: 20px; }
-
-/* ══════════════════════════════════════════════════════════
-   SECTION 1: HERO — pinned, scroll-driven fade + scale
-   ══════════════════════════════════════════════════════════ */
-#hero {
-  height: 100vh; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
+/* ── Sticky Subnav (Apple-style) ──────────────────────────── */
+.subnav{
+  position:sticky;top:0;z-index:9999;height:52px;
+  background:rgba(255,255,255,0.72);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(0,0,0,0.08);
+  display:flex;align-items:center;justify-content:center;gap:32px;
+  font-size:14px;font-weight:400;
 }
-#hero-text { position: relative; z-index: 2; }
-#hero-img {
-  margin-top: 24px; max-width: 680px; width: 85%;
-  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.4));
-  position: relative; z-index: 1;
+.subnav-title{font-size:21px;font-weight:600;color:var(--dark);letter-spacing:-0.01em}
+.subnav a{color:var(--gray);font-size:12px}
+.subnav a:hover{color:var(--dark)}
+.subnav .buy-btn{
+  background:var(--blue);color:#fff;padding:6px 16px;border-radius:100px;
+  font-size:12px;font-weight:500;text-decoration:none;
 }
 
-/* ══════════════════════════════════════════════════════════
-   SECTION 2: PRODUCT STICKY — pinned while text scrolls
-   ══════════════════════════════════════════════════════════ */
-#product-section { position: relative; background: #000; }
-#product-pin {
-  height: 100vh; display: flex; align-items: center; justify-content: center;
-  position: sticky; top: 0;
-}
-#product-pin img {
-  max-width: 560px; width: 70%;
-  filter: drop-shadow(0 40px 80px rgba(0,0,0,0.5));
-  -webkit-box-reflect: below 6px linear-gradient(transparent, transparent 70%, rgba(255,255,255,0.05));
-}
-.text-card {
-  min-height: 80vh; display: flex; align-items: center; justify-content: center;
-  padding: 60px 24px; position: relative; z-index: 2;
-}
-.text-card-inner { max-width: 520px; text-align: center; }
+/* ── Typography — Apple's exact scale ─────────────────────── */
+.eyebrow{font-size:24px;line-height:1.17;font-weight:600;letter-spacing:-0.005em;color:var(--gray)}
+.headline-xl{font-size:clamp(48px,7vw,96px);font-weight:700;letter-spacing:-0.04em;line-height:1.03}
+.headline-lg{font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-0.03em;line-height:1.06}
+.headline-md{font-size:clamp(28px,3.5vw,48px);font-weight:600;letter-spacing:-0.025em;line-height:1.08}
+.headline-sm{font-size:clamp(21px,2.2vw,28px);font-weight:600;letter-spacing:-0.015em;line-height:1.14}
+.body-xl{font-size:clamp(19px,1.8vw,21px);line-height:1.38;letter-spacing:0.011em}
+.body{font-size:17px;line-height:1.47;letter-spacing:0.022em}
+.caption{font-size:14px;line-height:1.43;letter-spacing:0.016em}
+.muted{color:var(--gray)}
+.white{color:#fff}
+.blue{color:var(--blue)}
 
-/* ══════════════════════════════════════════════════════════
-   SECTION 3+: FULL-BLEED PINNED IMAGE SECTIONS
-   ══════════════════════════════════════════════════════════ */
-.pin-section {
-  height: 100vh; position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
+/* ── Layout ───────────────────────────────────────────────── */
+.section{padding:100px 0}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+.container-wide{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+.center{text-align:center}
+.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}.mt-24{margin-top:24px}.mt-40{margin-top:40px}
+.mt-48{margin-top:48px}.mt-80{margin-top:80px}
+
+/* ── Backgrounds ──────────────────────────────────────────── */
+.bg-white{background:#fff;color:var(--dark)}
+.bg-light{background:var(--light);color:var(--dark)}
+.bg-dark{background:var(--dark);color:#fff}
+.bg-black{background:#000;color:#fff}
+.bg-dark .muted,.bg-black .muted{color:rgba(255,255,255,0.55)}
+.bg-dark .eyebrow,.bg-black .eyebrow{color:var(--gray)}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn{display:inline-block;padding:12px 24px;border-radius:100px;font-size:17px;font-weight:400}
+.btn-filled{background:var(--blue);color:#fff}
+.btn-text{color:var(--blue);font-size:21px}
+.btn-text::after{content:' ›'}
+.cta-row{display:flex;gap:20px;justify-content:center;margin-top:16px}
+
+/* ══════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:#000;color:#fff;text-align:center;
+  position:relative;overflow:hidden;padding:80px 24px 40px;
 }
-.pin-bg {
-  position: absolute; inset: 0; z-index: 0;
-  background-size: cover; background-position: center;
-  will-change: transform;
-}
-.pin-content {
-  position: relative; z-index: 2; text-align: center;
-  max-width: 700px; padding: 0 24px;
+#hero-img{
+  margin-top:32px;max-width:720px;width:88%;
+  filter:drop-shadow(0 20px 50px rgba(0,0,0,0.35));
 }
 
-/* ══════════════════════════════════════════════════════════
-   LIGHT SECTIONS
-   ══════════════════════════════════════════════════════════ */
-.section-light {
-  background: var(--light-bg); color: var(--dark);
-  padding: 120px 24px;
+/* ══════════════════════════════════════════════════════
+   STICKY PRODUCT SECTION
+   ══════════════════════════════════════════════════════ */
+.sticky-wrap{position:relative;background:#000;color:#fff}
+.sticky-pin{
+  position:sticky;top:52px;height:calc(100vh - 52px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1;pointer-events:none;
 }
-.section-light .muted { color: var(--gray); }
-
-.section-dark {
-  background: var(--dark); color: #fff;
-  padding: 120px 24px;
+.sticky-pin img{
+  max-width:560px;width:68%;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,0.4));
 }
+.panel{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;z-index:2}
+.panel-inner{max-width:520px;text-align:center}
 
-/* ══════════════════════════════════════════════════════════
-   SPLIT LAYOUT
-   ══════════════════════════════════════════════════════════ */
-.split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-.split img { width: 100%; border-radius: 20px; }
-@media (max-width: 768px) { .split { grid-template-columns: 1fr; } }
+/* ══════════════════════════════════════════════════════
+   FULL-BLEED MEDIA SECTION
+   ══════════════════════════════════════════════════════ */
+.media-section{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+}
+.media-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;will-change:transform}
+.media-overlay{position:absolute;inset:0;z-index:1}
+.media-content{position:relative;z-index:2;text-align:center;max-width:680px;padding:0 24px}
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
+   SPEC NUMBERS (horizontal row, Apple-style)
+   ══════════════════════════════════════════════════════ */
+.spec-row{display:flex;justify-content:center;gap:48px;margin-top:40px;flex-wrap:wrap}
+.spec-item{text-align:center}
+.spec-num{font-size:clamp(36px,5vw,56px);font-weight:700;letter-spacing:-0.03em;line-height:1}
+.spec-label{font-size:14px;color:var(--gray);margin-top:4px;max-width:140px}
+
+/* ══════════════════════════════════════════════════════
+   SPLIT (image + text, Apple's standard layout)
+   ══════════════════════════════════════════════════════ */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.split img{width:100%;border-radius:20px}
+.split-text{max-width:420px}
+@media(max-width:768px){.split{grid-template-columns:1fr;gap:24px}}
+
+/* ══════════════════════════════════════════════════════
    FEATURE CARDS
-   ══════════════════════════════════════════════════════════ */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.card {
-  border-radius: 24px; padding: 40px 28px; text-align: center;
-  overflow: hidden;
-}
-.card-dark { background: #161617; }
-.card-light { background: #fff; }
-.card .icon { font-size: 40px; margin-bottom: 16px; }
+   ══════════════════════════════════════════════════════ */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:40px}
+.card{border-radius:24px;padding:48px 32px;overflow:hidden;position:relative}
+.card-dark{background:#161617;color:#fff}
+.card-light{background:var(--light);color:var(--dark)}
+.card-img{margin:-48px -32px 24px;overflow:hidden}
+.card-img img{width:100%}
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    COMPARISON BARS
-   ══════════════════════════════════════════════════════════ */
-.bar-group { max-width: 700px; margin: 40px auto 0; }
-.bar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-.bar-label { width: 100px; text-align: right; font-size: 13px; font-weight: 600; opacity: 0.5; flex-shrink: 0; }
-.bar-track { flex: 1; height: 22px; background: rgba(255,255,255,0.06); border-radius: 11px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 11px; transform-origin: left; }
-.bar-val { width: 50px; font-size: 13px; font-weight: 700; }
+   ══════════════════════════════════════════════════════ */
+.bars{max-width:640px;margin:40px auto 0}
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bar-lbl{width:90px;text-align:right;font-size:12px;font-weight:600;color:var(--gray);flex-shrink:0}
+.bar-track{flex:1;height:20px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:10px;transform-origin:left}
+.bar-val{width:44px;font-size:12px;font-weight:700}
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    BIG NUMBER
-   ══════════════════════════════════════════════════════════ */
-.big-num {
-  font-size: clamp(72px, 14vw, 140px); font-weight: 800;
-  letter-spacing: -0.05em; line-height: 1;
-}
+   ══════════════════════════════════════════════════════ */
+.big{font-size:clamp(64px,12vw,128px);font-weight:800;letter-spacing:-0.05em;line-height:1}
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    FOOTER
-   ══════════════════════════════════════════════════════════ */
-footer { padding: 60px 24px; text-align: center; font-size: 12px; color: var(--gray); background: var(--light-bg); }
+   ══════════════════════════════════════════════════════ */
+footer{padding:48px 24px;text-align:center;font-size:12px;color:var(--gray);background:var(--light);border-top:1px solid rgba(0,0,0,0.06)}
+footer a{color:var(--blue);font-size:12px}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     1. HERO — pinned, text fades up, product scales down on scroll
-     ══════════════════════════════════════════════════════════ -->
+<!-- ═══ SUBNAV ═══ -->
+<nav class="subnav">
+  <span class="subnav-title">MacBook Neo</span>
+  <a href="#">Overview</a>
+  <a href="#">Tech Specs</a>
+  <a href="#">Compare</a>
+  <a href="#" class="buy-btn">Buy</a>
+</nav>
+
+<!-- ═══ 1. HERO ═══ -->
 <section id="hero">
   <div id="hero-text" class="center">
-    <p class="t-label muted">MacBook Air</p>
-    <h1 class="t-hero">Lean. Mean.<br>Dream machine.</h1>
-    <p class="t-body muted mt-sm" style="max-width:440px;margin:8px auto 0">Now supercharged by M5.</p>
-    <div class="cta-row">
-      <a href="#" class="btn btn-blue">Learn more</a>
-      <a href="#" class="btn btn-outline">Buy</a>
+    <h1 class="headline-xl">MacBook Neo</h1>
+    <p class="body-xl mt-8" style="color:rgba(255,255,255,0.6);max-width:420px;margin:8px auto 0">Now powered by M5.</p>
+    <div class="cta-row mt-16">
+      <a href="#" class="btn btn-filled">Learn more</a>
+      <a href="#" class="btn" style="color:#fff;border:1.5px solid rgba(255,255,255,0.3)">Buy</a>
     </div>
   </div>
-  <img id="hero-img" src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/5a033f8d-43ac-42d3-8d02-02f899c5d2c4.png" alt="MacBook Air">
+  <img id="hero-img" src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/5a033f8d-43ac-42d3-8d02-02f899c5d2c4.png" alt="MacBook Neo">
 </section>
+<div id="hero-spacer" style="height:120vh"></div>
 
-<!-- spacer for hero pin duration -->
-<div id="hero-spacer" style="height:150vh"></div>
-
-<!-- ══════════════════════════════════════════════════════════
-     2. PRODUCT STICKY — laptop pinned, text cards scroll past
-     ══════════════════════════════════════════════════════════ -->
-<section id="product-section">
-  <div id="product-pin">
-    <img id="sticky-laptop" src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3c61c3bd-04c1-4ccd-ac21-41459ecd156a.png" alt="MacBook Air">
+<!-- ═══ 2. STICKY PRODUCT + TEXT PANELS ═══ -->
+<section class="sticky-wrap">
+  <div class="sticky-pin">
+    <img id="sticky-img" src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3c61c3bd-04c1-4ccd-ac21-41459ecd156a.png" alt="MacBook Neo">
   </div>
-  <div class="scroll-panels">
-    <div class="text-card"><div class="text-card-inner" id="tc1">
-      <h2 class="t-section">The most versatile<br>laptop ever made.</h2>
-      <p class="t-body muted mt-sm">Incredibly thin. Unbelievably powerful. Built for everything you do.</p>
+  <div>
+    <div class="panel"><div class="panel-inner" id="p1">
+      <p class="eyebrow blue">Built to move you</p>
+      <h2 class="headline-lg mt-8 white">The most versatile<br>laptop ever made.</h2>
+      <p class="body-xl mt-12" style="color:rgba(255,255,255,0.5)">Incredibly thin. Unbelievably powerful.</p>
     </div></div>
-    <div class="text-card"><div class="text-card-inner" id="tc2">
-      <h2 class="t-section">Featherlight.<br>Heavylifter.</h2>
-      <p class="t-body muted mt-sm">Just 1.24 kg. 4K video editing, 3D rendering, AI workloads — without breaking a sweat.</p>
+    <div class="panel"><div class="panel-inner" id="p2">
+      <h2 class="headline-lg white">Featherlight.<br>Heavylifter.</h2>
+      <p class="body-xl mt-12" style="color:rgba(255,255,255,0.5)">Just 1.24 kg. Handles 4K editing, 3D rendering, and AI workloads effortlessly.</p>
     </div></div>
-    <div class="text-card"><div class="text-card-inner" id="tc3">
-      <h2 class="t-section">All-day battery.<br>All-night creativity.</h2>
-      <p class="t-body muted mt-sm">Up to 18 hours. From morning meeting to midnight deadline.</p>
+    <div class="panel"><div class="panel-inner" id="p3">
+      <h2 class="headline-lg white">All-day battery.<br>All-night creativity.</h2>
+      <p class="body-xl mt-12" style="color:rgba(255,255,255,0.5)">Up to 18 hours. From morning to midnight.</p>
     </div></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     3. DESIGN — color lineup (light bg)
-     ══════════════════════════════════════════════════════════ -->
-<section class="section-light center" id="design-section">
+<!-- ═══ 3. DISPLAY SPECS (light bg, horizontal numbers) ═══ -->
+<section class="section bg-white center" id="display-section">
   <div class="container">
-    <p class="t-label" style="color:var(--gray)">Design</p>
-    <h2 class="t-section mt-sm" style="color:var(--dark)">Four stunning finishes.</h2>
-    <p class="t-body mt-sm mx-auto" style="color:var(--gray);max-width:480px">Sky Blue. Starlight. Silver. Midnight.</p>
-    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/a7214059-d166-46c5-882e-4af31676b7ef.png" class="mt-lg mx-auto" style="max-width:800px;border-radius:20px" alt="Colors">
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════
-     4. CHIP — pinned full-bleed macro + big number scrub
-     ══════════════════════════════════════════════════════════ -->
-<section class="pin-section" id="chip-section">
-  <div class="pin-bg" id="chip-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e6b4621c-c105-4e66-af7d-bd2aebd9ca08.png')"></div>
-  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:1"></div>
-  <div class="pin-content" id="chip-content">
-    <p class="t-label blue">M5 Chip</p>
-    <div class="big-num blue mt-sm" id="chip-num">9.5x</div>
-    <p class="t-body muted mt-sm">faster than M1. AI workloads that fly.</p>
-    <a href="#" class="cta mt-md" style="display:inline-block">Learn more about M5 ›</a>
-  </div>
-</section>
-<div id="chip-spacer" style="height:100vh"></div>
-
-<!-- ══════════════════════════════════════════════════════════
-     5. PERFORMANCE BARS
-     ══════════════════════════════════════════════════════════ -->
-<section class="section-dark center" id="perf-section">
-  <div class="container">
-    <p class="t-label muted">Performance</p>
-    <h2 class="t-section mt-sm">Power that speaks<br>for itself.</h2>
-    <div class="bar-group" id="bars">
-      <div class="bar-row"><div class="bar-label">AI Tasks</div><div class="bar-track"><div class="bar-fill" style="background:var(--blue);width:0%" data-w="95%"></div></div><div class="bar-val blue">9.5x</div></div>
-      <div class="bar-row"><div class="bar-label">Video Edit</div><div class="bar-track"><div class="bar-fill" style="background:#30d158;width:0%" data-w="85%"></div></div><div class="bar-val" style="color:#30d158">4.2x</div></div>
-      <div class="bar-row"><div class="bar-label">Photo Edit</div><div class="bar-track"><div class="bar-fill" style="background:#ff9f0a;width:0%" data-w="78%"></div></div><div class="bar-val" style="color:#ff9f0a">3.8x</div></div>
-      <div class="bar-row"><div class="bar-label">Gaming</div><div class="bar-track"><div class="bar-fill" style="background:#bf5af2;width:0%" data-w="70%"></div></div><div class="bar-val" style="color:#bf5af2">2.5x</div></div>
+    <p class="eyebrow">Display</p>
+    <h2 class="headline-lg mt-8">Every view, a masterpiece.</h2>
+    <div style="margin-top:40px">
+      <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3b0264cf-4557-4a58-93a5-2f9352a30165.png" style="max-width:720px;margin:0 auto;border-radius:16px" alt="Display">
     </div>
-    <p class="t-small muted mt-md">Compared to MacBook Air with M1</p>
+    <div class="spec-row">
+      <div class="spec-item"><div class="spec-num blue">13.6"</div><div class="spec-label">Liquid Retina display</div></div>
+      <div class="spec-item"><div class="spec-num blue">360</div><div class="spec-label">ten-thousand pixels</div></div>
+      <div class="spec-item"><div class="spec-num blue">500</div><div class="spec-label">nits brightness</div></div>
+    </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     6. DISPLAY — pinned full-bleed
-     ══════════════════════════════════════════════════════════ -->
-<section class="pin-section" id="display-section">
-  <div class="pin-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/29546573-648a-4c2e-bef3-2d70d98b9aa0.png')"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.6) 100%);z-index:1"></div>
-  <div class="pin-content" id="display-content">
-    <p class="t-label blue">Display</p>
-    <h2 class="t-section mt-sm">Liquid Retina.<br>Love at every pixel.</h2>
-    <p class="t-body muted mt-sm">500 nits. P3 wide color. True Tone.</p>
+<!-- ═══ 4. DESIGN COLORS (light gray bg) ═══ -->
+<section class="section bg-light center" id="design-section">
+  <div class="container">
+    <p class="eyebrow">Design</p>
+    <h2 class="headline-lg mt-8">Four stunning finishes.</h2>
+    <p class="body-xl muted mt-8" style="max-width:480px;margin:8px auto 0">Sky Blue. Starlight. Silver. Midnight.</p>
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/a7214059-d166-46c5-882e-4af31676b7ef.png" class="mt-40" style="max-width:800px;margin-left:auto;margin-right:auto;border-radius:20px" alt="Colors">
+  </div>
+</section>
+
+<!-- ═══ 5. CHIP — full-bleed dark, pinned ═══ -->
+<section class="media-section" id="chip-section">
+  <div class="media-bg" id="chip-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e6b4621c-c105-4e66-af7d-bd2aebd9ca08.png')"></div>
+  <div class="media-overlay" style="background:rgba(0,0,0,0.5)"></div>
+  <div class="media-content" id="chip-content">
+    <p class="eyebrow blue">M5 Chip</p>
+    <div class="big blue mt-8" id="chip-num">9.5x</div>
+    <p class="body-xl mt-12" style="color:rgba(255,255,255,0.55)">faster than M1. AI workloads that fly.</p>
+    <a href="#" class="btn-text mt-24" style="display:inline-block">Learn more about M5</a>
   </div>
 </section>
 <div style="height:80vh"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     7. LIFESTYLE SPLIT
-     ══════════════════════════════════════════════════════════ -->
-<section class="section-light" id="battery-section">
+<!-- ═══ 6. PERFORMANCE BARS (dark bg) ═══ -->
+<section class="section bg-dark center" id="perf-section">
+  <div class="container">
+    <p class="eyebrow">Performance</p>
+    <h2 class="headline-lg mt-8 white">Power that speaks<br>for itself.</h2>
+    <div class="bars" id="bars">
+      <div class="bar-row"><div class="bar-lbl">AI Tasks</div><div class="bar-track"><div class="bar-fill" style="background:var(--blue);width:0" data-w="95%"></div></div><div class="bar-val blue">9.5x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Video Edit</div><div class="bar-track"><div class="bar-fill" style="background:#30d158;width:0" data-w="85%"></div></div><div class="bar-val" style="color:#30d158">4.2x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Photo Edit</div><div class="bar-track"><div class="bar-fill" style="background:#ff9f0a;width:0" data-w="78%"></div></div><div class="bar-val" style="color:#ff9f0a">3.8x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Gaming</div><div class="bar-track"><div class="bar-fill" style="background:#bf5af2;width:0" data-w="70%"></div></div><div class="bar-val" style="color:#bf5af2">2.5x</div></div>
+    </div>
+    <p class="caption muted mt-24">Compared to MacBook Air with M1</p>
+  </div>
+</section>
+
+<!-- ═══ 7. LIFESTYLE SPLIT (light bg) ═══ -->
+<section class="section bg-white" id="battery-section">
   <div class="container">
     <div class="split">
-      <div><img id="lifestyle-img" src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/f59181b2-ed40-43b6-8deb-2398f5bb5280.png" alt="Lifestyle"></div>
-      <div>
-        <p class="t-label" style="color:var(--gray)">Battery</p>
-        <h2 class="t-feature mt-sm" style="color:var(--dark)">Go all day.<br>And then some.</h2>
-        <p class="t-body mt-sm" style="color:var(--gray)">Up to 18 hours of battery life. MagSafe gets you to 50% in just 30 minutes.</p>
-        <a href="#" style="display:inline-block;margin-top:16px">Learn more ›</a>
+      <div id="life-img"><img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e120246c-30bc-4599-85a0-3112333cf294.png" alt="Lifestyle" style="border-radius:20px"></div>
+      <div class="split-text">
+        <p class="eyebrow">Battery</p>
+        <h2 class="headline-md mt-8">Go all day.<br>And then some.</h2>
+        <p class="body muted mt-12">Up to 18 hours of battery life. MagSafe gets you to 50% in just 30 minutes.</p>
+        <a href="#" class="btn-text mt-16" style="display:inline-block;font-size:17px">Learn more</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     8. KEYBOARD — pinned full-bleed
-     ══════════════════════════════════════════════════════════ -->
-<section class="pin-section" id="keyboard-section">
-  <div class="pin-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e7f3de15-2278-4b8f-a926-8d7cdfeb6429.png')"></div>
-  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.15) 50%,transparent);z-index:1"></div>
-  <div class="pin-content" id="kb-content" style="align-self:flex-end;padding-bottom:80px">
-    <h2 class="t-feature">Magic Keyboard.<br>Backlit brilliance.</h2>
-    <p class="t-body muted mt-sm">Full-height function keys. Touch ID. Best-in-class typing.</p>
+<!-- ═══ 8. CAMERA — full-bleed image ═══ -->
+<section class="media-section" id="camera-section" style="min-height:85vh">
+  <div class="media-bg" id="cam-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3b0264cf-4557-4a58-93a5-2f9352a30165.png')"></div>
+  <div class="media-overlay" style="background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.55) 100%)"></div>
+  <div class="media-content" id="cam-content">
+    <p class="eyebrow blue">Camera</p>
+    <h2 class="headline-lg mt-8 white">Center Stage.<br>Desk View. Ready.</h2>
+    <p class="body-xl mt-12" style="color:rgba(255,255,255,0.55)">1080p FaceTime HD camera with advanced ISP.</p>
   </div>
 </section>
 <div style="height:60vh"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     9. FEATURE CARDS
-     ══════════════════════════════════════════════════════════ -->
-<section class="section-dark center" id="features-section">
+<!-- ═══ 9. KEYBOARD — full-bleed ═══ -->
+<section class="media-section" id="kb-section" style="min-height:80vh;align-items:flex-end">
+  <div class="media-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/e7f3de15-2278-4b8f-a926-8d7cdfeb6429.png')"></div>
+  <div class="media-overlay" style="background:linear-gradient(to top,rgba(0,0,0,0.8),rgba(0,0,0,0.1) 60%,transparent)"></div>
+  <div class="media-content" id="kb-content" style="padding-bottom:80px">
+    <h2 class="headline-md white">Magic Keyboard.<br>Backlit brilliance.</h2>
+    <p class="body mt-12" style="color:rgba(255,255,255,0.5)">Full-height function keys. Touch ID. Best typing on a laptop.</p>
+  </div>
+</section>
+<div style="height:50vh"></div>
+
+<!-- ═══ 10. FEATURE CARDS (dark) ═══ -->
+<section class="section bg-dark center" id="cards-section">
   <div class="container">
-    <h2 class="t-section">Even more to love.</h2>
-    <div class="card-grid mt-lg" id="feature-cards">
-      <div class="card card-dark"><div class="icon">&#128247;</div><h3 class="t-feature">1080p Camera</h3><p class="t-small muted mt-sm">Center Stage. Desk View. Always look your best.</p></div>
-      <div class="card card-dark"><div class="icon">&#127911;</div><h3 class="t-feature">Spatial Audio</h3><p class="t-small muted mt-sm">Four speakers. Dolby Atmos. Immersive sound.</p></div>
-      <div class="card card-dark"><div class="icon">&#128268;</div><h3 class="t-feature">Thunderbolt 4</h3><p class="t-small muted mt-sm">MagSafe. Wi-Fi 7. Bluetooth 6. Two displays.</p></div>
+    <h2 class="headline-lg white">Even more to love.</h2>
+    <div class="card-grid" id="cards">
+      <div class="card card-dark center">
+        <div style="font-size:40px;margin-bottom:16px">&#128247;</div>
+        <h3 class="headline-sm white">1080p Camera</h3>
+        <p class="body muted mt-8">Center Stage keeps you in frame. Desk View shows your workspace.</p>
+      </div>
+      <div class="card card-dark center">
+        <div style="font-size:40px;margin-bottom:16px">&#127911;</div>
+        <h3 class="headline-sm white">Spatial Audio</h3>
+        <p class="body muted mt-8">Four speakers. Dolby Atmos. Three-mic array. Immersive sound.</p>
+      </div>
+      <div class="card card-dark center">
+        <div style="font-size:40px;margin-bottom:16px">&#128268;</div>
+        <h3 class="headline-sm white">Thunderbolt 4</h3>
+        <p class="body muted mt-8">MagSafe. Wi-Fi 7. Bluetooth 6. Two external displays.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     10. THIN PROFILE — pinned full-bleed
-     ══════════════════════════════════════════════════════════ -->
-<section class="pin-section" id="thin-section">
-  <div class="pin-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3fe7864c-d39b-451d-af6d-a8de4d3736fc.png');background-color:#000"></div>
-  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:1"></div>
-  <div class="pin-content" id="thin-content">
-    <h2 class="t-section">Impossibly thin.<br>Incredibly capable.</h2>
-    <p class="t-body muted mt-sm">11.3 mm. 1.24 kg. M5 power inside.</p>
+<!-- ═══ 11. THIN PROFILE — full-bleed ═══ -->
+<section class="media-section" id="thin-section" style="min-height:85vh">
+  <div class="media-bg" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/3fe7864c-d39b-451d-af6d-a8de4d3736fc.png');background-color:#000"></div>
+  <div class="media-overlay" style="background:rgba(0,0,0,0.35)"></div>
+  <div class="media-content" id="thin-content">
+    <h2 class="headline-lg white">Impossibly thin.<br>Incredibly capable.</h2>
+    <p class="body-xl mt-12" style="color:rgba(255,255,255,0.5)">11.3 mm thin. 1.24 kg light. M5 power inside.</p>
   </div>
 </section>
-<div style="height:60vh"></div>
+<div style="height:50vh"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     11. PRICE
-     ══════════════════════════════════════════════════════════ -->
-<section class="section-light center" style="padding:100px 24px" id="price-section">
-  <p class="t-label" style="color:var(--gray)">MacBook Air</p>
-  <h2 class="t-section mt-sm" style="color:var(--dark)">Starting at <span class="blue">HK$8,999</span></h2>
-  <p class="t-body mt-sm" style="color:var(--gray)">Apple Trade In. Free delivery.</p>
-  <div class="cta-row mt-md"><a href="#" class="btn btn-blue">Buy</a></div>
+<!-- ═══ 12. WORKSPACE FLAT LAY (light) ═══ -->
+<section class="section bg-light center" id="workspace-section">
+  <div class="container">
+    <p class="eyebrow">Workspace</p>
+    <h2 class="headline-lg mt-8">Your desk. Elevated.</h2>
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/08a9f1e0-f300-41c9-a2f4-c3ec19e9fa36.png" class="mt-40" style="max-width:800px;margin:0 auto;border-radius:20px" alt="Workspace">
+  </div>
 </section>
 
-<footer><p>&copy; 2027 Apple Inc. All rights reserved.</p></footer>
+<!-- ═══ 13. PRICING ═══ -->
+<section class="section bg-white center" style="padding:80px 24px">
+  <div class="container">
+    <p class="eyebrow">MacBook Neo</p>
+    <h2 class="headline-lg mt-8">Starting at <span class="blue">HK$8,999</span></h2>
+    <p class="body muted mt-8">Apple Trade In available. Free delivery.</p>
+    <div class="cta-row mt-24"><a href="#" class="btn btn-filled">Buy</a></div>
+  </div>
+</section>
+
+<footer>
+  <p>Copyright &copy; 2027 Apple Inc. All rights reserved. <a href="#">Privacy Policy</a> &middot; <a href="#">Terms of Use</a></p>
+</footer>
 
 <!-- ══════════════════════════════════════════════════════════
-     GSAP ScrollTrigger — Apple-equivalent scroll engine
+     GSAP ScrollTrigger — Full Animation Engine
      ══════════════════════════════════════════════════════════ -->
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
-// ── 1. HERO: Pin + scroll-driven fade/scale ─────────────
+/* ── Hero: pin + scroll-driven fade ────────────────────── */
 gsap.timeline({
-  scrollTrigger: {
-    trigger: '#hero',
-    start: 'top top',
-    end: '+=150%',
-    scrub: 0.8,
-    pin: true
-  }
+  scrollTrigger:{trigger:'#hero',start:'top top',end:'+=120%',scrub:0.6,pin:true}
 })
-.to('#hero-text', { opacity: 0, y: -80, scale: 0.9, ease: 'none' }, 0)
-.to('#hero-img', { scale: 1.15, y: -40, opacity: 0.3, ease: 'none' }, 0);
+.to('#hero-text',{opacity:0,y:-60,scale:0.92,ease:'none'},0)
+.to('#hero-img',{scale:1.12,y:-30,opacity:0.2,ease:'none'},0);
 
-// ── 2. STICKY PRODUCT: 3D transform as text scrolls ─────
-var stickyTl = gsap.timeline({
-  scrollTrigger: {
-    trigger: '#product-section',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 1
-  }
-});
-stickyTl
-  .fromTo('#sticky-laptop', { scale: 1, rotateY: 0 }, { scale: 0.75, rotateY: 12, ease: 'none' }, 0)
-  .fromTo('#sticky-laptop', { opacity: 1 }, { opacity: 0.5, ease: 'none' }, 0);
+/* ── Sticky product: 3D transform on scroll ────────────── */
+gsap.timeline({
+  scrollTrigger:{trigger:'.sticky-wrap',start:'top top',end:'bottom bottom',scrub:0.8}
+})
+.fromTo('#sticky-img',{scale:1,rotateY:0,opacity:1},{scale:0.72,rotateY:10,opacity:0.4,ease:'none'});
 
-// Text cards stagger in/out
-['#tc1', '#tc2', '#tc3'].forEach(function(id, i) {
-  gsap.from(id, {
-    opacity: 0, y: 60,
-    scrollTrigger: { trigger: id, start: 'top 75%', end: 'top 40%', scrub: 1 }
+/* ── Text panels: scrub fade in/out ────────────────────── */
+['#p1','#p2','#p3'].forEach(function(id){
+  gsap.fromTo(id,{opacity:0,y:50},{opacity:1,y:0,
+    scrollTrigger:{trigger:id,start:'top 78%',end:'top 45%',scrub:0.8}
   });
-  gsap.to(id, {
-    opacity: 0, y: -40,
-    scrollTrigger: { trigger: id, start: 'bottom 50%', end: 'bottom 20%', scrub: 1 }
+  gsap.to(id,{opacity:0,y:-30,
+    scrollTrigger:{trigger:id,start:'bottom 55%',end:'bottom 25%',scrub:0.8}
   });
 });
 
-// ── 3. CHIP SECTION: Pin + parallax bg + content reveal ──
-gsap.timeline({
-  scrollTrigger: {
-    trigger: '#chip-section',
-    start: 'top top',
-    end: '+=100%',
-    scrub: 1,
-    pin: true
-  }
-})
-.from('#chip-content', { opacity: 0, y: 60, scale: 0.95, ease: 'none' })
-.from('#chip-bg', { scale: 1.15, ease: 'none' }, 0);
+/* ── Display section: stagger reveal ───────────────────── */
+gsap.from('#display-section .container > *',{
+  opacity:0,y:40,stagger:0.08,
+  scrollTrigger:{trigger:'#display-section',start:'top 72%',toggleActions:'play none none reverse'}
+});
 
-// ── 4. PERFORMANCE BARS: Scrub-driven width ─────────────
+/* ── Design section: stagger ───────────────────────────── */
+gsap.from('#design-section .container > *',{
+  opacity:0,y:40,stagger:0.08,
+  scrollTrigger:{trigger:'#design-section',start:'top 72%',toggleActions:'play none none reverse'}
+});
+
+/* ── Chip: pin + parallax bg ───────────────────────────── */
+gsap.timeline({
+  scrollTrigger:{trigger:'#chip-section',start:'top top',end:'+=80%',scrub:0.8,pin:true}
+})
+.fromTo('#chip-content',{opacity:0,y:50},{opacity:1,y:0,ease:'none'})
+.fromTo('#chip-bg',{scale:1.12},{scale:1,ease:'none'},0);
+
+/* ── Performance bars ──────────────────────────────────── */
 ScrollTrigger.create({
-  trigger: '#bars',
-  start: 'top 70%',
-  onEnter: function() {
-    document.querySelectorAll('.bar-fill').forEach(function(bar) {
-      bar.style.transition = 'width 1.5s cubic-bezier(0.16,1,0.3,1)';
-      bar.style.width = bar.dataset.w;
+  trigger:'#bars',start:'top 72%',once:true,
+  onEnter:function(){
+    document.querySelectorAll('.bar-fill').forEach(function(b){
+      b.style.transition='width 1.4s cubic-bezier(0.16,1,0.3,1)';
+      b.style.width=b.dataset.w;
     });
-  },
-  once: true
-});
-
-// ── 5. DISPLAY: Pin + content parallax ──────────────────
-gsap.timeline({
-  scrollTrigger: {
-    trigger: '#display-section',
-    start: 'top top',
-    end: '+=80%',
-    scrub: 1,
-    pin: true
   }
-})
-.from('#display-content', { opacity: 0, y: 50, ease: 'none' });
-
-// ── 6. LIFESTYLE SPLIT: Image scale-up on scroll ────────
-gsap.from('#lifestyle-img', {
-  scale: 0.85, opacity: 0.5, borderRadius: '40px',
-  scrollTrigger: { trigger: '#battery-section', start: 'top 80%', end: 'top 30%', scrub: 1 }
+});
+gsap.from('#perf-section .container > *:not(.bars)',{
+  opacity:0,y:30,stagger:0.06,
+  scrollTrigger:{trigger:'#perf-section',start:'top 72%',toggleActions:'play none none reverse'}
 });
 
-// ── 7. KEYBOARD: Pin + gradient reveal ──────────────────
+/* ── Lifestyle image: scale morph ──────────────────────── */
+gsap.fromTo('#life-img img',{scale:0.88,opacity:0.6,borderRadius:'36px'},{scale:1,opacity:1,borderRadius:'20px',
+  scrollTrigger:{trigger:'#battery-section',start:'top 80%',end:'top 35%',scrub:0.8}
+});
+gsap.from('#battery-section .split-text > *',{
+  opacity:0,y:30,stagger:0.08,
+  scrollTrigger:{trigger:'#battery-section .split-text',start:'top 75%',toggleActions:'play none none reverse'}
+});
+
+/* ── Camera: pin + reveal ──────────────────────────────── */
 gsap.timeline({
-  scrollTrigger: {
-    trigger: '#keyboard-section',
-    start: 'top top',
-    end: '+=60%',
-    scrub: 1,
-    pin: true
-  }
+  scrollTrigger:{trigger:'#camera-section',start:'top top',end:'+=60%',scrub:0.8,pin:true}
 })
-.from('#kb-content', { opacity: 0, y: 40, ease: 'none' });
+.fromTo('#cam-content',{opacity:0,y:40},{opacity:1,y:0,ease:'none'})
+.fromTo('#cam-bg',{scale:1.08},{scale:1,ease:'none'},0);
 
-// ── 8. FEATURE CARDS: Stagger on scroll ─────────────────
-gsap.from('#feature-cards .card', {
-  opacity: 0, y: 50, scale: 0.95,
-  stagger: 0.15,
-  scrollTrigger: { trigger: '#feature-cards', start: 'top 75%', end: 'top 40%', scrub: 1 }
-});
-
-// ── 9. THIN PROFILE: Pin + parallax bg ──────────────────
+/* ── Keyboard: pin + reveal ────────────────────────────── */
 gsap.timeline({
-  scrollTrigger: {
-    trigger: '#thin-section',
-    start: 'top top',
-    end: '+=60%',
-    scrub: 1,
-    pin: true
-  }
+  scrollTrigger:{trigger:'#kb-section',start:'top top',end:'+=50%',scrub:0.8,pin:true}
 })
-.from('#thin-content', { opacity: 0, y: 50, ease: 'none' });
+.fromTo('#kb-content',{opacity:0,y:30},{opacity:1,y:0,ease:'none'});
 
-// ── 10. PRICE: Fade up ──────────────────────────────────
-gsap.from('#price-section', {
-  opacity: 0, y: 40,
-  scrollTrigger: { trigger: '#price-section', start: 'top 80%', toggleActions: 'play none none reverse' }
+/* ── Feature cards: stagger ────────────────────────────── */
+gsap.from('#cards .card',{
+  opacity:0,y:40,scale:0.96,stagger:0.12,
+  scrollTrigger:{trigger:'#cards',start:'top 75%',end:'top 45%',scrub:0.8}
 });
 
-// ── Design section: all elements reveal on scroll ───────
-gsap.from('#design-section .container > *', {
-  opacity: 0, y: 40, stagger: 0.1,
-  scrollTrigger: { trigger: '#design-section', start: 'top 70%', toggleActions: 'play none none reverse' }
-});
+/* ── Thin profile: pin ─────────────────────────────────── */
+gsap.timeline({
+  scrollTrigger:{trigger:'#thin-section',start:'top top',end:'+=50%',scrub:0.8,pin:true}
+})
+.fromTo('#thin-content',{opacity:0,y:40},{opacity:1,y:0,ease:'none'});
 
-// ── Perf section title ──────────────────────────────────
-gsap.from('#perf-section .container > *:not(.bar-group)', {
-  opacity: 0, y: 30, stagger: 0.08,
-  scrollTrigger: { trigger: '#perf-section', start: 'top 70%', toggleActions: 'play none none reverse' }
+/* ── Workspace: reveal ─────────────────────────────────── */
+gsap.from('#workspace-section .container > *',{
+  opacity:0,y:40,stagger:0.08,
+  scrollTrigger:{trigger:'#workspace-section',start:'top 72%',toggleActions:'play none none reverse'}
 });
 </script>
 </body>
