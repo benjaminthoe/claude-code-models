@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=320">
+  <link rel="stylesheet" href="popup.css">
+  <title>SpeedBoost</title>
+</head>
+<body>
+  <div class="header">
+    <h1>SpeedBoost</h1>
+    <div class="master-toggle">
+      <span id="statusText">Active</span>
+      <label class="switch">
+        <input type="checkbox" id="masterToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-number" id="blockedCount">0</div>
+      <div class="stat-label">Requests Blocked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="optimizedCount">0</div>
+      <div class="stat-label">Elements Optimized</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="toggles" id="togglesContainer">
+    <div class="toggle-row" data-setting="blockAdsTrackers">
+      <span class="toggle-label">Block Ads & Trackers</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="lazyLoadImages">
+      <span class="toggle-label">Lazy Load Images</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="lazyLoadVideos">
+      <span class="toggle-label">Lazy Load Videos</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="removeOverlays">
+      <span class="toggle-label">Remove Overlays</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="preconnectCDN">
+      <span class="toggle-label">Preconnect CDN</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="deferScripts">
+      <span class="toggle-label">Defer Scripts</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="blockAutoplay">
+      <span class="toggle-label">Block Autoplay</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="cssPerformance">
+      <span class="toggle-label">CSS Performance</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="domContainment">
+      <span class="toggle-label">DOM Containment</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row" data-setting="timerCleanup">
+      <span class="toggle-label">Timer Cleanup</span>
+      <label class="switch sm">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="footer">
+    Reload page after changing settings
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

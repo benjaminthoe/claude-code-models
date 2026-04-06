@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "SpeedBoost",
+  "version": "1.0.0",
+  "description": "Dramatically speed up page loading by blocking ads/trackers, lazy-loading media, and optimizing DOM performance.",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.missav.ai/*",
+    "*://*.missav.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.missav.ai/*", "*://*.missav.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "images/icon-48.png",
+      "96": "images/icon-96.png",
+      "128": "images/icon-128.png"
+    }
+  },
+  "icons": {
+    "48": "images/icon-48.png",
+    "96": "images/icon-96.png",
+    "128": "images/icon-128.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "block_rules",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}

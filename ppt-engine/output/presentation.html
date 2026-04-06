@@ -40,14 +40,14 @@
 .reveal-viewport{background:var(--bg)!important;font-family:var(--font)!important}
 .reveal{font-family:var(--font)!important;color:var(--text)}
 .reveal .slides{text-align:left}
-.reveal .slides section{padding:0;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+.reveal .slides section{padding:60px 80px;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
 .reveal h1,.reveal h2,.reveal h3{font-family:var(--font)!important;color:var(--text);text-transform:none;letter-spacing:-0.03em;font-weight:800;line-height:1.05;text-align:center}
 .reveal p{color:var(--text2);line-height:1.6}
 .reveal .progress{height:2px}.reveal .progress span{background:var(--g-hero)}
 .reveal .controls{color:rgba(255,255,255,0.15)}
 
 /* ── Particle Canvas (global overlay) ─────────────────── */
-#particles-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.6}
+#particles-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.5}
 
 /* ── Gradient Text ────────────────────────────────────── */
 .gt{background:var(--g-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -65,16 +65,14 @@
 .glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.06);border-radius:24px}
 .glass-strong{background:rgba(255,255,255,0.08);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)}
 
-/* ── Animated Background Orbs ─────────────────────────── */
-.orbs{position:absolute;inset:0;z-index:0;overflow:hidden}
-.orbs .o{position:absolute;border-radius:50%;filter:blur(120px);animation:orbFloat 25s ease-in-out infinite}
-.orbs .o1{width:700px;height:700px;top:-15%;left:-10%;background:rgba(99,102,241,0.25);animation-duration:30s}
-.orbs .o2{width:500px;height:500px;bottom:-10%;right:-8%;background:rgba(168,85,247,0.2);animation-delay:-12s;animation-direction:reverse}
-.orbs .o3{width:400px;height:400px;top:40%;right:15%;background:rgba(34,211,238,0.12);animation-delay:-8s;animation-duration:35s}
-@keyframes orbFloat{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(40px,-50px) scale(1.08)}
-  66%{transform:translate(-30px,30px) scale(0.92)}
+/* ── Ambient Background (applied to section background, zero z-index risk) */
+.orbs{display:none} /* gradient is now on section directly */
+.has-mesh{
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 40%, rgba(99,102,241,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 25%, rgba(168,85,247,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 80%, rgba(34,211,238,0.08) 0%, transparent 70%),
+    var(--bg) !important;
 }
 
 /* ── Cinematic Text Reveal (mask clip) ────────────────── */
@@ -150,7 +148,7 @@
 
 /* ── SECTION DIVIDER ──────────────────────────────────── */
 .s-section{text-align:center;position:relative}
-.s-section .big-num{font-size:180px;font-weight:900;opacity:0.04;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);line-height:1}
+.s-section .big-num{font-size:200px;font-weight:900;opacity:0.04;position:absolute;top:8%;left:50%;transform:translateX(-50%);line-height:1;z-index:0;pointer-events:none}
 .s-section h2{font-size:60px;position:relative;z-index:1}
 
 /* ── CONTENT + IMAGE ──────────────────────────────────── */
@@ -227,6 +225,31 @@
 /* ── Auto-Animate overrides ───────────────────────────── */
 .reveal[data-auto-animate-duration="1.2s"] section{transition-duration:1.2s!important}
 
+/* ── CSS-Driven Entrance Animations ──────────────────── */
+/* Hidden state */
+[data-anim]{opacity:0;transform:translateY(24px);transition:opacity 0.8s var(--ease-cine),transform 0.8s var(--ease-cine),clip-path 1s var(--ease-cine)}
+[data-anim="slide-left"]{transform:translateX(-50px)}
+[data-anim="slide-right"]{transform:translateX(50px)}
+[data-anim="scale"]{transform:scale(0.88)}
+[data-anim="float3d"]{transform:translateY(50px) perspective(800px) rotateX(12deg) scale(0.92);transition-duration:1.2s}
+[data-anim="wipe"]{transform:scaleX(0);transform-origin:left;transition-duration:0.7s}
+.gt[data-anim="chars"],.gt-ocean[data-anim="chars"],.gt-fire[data-anim="chars"],.gt-emerald[data-anim="chars"]{
+  display:inline-block;clip-path:inset(0 100% 0 0);transform:none;opacity:1}
+/* stagger children animated via GSAP — no CSS rules needed */
+/* Active state — !important ensures no override battles */
+[data-anim].a{opacity:1!important;transform:translateY(0)!important}
+[data-anim="chars"].a{transform:none!important}
+[data-anim="slide-left"].a,[data-anim="slide-right"].a{transform:translateX(0)!important}
+[data-anim="scale"].a{transform:scale(1)!important}
+[data-anim="float3d"].a{transform:translateY(0) perspective(800px) rotateX(0) scale(1)!important}
+[data-anim="wipe"].a{transform:scaleX(1)!important}
+.gt[data-anim="chars"].a,.gt-ocean[data-anim="chars"].a,.gt-fire[data-anim="chars"].a,.gt-emerald[data-anim="chars"].a{
+  clip-path:inset(0 0% 0 0)!important}
+/* stagger .a state handled by GSAP */
+/* Char-by-char via CSS @keyframes */
+@keyframes charIn{from{opacity:0;transform:translateY(50px) rotateX(-60deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}
+[data-anim="chars"].a span{animation:charIn 0.55s var(--ease-spring) both}
+
 /* ── Print ────────────────────────────────────────────── */
 @media print{
   #particles-canvas,.orbs,.counter,.reveal .controls,.reveal .progress{display:none}
@@ -245,8 +268,7 @@
 <!-- ══════════════════════════════════════════════════════
      1. TITLE — Cinematic text reveal + particles
      ══════════════════════════════════════════════════════ -->
-<section class="s-title" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
-  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+<section class="s-title has-mesh" data-transition="fade">
   <div class="inner">
     <div class="pill" data-anim="fade">AI 2026</div>
     <h1 style="margin-top:24px" data-id="main-title">
@@ -261,8 +283,7 @@
 <!-- ══════════════════════════════════════════════════════
      2. STATEMENT — Auto-animate morph from title
      ══════════════════════════════════════════════════════ -->
-<section class="s-statement" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
-  <div class="orbs"><div class="o o1"></div><div class="o o2"></div></div>
+<section class="s-statement has-mesh" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
   <div style="position:relative;z-index:1;max-width:1000px;padding:0 60px">
     <div class="pill pill-cyan" data-anim="fade">The Big Picture</div>
     <h2 data-id="main-title" style="margin-top:28px;font-size:58px">
@@ -302,12 +323,11 @@
 <!-- ══════════════════════════════════════════════════════
      4. SECTION — Iris reveal
      ══════════════════════════════════════════════════════ -->
-<section class="s-section" data-transition="fade">
-  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+<section class="s-section has-mesh" data-transition="fade">
   <div class="big-num" data-anim="fade">01</div>
   <div style="position:relative;z-index:1">
     <div class="pill pill-emerald" data-anim="fade">Chapter One</div>
-    <h2 style="margin-top:24px" data-anim="chars">
+    <h2 style="margin-top:24px" data-anim="fade">
       <span class="gt-emerald">Intelligence</span><br>Reimagined
     </h2>
   </div>
@@ -319,7 +339,7 @@
 <section class="s-split" data-transition="slide">
   <div class="txt">
     <div class="pill" data-anim="fade">Core Insight</div>
-    <h2 data-anim="chars" style="margin-top:20px">From Data to<br><span class="gt">Decisions</span></h2>
+    <h2 data-anim="fade" style="margin-top:20px">From Data to<br><span class="gt">Decisions</span></h2>
     <div style="width:80px;height:4px;border-radius:2px;background:var(--g-hero);margin:20px 0" data-anim="wipe"></div>
     <p data-anim="fade" data-anim-delay="0.5">Modern AI doesn't just analyze — it <strong style="color:var(--text)">understands context</strong>, anticipates needs, and delivers insight at the speed of thought.</p>
     <p style="margin-top:14px" data-anim="fade" data-anim-delay="0.7">The gap between information and action has collapsed. What took weeks now happens in seconds.</p>
@@ -335,7 +355,7 @@
 <section class="s-product" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.0">
   <div class="orbs"><div class="o o1"></div><div class="o o3"></div></div>
   <div class="pill pill-cyan" data-anim="fade" style="position:relative;z-index:1">Hardware</div>
-  <h2 data-anim="chars" style="margin-top:20px" data-id="product-title">Built for the<br><span class="gt-ocean">AI Era</span></h2>
+  <h2 data-anim="fade" style="margin-top:20px" data-id="product-title">Built for the<br><span class="gt-ocean">AI Era</span></h2>
   <p class="tagline" data-anim="fade" data-anim-delay="0.5">Power meets precision. Intelligence meets design.</p>
   <div class="product-scene" data-anim="float3d">
     <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/70df524d-981c-4090-be3a-fbc6ee222e61.png" alt="MacBook" class="device product-float" data-id="product-img" style="animation:pulseGlow 4s ease-in-out infinite">
@@ -413,7 +433,7 @@
 <section class="s-quote" data-transition="fade">
   <div class="orbs"><div class="o o1"></div><div class="o o3"></div></div>
   <div class="qmark">"</div>
-  <blockquote data-anim="chars">The best way to predict the future is to invent it — and AI gives us the tools to do exactly that.</blockquote>
+  <blockquote data-anim="fade" data-anim-delay="0.3">The best way to predict the future is to invent it — and AI gives us the tools to do exactly that.</blockquote>
   <div class="attr" data-anim="fade" data-anim-delay="1.0">
     <strong style="color:var(--text)">Alan Kay</strong> — Computer Science Pioneer
   </div>
@@ -440,10 +460,9 @@
 <!-- ══════════════════════════════════════════════════════
      11. PHONE SHOWCASE — 3D float with neon glow
      ══════════════════════════════════════════════════════ -->
-<section class="s-product" data-transition="fade">
-  <div class="orbs"><div class="o o2"></div><div class="o o3"></div></div>
+<section class="s-product has-mesh" data-transition="fade">
   <div class="pill pill-rose" data-anim="fade" style="position:relative;z-index:1">Mobile AI</div>
-  <h2 data-anim="chars" style="margin-top:20px">Intelligence<br><span class="gt-fire">In Your Pocket</span></h2>
+  <h2 data-anim="fade" style="margin-top:20px">Intelligence<br><span class="gt-fire">In Your Pocket</span></h2>
   <p class="tagline" data-anim="fade" data-anim-delay="0.5">On-device AI. Private. Instant. Always ready.</p>
   <div class="product-scene" data-anim="float3d">
     <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4d246ad3-e992-41a5-980f-8ce78ce2cf78.png" alt="Smartphone" class="device product-float neon-glow-cyan" style="max-width:280px;border-radius:24px">
@@ -467,10 +486,10 @@
      13. FULL IMAGE — Ken Burns + glass overlay
      ══════════════════════════════════════════════════════ -->
 <section class="s-fullimg" data-transition="fade">
-  <div class="bg ken-burns" style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80&fit=crop&auto=format')"></div>
+  <div class="bg ken-burns" style="background-image:url('https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/d7d42e94-c8c7-4eca-8734-63e722f7f630.png')"></div>
   <div class="overlay">
     <div class="pill" data-anim="fade">Our Team</div>
-    <h2 data-anim="chars" style="margin-top:20px">Built by Humans.<br><span class="gt">Powered by AI.</span></h2>
+    <h2 data-anim="fade" style="margin-top:20px">Built by Humans.<br><span class="gt">Powered by AI.</span></h2>
     <p data-anim="fade" data-anim-delay="0.6">The best teams don't choose between human insight and machine intelligence — they amplify both.</p>
   </div>
 </section>
@@ -478,9 +497,8 @@
 <!-- ══════════════════════════════════════════════════════
      14. CLOSING — Particle burst + gradient morph
      ══════════════════════════════════════════════════════ -->
-<section class="s-closing" data-transition="fade">
-  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
-  <h2 data-anim="chars">The Future Doesn't Wait.<br><span class="gt">Neither Should You.</span></h2>
+<section class="s-closing has-mesh" data-transition="fade">
+  <h2 data-anim="fade">The Future Doesn't Wait.<br><span class="gt">Neither Should You.</span></h2>
   <p class="sub" data-anim="fade" data-anim-delay="0.6">Start your AI transformation today.</p>
   <a class="cta" href="#" data-anim="fade" data-anim-delay="0.8">Let's Build Together &#8594;</a>
   <p class="byline" data-anim="fade" data-anim-delay="1.0" style="margin-top:44px">benjamin@example.com &middot; @benjaminthoe</p>
@@ -508,7 +526,7 @@
   function resize(){ W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
   resize(); window.addEventListener('resize', resize);
 
-  const particles = Array.from({length:50}, () => ({
+  const particles = Array.from({length:30}, () => ({
     x: Math.random()*W, y: Math.random()*H,
     r: Math.random()*2+0.5,
     dx: (Math.random()-0.5)*0.3,
@@ -549,109 +567,77 @@
 
 // ── 2. Character-by-Character Text Split ───────────────
 function splitChars(el){
-  const text = el.textContent;
-  el.innerHTML = '';
+  // Walk child nodes to preserve <br> and nested elements
   const frag = document.createDocumentFragment();
-  for(let i=0;i<text.length;i++){
-    const span = document.createElement('span');
-    span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
-    span.style.cssText = 'display:inline-block;opacity:0;transform:translateY(110%)';
-    frag.appendChild(span);
+  function processNode(node){
+    if(node.nodeType === 3){ // Text node
+      const words = node.textContent.split(/(\s+)/);
+      words.forEach(word => {
+        if(/^\s+$/.test(word)){
+          frag.appendChild(document.createTextNode(word));
+        } else {
+          for(let i=0;i<word.length;i++){
+            const span = document.createElement('span');
+            span.textContent = word[i];
+            span.style.display = 'inline-block';
+            frag.appendChild(span);
+          }
+        }
+      });
+    } else if(node.nodeName === 'BR'){
+      frag.appendChild(document.createElement('br'));
+    } else {
+      // Preserve child elements (like <span class="gt-emerald">)
+      const clone = node.cloneNode(false);
+      // Don't split gradient text children — they animate via clip-path
+      if(/\b(gt|gt-ocean|gt-fire|gt-emerald)\b/.test(node.className)){
+        clone.textContent = node.textContent;
+        frag.appendChild(clone);
+      } else {
+        Array.from(node.childNodes).forEach(c => processNode(c));
+      }
+    }
   }
+  Array.from(el.childNodes).forEach(n => processNode(n));
+  el.innerHTML = '';
   el.appendChild(frag);
-  return el.querySelectorAll('span');
+  return Array.from(el.querySelectorAll('span'));
 }
 
-// ── 3. Slide Animation Engine ──────────────────────────
+// ── 3. Slide Animation Engine (CSS-first, bulletproof) ─
 function animateSlide(slide){
   if(!slide) return;
 
-  // Character reveal — skip gradient text (use wipe), split plain text
-  slide.querySelectorAll('[data-anim="chars"]').forEach(el => {
-    const delay = parseFloat(el.dataset.animDelay||0);
-    // Gradient text: use clip-path wipe reveal (preserves gradient)
-    if(el.classList.contains('gt')||el.classList.contains('gt-ocean')||el.classList.contains('gt-fire')||el.classList.contains('gt-emerald')){
-      gsap.fromTo(el,
-        {clipPath:'inset(0 100% 0 0)', opacity:1},
-        {clipPath:'inset(0 0% 0 0)', duration:1.0, ease:'power3.inOut', delay:0.3+delay, overwrite:true}
-      );
-      return;
-    }
-    // Plain text: character-by-character reveal
-    if(el.dataset._split) { // Re-animate existing splits
-      gsap.fromTo(el.querySelectorAll('span'),
-        {opacity:0, y:60, rotateX:-80},
-        {opacity:1, y:0, rotateX:0, duration:0.65, stagger:0.025, ease:'back.out(1.2)', delay:0.2+delay, overwrite:true}
-      );
-      return;
-    }
-    const chars = splitChars(el);
-    el.dataset._split = '1';
-    gsap.fromTo(chars,
-      {opacity:0, y:60, rotateX:-80},
-      {opacity:1, y:0, rotateX:0, duration:0.65, stagger:0.025, ease:'back.out(1.2)', delay:0.2+delay, overwrite:true}
-    );
+  // Split chars (once) for char-by-char elements
+  slide.querySelectorAll('[data-anim="chars"]:not(.gt):not(.gt-ocean):not(.gt-fire):not(.gt-emerald)').forEach(el => {
+    if(!el.dataset._split){ splitChars(el); el.dataset._split='1'; }
+    // Apply staggered animation-delay to each span
+    const spans = el.querySelectorAll('span');
+    const baseDelay = parseFloat(el.dataset.animDelay||0);
+    spans.forEach((s,i) => { s.style.animationDelay = (baseDelay + 0.2 + i*0.025) + 's'; });
   });
 
-  // Fade animations
-  slide.querySelectorAll('[data-anim="fade"]').forEach(el => {
-    const delay = parseFloat(el.dataset.animDelay||0);
-    gsap.fromTo(el,
-      {opacity:0, y:24},
-      {opacity:1, y:0, duration:0.8, ease:'power3.out', delay:0.15+delay, overwrite:true}
-    );
+  // Apply transition-delay from data-anim-delay
+  slide.querySelectorAll('[data-anim][data-anim-delay]').forEach(el => {
+    el.style.transitionDelay = el.dataset.animDelay + 's';
   });
 
-  // Scale animations (for images)
-  slide.querySelectorAll('[data-anim="scale"]').forEach(el => {
-    gsap.fromTo(el,
-      {opacity:0, scale:0.88},
-      {opacity:1, scale:1, duration:1.2, ease:'power2.out', delay:0.3, overwrite:true}
-    );
+  // Toggle .a class on all non-stagger elements (CSS handles the rest)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      slide.querySelectorAll('[data-anim]:not([data-anim="stagger"])').forEach(el => el.classList.add('a'));
+      // Stagger: use GSAP for bulletproof child animation
+      slide.querySelectorAll('[data-anim="stagger"]').forEach(container => {
+        container.classList.add('a');
+        gsap.from(Array.from(container.children), {
+          opacity:0, y:30, scale:0.96,
+          duration:0.7, stagger:0.1, ease:'power2.out', delay:0.3, clearProps:'all'
+        });
+      });
+    });
   });
 
-  // 3D float entrance
-  slide.querySelectorAll('[data-anim="float3d"]').forEach(el => {
-    gsap.fromTo(el,
-      {opacity:0, y:60, rotateX:15, scale:0.9},
-      {opacity:1, y:0, rotateX:0, scale:1, duration:1.4, ease:'power2.out', delay:0.5, overwrite:true}
-    );
-  });
-
-  // Wipe divider
-  slide.querySelectorAll('[data-anim="wipe"]').forEach(el => {
-    gsap.fromTo(el,
-      {scaleX:0, transformOrigin:'left center'},
-      {scaleX:1, duration:0.8, ease:'power2.inOut', delay:0.4, overwrite:true}
-    );
-  });
-
-  // Slide from left
-  slide.querySelectorAll('[data-anim="slide-left"]').forEach(el => {
-    gsap.fromTo(el,
-      {opacity:0, x:-60},
-      {opacity:1, x:0, duration:0.9, ease:'power3.out', delay:0.2, overwrite:true}
-    );
-  });
-
-  // Slide from right
-  slide.querySelectorAll('[data-anim="slide-right"]').forEach(el => {
-    gsap.fromTo(el,
-      {opacity:0, x:60},
-      {opacity:1, x:0, duration:0.9, ease:'power3.out', delay:0.2, overwrite:true}
-    );
-  });
-
-  // Stagger children
-  slide.querySelectorAll('[data-anim="stagger"]').forEach(container => {
-    const kids = Array.from(container.children);
-    gsap.fromTo(kids,
-      {opacity:0, y:30, scale:0.96},
-      {opacity:1, y:0, scale:1, duration:0.7, stagger:0.08, ease:'power2.out', delay:0.35, overwrite:true}
-    );
-  });
-
-  // Spring physics counter animation
+  // GSAP only for counters (the one thing CSS can't do)
   slide.querySelectorAll('[data-count]').forEach(el => {
     const target = parseFloat(el.dataset.count);
     const prefix = el.dataset.prefix || '';
@@ -659,7 +645,6 @@ function animateSlide(slide){
     const isDecimal = target % 1 !== 0;
     el.textContent = prefix + '0' + suffix;
     const obj = {v:0};
-    // Spring overshoot: go 8% past target then settle
     gsap.to(obj, {
       v: target * 1.08, duration: 1.2, ease:'power2.out', delay:0.5,
       onUpdate:()=>{ el.textContent = prefix + (isDecimal ? obj.v.toFixed(1) : Math.round(obj.v)) + suffix; }
@@ -669,6 +654,12 @@ function animateSlide(slide){
       onUpdate:()=>{ el.textContent = prefix + (isDecimal ? obj.v.toFixed(1) : Math.round(obj.v)) + suffix; }
     });
   });
+}
+
+// Reset animations when leaving a slide
+function resetSlide(slide){
+  if(!slide) return;
+  slide.querySelectorAll('[data-anim]').forEach(el => el.classList.remove('a'));
 }
 
 // ── 4. Initialize Reveal.js ────────────────────────────
@@ -699,17 +690,16 @@ Reveal.initialize({
   document.getElementById('tot').textContent = Reveal.getTotalSlides();
 
   // Animate first slide
-  setTimeout(() => animateSlide(Reveal.getCurrentSlide()), 100);
+  setTimeout(() => animateSlide(Reveal.getCurrentSlide()), 300);
 
-  // Animate on slide change
+  // On slide change: reset old, animate new
   Reveal.on('slidechanged', e => {
     document.getElementById('cur').textContent = e.indexh + 1;
-    setTimeout(() => animateSlide(e.currentSlide), 100);
+    if(e.previousSlide) resetSlide(e.previousSlide);
+    setTimeout(() => animateSlide(e.currentSlide), 50);
   });
-
-  // Re-animate on auto-animate
   Reveal.on('autoanimate', e => {
-    setTimeout(() => animateSlide(e.currentSlide), 200);
+    setTimeout(() => animateSlide(e.currentSlide), 100);
   });
 });
 

@@ -42,7 +42,8 @@ swiftc -O \
     "${SCRIPT_DIR}/main.swift" \
     -framework Cocoa \
     -framework CoreAudio \
-    -framework AudioToolbox
+    -framework AudioToolbox \
+    -framework Carbon
 echo "   Compiled."
 
 # Step 3: Create .app bundle
