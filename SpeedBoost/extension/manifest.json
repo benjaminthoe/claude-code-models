@@ -10,15 +10,14 @@
     "activeTab"
   ],
   "host_permissions": [
-    "*://*.missav.ai/*",
-    "*://*.missav.com/*"
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["*://*.missav.ai/*", "*://*.missav.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "run_at": "document_start",
       "all_frames": true

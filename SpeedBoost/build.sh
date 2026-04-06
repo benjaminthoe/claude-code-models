@@ -7,7 +7,8 @@ cd "$SCRIPT_DIR"
 APP_NAME="SpeedBoost"
 BUNDLE_ID="com.local.speedboost"
 EXTENSION_DIR="$SCRIPT_DIR/extension"
-BUILD_DIR="$SCRIPT_DIR/build"
+# Build in /tmp to avoid iCloud Drive extended attributes breaking code signing
+BUILD_DIR="/tmp/SpeedBoost-build"
 DEPLOY_DIR="$HOME/Desktop/Claude Code App"
 
 echo "========================================="
@@ -34,14 +35,19 @@ if [[ -z "$XCODE_PATH" ]] || [[ ! "$XCODE_PATH" == *"Xcode"* ]]; then
     exit 1
 fi
 
-if ! xcrun --find safari-web-extension-converter &>/dev/null; then
+CONVERTER=""
+CONVERTER="$(xcrun --find safari-web-extension-converter 2>/dev/null)" || true
+if [[ -z "$CONVERTER" ]]; then
+    CONVERTER="$(find /Applications/Xcode.app -name safari-web-extension-converter -type f 2>/dev/null | head -1)" || true
+fi
+if [[ -z "$CONVERTER" ]]; then
     echo "ERROR: safari-web-extension-converter not found."
     echo "  Make sure Xcode is properly installed and selected."
     exit 1
 fi
 
 echo "  Xcode: $XCODE_PATH"
-echo "  safari-web-extension-converter: found"
+echo "  Converter: $CONVERTER"
 echo ""
 
 # ─── Step 1: Generate placeholder icons ───
@@ -111,7 +117,13 @@ echo "[3/5] Converting to Safari Web Extension..."
 
 rm -rf "$BUILD_DIR"
 
-xcrun safari-web-extension-converter "$EXTENSION_DIR" \
+# Copy extension to /tmp to strip iCloud xattrs
+EXTENSION_COPY="/tmp/SpeedBoost-ext"
+rm -rf "$EXTENSION_COPY"
+cp -R "$EXTENSION_DIR" "$EXTENSION_COPY"
+xattr -cr "$EXTENSION_COPY"
+
+"$CONVERTER" "$EXTENSION_COPY" \
     --project-location "$BUILD_DIR" \
     --app-name "$APP_NAME" \
     --bundle-identifier "$BUNDLE_ID" \
@@ -134,15 +146,19 @@ if [[ -z "$XCODEPROJ" ]]; then
 fi
 echo "  Project: $XCODEPROJ"
 
+# Fix bundle ID case mismatch (converter may capitalize app name)
+sed -i '' "s/com\.local\.SpeedBoost/com.local.speedboost/g" "$XCODEPROJ/project.pbxproj"
+
 # Auto-detect scheme
 SCHEME=$(xcodebuild -project "$XCODEPROJ" -list 2>/dev/null | \
     awk '/Schemes:/{found=1; next} found && /^[[:space:]]+.+/{gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print; exit}')
 
 if [[ -z "$SCHEME" ]]; then
-    # Fallback: use app name with macOS suffix
     SCHEME="$APP_NAME (macOS)"
 fi
 echo "  Scheme: $SCHEME"
+
+xattr -cr "$BUILD_DIR"
 
 xcodebuild \
     -project "$XCODEPROJ" \

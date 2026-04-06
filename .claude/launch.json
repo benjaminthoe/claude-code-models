@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "ppt-studio",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/Applications/PPT Studio.app/Contents/Resources/app/server.py"],
+      "port": 3848
+    },
+    {
       "name": "ppt-preview",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["/tmp/ppt-preview/server.py"],

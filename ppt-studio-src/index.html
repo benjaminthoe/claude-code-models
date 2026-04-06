@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPT Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ═══ Top Bar ═══ -->
+<header id="topbar">
+  <div class="logo">
+    <span class="logo-icon">&#9670;</span>
+    <span class="logo-text">PPT Studio</span>
+  </div>
+  <div class="toolbar">
+    <select id="theme-select">
+      <option value="dark">Dark Cinematic</option>
+      <option value="apple">Apple Keynote</option>
+      <option value="xiaomi">Xiaomi / Lei Jun</option>
+      <option value="light">Light Clean</option>
+    </select>
+    <button class="tb-btn" onclick="exportHTML()" title="Export as shareable HTML">&#128196; HTML</button>
+    <button class="tb-btn" onclick="exportPPTX()" title="Export as PowerPoint">&#128202; PPTX</button>
+    <button class="tb-btn" onclick="exportVideo()" title="Export as video">&#127916; Video</button>
+    <div class="hf-status" id="hf-status" title="Higgsfield AI">&#9679; AI Ready</div>
+  </div>
+</header>
+
+<!-- ═══ Main Split Layout ═══ -->
+<main id="app">
+  <!-- Left: Chat Panel -->
+  <section id="chat-panel">
+    <div id="chat-messages">
+      <div class="msg system">
+        <div class="msg-content">
+          <strong>PPT Studio</strong><br>
+          Tell me what presentation to create. I'll research the topic, design cinematic slides, and generate AI visuals.<br><br>
+          <span style="color:var(--text3)">Try: "Create an Apple-style product launch for a new AI phone" or "Make a Xiaomi Lei Jun keynote for a flagship laptop"</span>
+        </div>
+      </div>
+    </div>
+    <div id="chat-input-wrap">
+      <textarea id="chat-input" placeholder="Describe your presentation..." rows="2"></textarea>
+      <button id="chat-send" onclick="sendMessage()">&#9654;</button>
+    </div>
+  </section>
+
+  <!-- Right: Preview Panel -->
+  <section id="preview-panel">
+    <div id="preview-frame-wrap">
+      <iframe id="preview-frame" src="about:blank"></iframe>
+    </div>
+    <div id="slide-strip">
+      <div class="strip-label">Slides</div>
+      <div id="slide-thumbs"></div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══ Status Bar ═══ -->
+<footer id="statusbar">
+  <span id="status-left">Ready</span>
+  <span id="status-right">Slide 1 / 1</span>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

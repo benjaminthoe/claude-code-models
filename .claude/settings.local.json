@@ -50,7 +50,9 @@
       "Bash(grep -o \"\"url\"\":\"\"[^\"\"]*\"\" /Users/benjaminthoe/.claude/projects/-Users-benjaminthoe-Library-Mobile-Documents-com-apple-CloudDocs-Claude-Code-Models/a924dbb1-fa2f-4868-841f-1f342489c69d/tool-results/b36klscm9.txt)",
       "Bash(AUTH=\"Authorization: Key 3b4d1846-57ca-4510-a2e4-99bf892f14c6:9ae8f8f61824f431bd7e202fe76d303e6f04fa12a1f1c70860b205c10c5420ec\" for id in d1fbfc8e-b3ba-4258-a067-09a9abca9c1e cd1daccc-ecb4-496c-ace9-95cf59a9a939 e536dde7-7dad-4d47-8c14-d76c3b72dad3 8da27e55-f8f9-4f39-8f37-c9ef400c4301)",
       "Bash(do echo:*)",
-      "Bash(1 done:*)"
+      "Bash(1 done:*)",
+      "Bash(lsof -ti:3848)",
+      "Bash(xargs kill:*)"
     ]
   }
 }

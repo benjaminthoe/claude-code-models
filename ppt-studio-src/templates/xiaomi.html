@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+<style>
+:root{--bg:#0a0a0f;--text:#fff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.3);--orange:#ff6b00;--blue:#2196f3;--font:'Inter',sans-serif;--ease:cubic-bezier(0.16,1,0.3,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+.reveal-viewport{background:var(--bg)!important;font-family:var(--font)!important}
+.reveal{font-family:var(--font)!important;color:var(--text)}
+.reveal .slides{text-align:center}
+.reveal .slides section{padding:60px 80px;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center}
+.reveal h1,.reveal h2{font-family:var(--font)!important;color:var(--text);text-transform:none;letter-spacing:-0.03em;font-weight:800;line-height:1.1}
+.reveal .progress span{background:var(--orange)}
+.reveal .controls{color:rgba(255,255,255,0.12)}
+
+.xi-logo{font-size:48px;font-weight:900;color:var(--orange);margin-bottom:20px;letter-spacing:-0.04em}
+.hero-title{font-size:72px}
+.hero-sub{font-size:24px;color:var(--text2);font-weight:400;margin-top:14px}
+.big-num{font-size:100px;font-weight:900;letter-spacing:-0.05em;line-height:1}
+.orange{color:var(--orange)}
+.spec-row{display:flex;gap:24px;max-width:900px;margin-top:36px;width:100%}
+.spec-card{flex:1;padding:28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;text-align:center}
+.spec-card .num{font-size:36px;font-weight:800}
+.spec-card .label{font-size:13px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
+.bench-row{display:flex;flex-direction:column;gap:16px;max-width:700px;width:100%;margin-top:32px}
+.bench-item{display:flex;align-items:center;gap:16px}
+.bench-label{width:140px;text-align:right;font-size:14px;color:var(--text2);font-weight:600}
+.bench-bar-wrap{flex:1;height:28px;background:rgba(255,255,255,0.06);border-radius:14px;overflow:hidden}
+.bench-bar{height:100%;border-radius:14px;transition:width 1.5s var(--ease)}
+.bench-val{font-size:14px;font-weight:700;width:60px}
+.product-img{max-width:400px;width:70%;border-radius:20px;filter:drop-shadow(0 20px 50px rgba(255,107,0,0.2))}
+.price-tag{font-size:72px;font-weight:900}
+.price-old{font-size:28px;text-decoration:line-through;color:var(--text3);margin-right:16px}
+
+[data-anim]{opacity:0;transform:translateY(28px);transition:opacity 0.9s var(--ease),transform 0.9s var(--ease)}
+[data-anim].a{opacity:1!important;transform:translateY(0)!important}
+[data-anim="scale"]{transform:scale(0.9)}
+[data-anim="scale"].a{transform:scale(1)!important}
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- 1: Xiaomi Title -->
+<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 80%,#1a0a00,var(--bg))">
+  <div class="xi-logo" data-anim>Xiaomi</div>
+  <h1 class="hero-title" data-anim data-delay="0.3">Xiaomi 16 Ultra</h1>
+  <p class="hero-sub" data-anim data-delay="0.6">Redefining what's possible.</p>
+</section>
+
+<!-- 2: Product Hero -->
+<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 60%,#1a0800,var(--bg))">
+  <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4d246ad3-e992-41a5-980f-8ce78ce2cf78.png" class="product-img" data-anim="scale">
+</section>
+
+<!-- 3: Design Statement -->
+<section data-transition="slide">
+  <h2 style="font-size:48px" data-anim>Precision-Engineered.<br><span class="orange">Obsessively Refined.</span></h2>
+  <p style="font-size:18px;color:var(--text2);max-width:550px;margin-top:16px" data-anim data-delay="0.4">Titanium frame. Nano-texture ceramic back. IP69 water resistance.</p>
+</section>
+
+<!-- 4: Camera Spec -->
+<section data-transition="slide">
+  <p style="font-size:16px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em" data-anim>Leica Optics</p>
+  <div class="big-num orange counter" data-anim data-delay="0.2" data-count="200" data-suffix="MP">0</div>
+  <p style="font-size:14px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:8px" data-anim data-delay="0.4">1-inch Type Sensor</p>
+  <p style="font-size:18px;color:var(--text2);max-width:500px;margin-top:16px" data-anim data-delay="0.6">The largest sensor ever in a smartphone. 8K video. Cinematic Leica color science.</p>
+</section>
+
+<!-- 5: Benchmark Bars -->
+<section data-transition="slide">
+  <h2 style="font-size:36px;margin-bottom:8px" data-anim>Performance <span class="orange">Benchmark</span></h2>
+  <p style="font-size:14px;color:var(--text3);margin-bottom:16px" data-anim data-delay="0.2">AnTuTu v11 Score</p>
+  <div class="bench-row" data-anim-bench>
+    <div class="bench-item"><div class="bench-label">Xiaomi 16 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--orange)" data-width="95%"></div></div><div class="bench-val orange">2.8M</div></div>
+    <div class="bench-item"><div class="bench-label">Galaxy S26 Ultra</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--blue)" data-width="82%"></div></div><div class="bench-val" style="color:var(--blue)">2.4M</div></div>
+    <div class="bench-item"><div class="bench-label">iPhone AI Pro</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:0%;background:var(--text3)" data-width="78%"></div></div><div class="bench-val" style="color:var(--text3)">2.3M</div></div>
+  </div>
+</section>
+
+<!-- 6: Spec Grid -->
+<section data-transition="slide">
+  <h2 style="font-size:36px;margin-bottom:8px" data-anim>Specs That Matter</h2>
+  <div class="spec-row" data-anim-stagger>
+    <div class="spec-card"><div class="num orange">6.9"</div><div class="label">2K LTPO OLED</div></div>
+    <div class="spec-card"><div class="num orange">24GB</div><div class="label">LPDDR5X RAM</div></div>
+    <div class="spec-card"><div class="num orange">1TB</div><div class="label">UFS 5.0 Storage</div></div>
+  </div>
+  <div class="spec-row" style="margin-top:16px" data-anim-stagger>
+    <div class="spec-card"><div class="num">SD 8 Gen 4</div><div class="label">3nm Processor</div></div>
+    <div class="spec-card"><div class="num">5500mAh</div><div class="label">Silicon-Carbon</div></div>
+    <div class="spec-card"><div class="num">IP69</div><div class="label">Dust & Water</div></div>
+  </div>
+</section>
+
+<!-- 7: Charging -->
+<section data-transition="slide">
+  <p style="font-size:16px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em" data-anim>Charging Speed</p>
+  <div class="big-num counter" data-anim data-delay="0.2" data-count="120" data-suffix="W">0</div>
+  <p style="font-size:20px;color:var(--text2);margin-top:12px" data-anim data-delay="0.5">0 to 100% in 19 minutes.</p>
+</section>
+
+<!-- 8: AI Features -->
+<section data-transition="slide">
+  <h2 style="font-size:36px" data-anim>AI-Powered <span class="orange">Intelligence</span></h2>
+  <div class="spec-row" style="margin-top:32px" data-anim-stagger>
+    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#129504;</div><h3 style="font-size:16px;font-weight:700">AI Assistant</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">On-device LLM. Private. Instant.</p></div>
+    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#128247;</div><h3 style="font-size:16px;font-weight:700">AI Photography</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">Real-time scene optimization.</p></div>
+    <div class="spec-card"><div style="font-size:32px;margin-bottom:10px">&#127912;</div><h3 style="font-size:16px;font-weight:700">AI Create</h3><p style="font-size:13px;color:var(--text2);margin-top:4px">Generate, edit, transform.</p></div>
+  </div>
+</section>
+
+<!-- 9: Price Reveal -->
+<section data-transition="fade" style="background:radial-gradient(ellipse at 50% 70%,#1a0600,var(--bg))">
+  <h2 style="font-size:32px;margin-bottom:24px" data-anim>Xiaomi 16 Ultra</h2>
+  <div data-anim data-delay="0.5"><span class="price-old">$1,299</span><span class="price-tag orange counter" data-count="999" data-prefix="$">0</span></div>
+  <p style="font-size:16px;color:var(--text3);margin-top:16px" data-anim data-delay="0.8">Starting price. Flagship experience.</p>
+</section>
+
+<!-- 10: Closing -->
+<section data-transition="fade">
+  <h2 style="font-size:48px" data-anim>Make technology<br><span class="orange">accessible to everyone.</span></h2>
+  <p style="font-size:18px;color:var(--text2);margin-top:20px" data-anim data-delay="0.5">— Lei Jun</p>
+</section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+function animateSlide(s){
+  if(!s)return;
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+    s.querySelectorAll('[data-anim]').forEach((el,i)=>{
+      el.style.transitionDelay=(parseFloat(el.dataset.delay||0)+i*0.05)+'s';
+      el.classList.add('a');
+    });
+    s.querySelectorAll('[data-anim-stagger]').forEach(c=>{
+      gsap.from(c.children,{opacity:0,y:24,scale:0.96,duration:0.7,stagger:0.1,ease:'power2.out',delay:0.3});
+    });
+    // Benchmark bars
+    s.querySelectorAll('[data-anim-bench]').forEach(c=>{
+      c.querySelectorAll('.bench-bar').forEach((bar,i)=>{
+        setTimeout(()=>{bar.style.width=bar.dataset.width},400+i*200);
+      });
+    });
+    s.querySelectorAll('[data-count]').forEach(el=>{
+      const t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'';
+      const d=t%1!==0;el.textContent=pre+'0'+suf;
+      const o={v:0};
+      gsap.to(o,{v:t,duration:1.8,ease:'power2.out',delay:0.5,onUpdate:()=>{el.textContent=pre+(d?o.v.toFixed(1):Math.round(o.v))+suf}});
+    });
+  })});
+}
+function resetSlide(s){if(!s)return;s.querySelectorAll('[data-anim]').forEach(el=>{el.classList.remove('a');el.style.transitionDelay='0s'});s.querySelectorAll('.bench-bar').forEach(b=>{b.style.width='0%'})}
+Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'slide',transitionSpeed:'default',width:1280,height:720,margin:0}).then(()=>{
+  setTimeout(()=>animateSlide(Reveal.getCurrentSlide()),400);
+  Reveal.on('slidechanged',e=>{if(e.previousSlide)resetSlide(e.previousSlide);setTimeout(()=>animateSlide(e.currentSlide),80)});
+});
+</script>
+</body></html>

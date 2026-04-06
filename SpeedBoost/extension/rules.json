@@ -4,8 +4,8 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||google-analytics.com",
-      "resourceTypes": ["script", "xmlhttprequest", "image", "ping"]
+      "requestDomains": ["google-analytics.com"],
+      "resourceTypes": ["script", "xmlhttprequest", "image"]
     }
   },
   {
@@ -13,7 +13,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||googletagmanager.com",
+      "requestDomains": ["googletagmanager.com"],
       "resourceTypes": ["script", "xmlhttprequest"]
     }
   },
@@ -22,7 +22,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||doubleclick.net",
+      "requestDomains": ["doubleclick.net"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -31,7 +31,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||googlesyndication.com",
+      "requestDomains": ["googlesyndication.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -40,7 +40,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||connect.facebook.net",
+      "requestDomains": ["connect.facebook.net"],
       "resourceTypes": ["script", "xmlhttprequest"]
     }
   },
@@ -49,8 +49,8 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||pixel.facebook.com",
-      "resourceTypes": ["image", "xmlhttprequest", "ping"]
+      "requestDomains": ["pixel.facebook.com"],
+      "resourceTypes": ["image", "xmlhttprequest"]
     }
   },
   {
@@ -58,8 +58,8 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||ads.twitter.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "ping"]
+      "requestDomains": ["ads.twitter.com"],
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
   {
@@ -67,7 +67,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||amazon-adsystem.com",
+      "requestDomains": ["amazon-adsystem.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -76,7 +76,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||adnxs.com",
+      "requestDomains": ["adnxs.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -85,7 +85,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||criteo.com",
+      "requestDomains": ["criteo.com"],
       "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
@@ -94,7 +94,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||taboola.com",
+      "requestDomains": ["taboola.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -103,7 +103,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||outbrain.com",
+      "requestDomains": ["outbrain.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -112,7 +112,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||hotjar.com",
+      "requestDomains": ["hotjar.com"],
       "resourceTypes": ["script", "xmlhttprequest"]
     }
   },
@@ -121,8 +121,8 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||bat.bing.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "ping"]
+      "requestDomains": ["bat.bing.com"],
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
   {
@@ -130,7 +130,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||cdn.mxpnl.com",
+      "requestDomains": ["cdn.mxpnl.com"],
       "resourceTypes": ["script", "xmlhttprequest"]
     }
   },
@@ -139,7 +139,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||segment.io",
+      "requestDomains": ["segment.io"],
       "resourceTypes": ["script", "xmlhttprequest"]
     }
   },
@@ -148,7 +148,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||quantserve.com",
+      "requestDomains": ["quantserve.com"],
       "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
@@ -157,7 +157,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||scorecardresearch.com",
+      "requestDomains": ["scorecardresearch.com"],
       "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
@@ -166,7 +166,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||popads.net",
+      "requestDomains": ["popads.net"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -175,7 +175,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||exoclick.com",
+      "requestDomains": ["exoclick.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -184,7 +184,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||juicyads.com",
+      "requestDomains": ["juicyads.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -193,7 +193,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||trafficjunky.com",
+      "requestDomains": ["trafficjunky.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -202,7 +202,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||clickadu.com",
+      "requestDomains": ["clickadu.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -211,7 +211,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||propellerads.com",
+      "requestDomains": ["propellerads.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   },
@@ -220,7 +220,7 @@
     "priority": 1,
     "action": { "type": "block" },
     "condition": {
-      "urlFilter": "||adsterra.com",
+      "requestDomains": ["adsterra.com"],
       "resourceTypes": ["script", "sub_frame", "image", "xmlhttprequest"]
     }
   }
