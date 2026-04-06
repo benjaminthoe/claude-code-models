@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ppt-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/tmp/ppt-preview/server.py"],
+      "port": 3847
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+*.app/
+*.icns
+test_tone_agg
+__pycache__/
+*.pyc
+.DS_Store

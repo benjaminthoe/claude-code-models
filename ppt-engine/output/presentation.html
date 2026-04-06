@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future of AI — Cinematic Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   CINEMATIC DESIGN SYSTEM — Surpassing Apple & Xiaomi
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #08080f;
+  --bg2: #0c0c1d;
+  --text: #f0f2f5;
+  --text2: rgba(240,242,245,0.55);
+  --text3: rgba(240,242,245,0.25);
+  --indigo: #6366f1;
+  --violet: #8b5cf6;
+  --cyan: #22d3ee;
+  --rose: #f43f5e;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --g-hero: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --g-ocean: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  --g-fire: linear-gradient(135deg, #f43f5e 0%, #f97316 100%);
+  --g-emerald: linear-gradient(135deg, #10b981 0%, #22d3ee 100%);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ease-cine: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+.reveal-viewport{background:var(--bg)!important;font-family:var(--font)!important}
+.reveal{font-family:var(--font)!important;color:var(--text)}
+.reveal .slides{text-align:left}
+.reveal .slides section{padding:0;height:100%;display:flex!important;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--font)!important;color:var(--text);text-transform:none;letter-spacing:-0.03em;font-weight:800;line-height:1.05;text-align:center}
+.reveal p{color:var(--text2);line-height:1.6}
+.reveal .progress{height:2px}.reveal .progress span{background:var(--g-hero)}
+.reveal .controls{color:rgba(255,255,255,0.15)}
+
+/* ── Particle Canvas (global overlay) ─────────────────── */
+#particles-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.6}
+
+/* ── Gradient Text ────────────────────────────────────── */
+.gt{background:var(--g-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gt-ocean{background:var(--g-ocean);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gt-fire{background:var(--g-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gt-emerald{background:var(--g-emerald);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── Pill Badge ───────────────────────────────────────── */
+.pill{display:inline-flex;align-items:center;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(99,102,241,0.12);color:var(--indigo);border:1px solid rgba(99,102,241,0.2)}
+.pill-cyan{background:rgba(34,211,238,0.1);color:var(--cyan);border-color:rgba(34,211,238,0.2)}
+.pill-rose{background:rgba(244,63,94,0.1);color:var(--rose);border-color:rgba(244,63,94,0.2)}
+.pill-emerald{background:rgba(16,185,129,0.1);color:var(--emerald);border-color:rgba(16,185,129,0.2)}
+
+/* ── Glass Card ───────────────────────────────────────── */
+.glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.06);border-radius:24px}
+.glass-strong{background:rgba(255,255,255,0.08);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)}
+
+/* ── Animated Background Orbs ─────────────────────────── */
+.orbs{position:absolute;inset:0;z-index:0;overflow:hidden}
+.orbs .o{position:absolute;border-radius:50%;filter:blur(120px);animation:orbFloat 25s ease-in-out infinite}
+.orbs .o1{width:700px;height:700px;top:-15%;left:-10%;background:rgba(99,102,241,0.25);animation-duration:30s}
+.orbs .o2{width:500px;height:500px;bottom:-10%;right:-8%;background:rgba(168,85,247,0.2);animation-delay:-12s;animation-direction:reverse}
+.orbs .o3{width:400px;height:400px;top:40%;right:15%;background:rgba(34,211,238,0.12);animation-delay:-8s;animation-duration:35s}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(40px,-50px) scale(1.08)}
+  66%{transform:translate(-30px,30px) scale(0.92)}
+}
+
+/* ── Cinematic Text Reveal (mask clip) ────────────────── */
+.reveal-text{overflow:hidden;display:inline-block}
+.reveal-text .char{display:inline-block;opacity:0;transform:translateY(110%)}
+
+/* ── Ken Burns Effect ─────────────────────────────────── */
+.ken-burns{animation:kenBurns 25s ease-in-out infinite alternate}
+@keyframes kenBurns{
+  0%{transform:scale(1) translate(0,0)}
+  100%{transform:scale(1.15) translate(-2%,-1.5%)}
+}
+
+/* ── 3D Product Float ─────────────────────────────────── */
+.product-scene{perspective:1200px;perspective-origin:50% 50%}
+.product-float{
+  transform:rotateY(-8deg) rotateX(4deg) translateZ(0);
+  transition:transform 1.5s var(--ease-cine);
+  filter:drop-shadow(0 40px 80px rgba(0,0,0,0.6));
+  -webkit-box-reflect:below 8px linear-gradient(transparent,transparent 70%,rgba(255,255,255,0.08));
+}
+.product-float:hover{transform:rotateY(2deg) rotateX(-1deg) translateZ(20px) scale(1.02)}
+
+/* ── Neon Glow ────────────────────────────────────────── */
+.neon-glow{box-shadow:0 0 30px rgba(99,102,241,0.3),0 0 60px rgba(99,102,241,0.15),0 0 120px rgba(99,102,241,0.05)}
+.neon-glow-cyan{box-shadow:0 0 30px rgba(34,211,238,0.3),0 0 60px rgba(34,211,238,0.15),0 0 120px rgba(34,211,238,0.05)}
+@keyframes pulseGlow{
+  0%,100%{filter:drop-shadow(0 0 20px rgba(99,102,241,0.4))}
+  50%{filter:drop-shadow(0 0 40px rgba(99,102,241,0.7)) drop-shadow(0 0 80px rgba(99,102,241,0.3))}
+}
+
+/* ── Clip-Path Reveal Transitions ─────────────────────── */
+.clip-iris{clip-path:circle(0% at 50% 50%);transition:clip-path 1.2s var(--ease-cine)}
+.clip-iris.active{clip-path:circle(150% at 50% 50%)}
+.clip-wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1s var(--ease-cine)}
+.clip-wipe.active{clip-path:inset(0 0 0 0)}
+.clip-diamond{clip-path:polygon(50% 50%,50% 50%,50% 50%,50% 50%);transition:clip-path 1s var(--ease-cine)}
+.clip-diamond.active{clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)}
+
+/* ── 3D Tilt Card ─────────────────────────────────────── */
+.tilt-card{
+  transform-style:preserve-3d;
+  transition:transform 0.6s var(--ease-out),box-shadow 0.6s var(--ease-out);
+}
+.tilt-card:hover{
+  transform:perspective(800px) rotateY(-4deg) rotateX(3deg) translateZ(10px);
+  box-shadow:20px 20px 60px rgba(0,0,0,0.4),-20px -20px 60px rgba(99,102,241,0.03);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SLIDE LAYOUTS
+   ═══════════════════════════════════════════════════════ */
+
+/* ── TITLE HERO ───────────────────────────────────────── */
+.s-title{position:relative;text-align:center}
+.s-title .inner{position:relative;z-index:1;padding:0 80px;max-width:1100px}
+.s-title h1{font-size:76px;margin-bottom:20px}
+.s-title .sub{font-size:24px;color:var(--text2);max-width:650px;margin:0 auto;font-weight:400}
+.s-title .byline{margin-top:48px;font-size:13px;color:var(--text3);font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── BIG STATEMENT ────────────────────────────────────── */
+.s-statement{text-align:center;position:relative}
+.s-statement h2{font-size:60px;max-width:900px;padding:0 60px}
+
+/* ── STATS ────────────────────────────────────────────── */
+.s-stats{text-align:center}
+.s-stats h2{font-size:38px;margin-bottom:48px}
+.stat-row{display:flex;gap:28px;max-width:1000px}
+.stat-box{flex:1;padding:44px 24px;text-align:center}
+.stat-num{font-size:68px;font-weight:900;line-height:1;letter-spacing:-0.04em;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.stat-label{font-size:13px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.08em}
+.stat-sub{font-size:12px;color:var(--text3);margin-top:4px}
+
+/* ── SECTION DIVIDER ──────────────────────────────────── */
+.s-section{text-align:center;position:relative}
+.s-section .big-num{font-size:180px;font-weight:900;opacity:0.04;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);line-height:1}
+.s-section h2{font-size:60px;position:relative;z-index:1}
+
+/* ── CONTENT + IMAGE ──────────────────────────────────── */
+.s-split{flex-direction:row!important;padding:0 80px!important;gap:60px}
+.s-split .txt{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:left}
+.s-split .txt h2{font-size:44px;text-align:left;margin-bottom:16px}
+.s-split .txt p{font-size:19px;line-height:1.7;max-width:480px}
+.s-split .vis{flex:1;display:flex;align-items:center;justify-content:center}
+.s-split .vis img{width:100%;max-height:480px;object-fit:cover;border-radius:20px}
+
+/* ── PRODUCT SHOWCASE ─────────────────────────────────── */
+.s-product{text-align:center;position:relative}
+.s-product h2{font-size:44px;margin-bottom:12px;position:relative;z-index:1}
+.s-product .tagline{font-size:20px;color:var(--text2);margin-bottom:40px;position:relative;z-index:1}
+.s-product .device{max-width:600px;width:80%;border-radius:16px;position:relative;z-index:1}
+
+/* ── FEATURE GRID ─────────────────────────────────────── */
+.s-features{text-align:center}
+.s-features h2{font-size:38px;margin-bottom:44px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;padding:0 40px}
+.feat-card{padding:32px 24px;text-align:left;transition:transform 0.5s var(--ease-cine),box-shadow 0.5s var(--ease-cine)}
+.feat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px}
+.feat-card h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.feat-card p{font-size:14px;color:var(--text2);line-height:1.6}
+
+/* ── QUOTE ────────────────────────────────────────────── */
+.s-quote{text-align:center;position:relative}
+.s-quote .qmark{font-size:240px;opacity:0.04;position:absolute;top:12%;left:50%;transform:translateX(-50%);font-family:Georgia,serif;line-height:0.5}
+.s-quote blockquote{font-size:34px;font-weight:500;font-style:italic;line-height:1.4;max-width:780px;color:var(--text);position:relative;z-index:1;padding:0 60px}
+.s-quote .attr{margin-top:28px;font-size:17px;color:var(--text2);font-style:normal;position:relative;z-index:1}
+
+/* ── COMPARISON ───────────────────────────────────────── */
+.s-compare{text-align:center}
+.s-compare h2{font-size:38px;margin-bottom:36px}
+.cmp-row{display:flex;gap:0;max-width:960px;width:100%;align-items:stretch;padding:0 40px}
+.cmp-card{flex:1;padding:36px 28px;text-align:left}
+.cmp-card h3{font-size:24px;font-weight:700;margin-bottom:18px}
+.cmp-card ul{list-style:none;padding:0}
+.cmp-card ul li{padding:10px 0;font-size:17px;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:12px}
+.cmp-card ul li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cmp-card.old li::before{background:var(--rose)}
+.cmp-card.new li::before{background:var(--emerald)}
+.cmp-vs{display:flex;align-items:center;justify-content:center;padding:0 20px;font-size:28px;font-weight:900;color:var(--text3)}
+
+/* ── TIMELINE ─────────────────────────────────────────── */
+.s-timeline{text-align:center}
+.s-timeline h2{font-size:38px;margin-bottom:52px}
+.tl-row{display:flex;max-width:1000px;width:100%;position:relative;padding:0 40px}
+.tl-row::before{content:'';position:absolute;top:28px;left:60px;right:60px;height:2px;background:rgba(255,255,255,0.06)}
+.tl-item{flex:1;text-align:center;position:relative;padding-top:56px}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--g-hero);position:absolute;top:21px;left:50%;transform:translateX(-50%);box-shadow:0 0 20px rgba(99,102,241,0.5)}
+.tl-year{font-size:12px;font-weight:700;color:var(--indigo);letter-spacing:0.08em;margin-bottom:6px}
+.tl-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--text2);line-height:1.5;padding:0 8px}
+
+/* ── FULL IMAGE ───────────────────────────────────────── */
+.s-fullimg{padding:0!important;position:relative;align-items:flex-end!important;justify-content:flex-end!important}
+.s-fullimg .bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.s-fullimg .bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,15,0.95) 0%,rgba(8,8,15,0.4) 50%,transparent 100%)}
+.s-fullimg .overlay{position:relative;z-index:1;padding:60px 80px;max-width:700px;text-align:left;align-self:flex-start}
+.s-fullimg h2{font-size:48px;text-align:left;margin-bottom:14px}
+.s-fullimg p{font-size:19px}
+
+/* ── CLOSING ──────────────────────────────────────────── */
+.s-closing{text-align:center;position:relative}
+.s-closing h2{font-size:60px;margin-bottom:16px;position:relative;z-index:1}
+.s-closing .sub{font-size:20px;color:var(--text2);margin-bottom:36px;position:relative;z-index:1}
+.s-closing .cta{display:inline-flex;align-items:center;gap:10px;padding:16px 44px;border-radius:100px;font-size:17px;font-weight:700;background:var(--g-hero);color:#fff;border:none;text-decoration:none;box-shadow:0 4px 30px rgba(99,102,241,0.4);transition:all 0.4s var(--ease-cine);position:relative;z-index:1;cursor:pointer}
+.s-closing .cta:hover{transform:translateY(-3px);box-shadow:0 8px 50px rgba(99,102,241,0.6)}
+
+/* ── Slide counter ────────────────────────────────────── */
+.counter{position:fixed;bottom:20px;right:36px;z-index:100;font-size:12px;font-weight:600;color:var(--text3);font-family:var(--font);font-variant-numeric:tabular-nums}
+
+/* ── Auto-Animate overrides ───────────────────────────── */
+.reveal[data-auto-animate-duration="1.2s"] section{transition-duration:1.2s!important}
+
+/* ── Print ────────────────────────────────────────────── */
+@media print{
+  #particles-canvas,.orbs,.counter,.reveal .controls,.reveal .progress{display:none}
+  .reveal .slides section{page-break-after:always}
+}
+</style>
+</head>
+
+<body>
+<!-- Global Particle Canvas -->
+<canvas id="particles-canvas"></canvas>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ══════════════════════════════════════════════════════
+     1. TITLE — Cinematic text reveal + particles
+     ══════════════════════════════════════════════════════ -->
+<section class="s-title" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
+  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+  <div class="inner">
+    <div class="pill" data-anim="fade">AI 2026</div>
+    <h1 style="margin-top:24px" data-id="main-title">
+      <span data-anim="chars">The Future of</span><br>
+      <span class="gt" data-anim="chars" data-anim-delay="0.4">Artificial Intelligence</span>
+    </h1>
+    <p class="sub" data-anim="fade" data-anim-delay="0.8">How AI is rewriting the rules of business, creativity, and human potential</p>
+    <p class="byline" data-anim="fade" data-anim-delay="1.0">Presented by Benjamin Thoe</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     2. STATEMENT — Auto-animate morph from title
+     ══════════════════════════════════════════════════════ -->
+<section class="s-statement" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.2">
+  <div class="orbs"><div class="o o1"></div><div class="o o2"></div></div>
+  <div style="position:relative;z-index:1;max-width:1000px;padding:0 60px">
+    <div class="pill pill-cyan" data-anim="fade">The Big Picture</div>
+    <h2 data-id="main-title" style="margin-top:28px;font-size:58px">
+      We don't just <span class="gt-ocean">adopt AI</span>.<br>
+      We <em>become</em> it.
+    </h2>
+    <p style="margin-top:20px;font-size:20px;max-width:600px;text-align:center" data-anim="fade" data-anim-delay="0.4">
+      Every industry. Every workflow. Every decision.<br>AI isn't a tool anymore — it's the operating system of the future.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     3. STATS — Spring physics counters
+     ══════════════════════════════════════════════════════ -->
+<section class="s-stats" data-transition="slide">
+  <h2 data-anim="fade">The Numbers Speak <span class="gt">Louder</span></h2>
+  <div class="stat-row" data-anim="stagger">
+    <div class="stat-box glass-strong">
+      <div class="stat-num gt" data-count="97" data-suffix="%">0</div>
+      <div class="stat-label">of Fortune 500</div>
+      <div class="stat-sub">now use AI in core operations</div>
+    </div>
+    <div class="stat-box glass-strong">
+      <div class="stat-num gt-ocean" data-count="4.8" data-prefix="$" data-suffix="T">0</div>
+      <div class="stat-label">Market Value</div>
+      <div class="stat-sub">projected AI economy by 2030</div>
+    </div>
+    <div class="stat-box glass-strong">
+      <div class="stat-num gt-fire" data-count="10" data-suffix="x">0</div>
+      <div class="stat-label">Productivity</div>
+      <div class="stat-sub">gain for early AI adopters</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     4. SECTION — Iris reveal
+     ══════════════════════════════════════════════════════ -->
+<section class="s-section" data-transition="fade">
+  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+  <div class="big-num" data-anim="fade">01</div>
+  <div style="position:relative;z-index:1">
+    <div class="pill pill-emerald" data-anim="fade">Chapter One</div>
+    <h2 style="margin-top:24px" data-anim="chars">
+      <span class="gt-emerald">Intelligence</span><br>Reimagined
+    </h2>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     5. CONTENT + REALISTIC PERSON — Ken Burns + parallax
+     ══════════════════════════════════════════════════════ -->
+<section class="s-split" data-transition="slide">
+  <div class="txt">
+    <div class="pill" data-anim="fade">Core Insight</div>
+    <h2 data-anim="chars" style="margin-top:20px">From Data to<br><span class="gt">Decisions</span></h2>
+    <div style="width:80px;height:4px;border-radius:2px;background:var(--g-hero);margin:20px 0" data-anim="wipe"></div>
+    <p data-anim="fade" data-anim-delay="0.5">Modern AI doesn't just analyze — it <strong style="color:var(--text)">understands context</strong>, anticipates needs, and delivers insight at the speed of thought.</p>
+    <p style="margin-top:14px" data-anim="fade" data-anim-delay="0.7">The gap between information and action has collapsed. What took weeks now happens in seconds.</p>
+  </div>
+  <div class="vis product-scene" data-anim="scale">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/1a509092-e3bf-4b38-8db9-e315c212d36a.png" alt="Professional" class="product-float ken-burns" style="box-shadow:0 30px 60px rgba(0,0,0,0.5)">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     6. PRODUCT SHOWCASE — 3D floating laptop with glow
+     ══════════════════════════════════════════════════════ -->
+<section class="s-product" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.0">
+  <div class="orbs"><div class="o o1"></div><div class="o o3"></div></div>
+  <div class="pill pill-cyan" data-anim="fade" style="position:relative;z-index:1">Hardware</div>
+  <h2 data-anim="chars" style="margin-top:20px" data-id="product-title">Built for the<br><span class="gt-ocean">AI Era</span></h2>
+  <p class="tagline" data-anim="fade" data-anim-delay="0.5">Power meets precision. Intelligence meets design.</p>
+  <div class="product-scene" data-anim="float3d">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/70df524d-981c-4090-be3a-fbc6ee222e61.png" alt="MacBook" class="device product-float" data-id="product-img" style="animation:pulseGlow 4s ease-in-out infinite">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     7. PRODUCT DETAIL — Auto-animate morph from showcase
+     ══════════════════════════════════════════════════════ -->
+<section class="s-split" data-auto-animate data-auto-animate-easing="cubic-bezier(0.16,1,0.3,1)" data-auto-animate-duration="1.0">
+  <div class="txt">
+    <h2 data-id="product-title" style="font-size:36px;text-align:left">Built for the<br><span class="gt-ocean">AI Era</span></h2>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px">
+      <div style="display:flex;gap:14px;align-items:flex-start" data-anim="fade" data-anim-delay="0.3">
+        <span class="gt-ocean" style="font-size:28px;font-weight:900;line-height:1">1</span>
+        <div><strong style="color:var(--text);font-size:17px">Neural Engine</strong><p style="font-size:15px;margin-top:2px">40 TOPS of dedicated ML processing power</p></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start" data-anim="fade" data-anim-delay="0.5">
+        <span class="gt-ocean" style="font-size:28px;font-weight:900;line-height:1">2</span>
+        <div><strong style="color:var(--text);font-size:17px">Unified Memory</strong><p style="font-size:15px;margin-top:2px">192GB shared across CPU, GPU, and NPU</p></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start" data-anim="fade" data-anim-delay="0.7">
+        <span class="gt-ocean" style="font-size:28px;font-weight:900;line-height:1">3</span>
+        <div><strong style="color:var(--text);font-size:17px">All-Day Battery</strong><p style="font-size:15px;margin-top:2px">22 hours of continuous AI workloads</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="vis product-scene">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/70df524d-981c-4090-be3a-fbc6ee222e61.png" alt="MacBook" class="device product-float" data-id="product-img" style="max-height:400px">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     8. FEATURE GRID — 3D tilt cards with staggered entrance
+     ══════════════════════════════════════════════════════ -->
+<section class="s-features" data-transition="slide">
+  <h2 data-anim="fade">What Makes AI <span class="gt">Unstoppable</span></h2>
+  <div class="feat-grid" data-anim="stagger">
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(99,102,241,0.12);color:var(--indigo)">&#9889;</div>
+      <h3>Speed</h3>
+      <p>Process millions of data points in milliseconds. Real-time decisions at infinite scale.</p>
+    </div>
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(34,211,238,0.12);color:var(--cyan)">&#127919;</div>
+      <h3>Precision</h3>
+      <p>99.9% accuracy across pattern recognition, language understanding, and prediction.</p>
+    </div>
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(168,85,247,0.12);color:var(--violet)">&#128260;</div>
+      <h3>Adaptability</h3>
+      <p>Self-improving systems that evolve with every interaction and context shift.</p>
+    </div>
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(16,185,129,0.12);color:var(--emerald)">&#127760;</div>
+      <h3>Scale</h3>
+      <p>From personal assistant to enterprise brain — AI scales with your ambition.</p>
+    </div>
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(244,63,94,0.12);color:var(--rose)">&#127912;</div>
+      <h3>Creativity</h3>
+      <p>Generate art, music, code, and ideas that push the boundaries of imagination.</p>
+    </div>
+    <div class="feat-card glass tilt-card">
+      <div class="feat-icon" style="background:rgba(245,158,11,0.12);color:var(--amber)">&#128737;</div>
+      <h3>Safety</h3>
+      <p>Built-in guardrails and ethical frameworks. Responsible by design.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     9. QUOTE — Diagonal wipe reveal
+     ══════════════════════════════════════════════════════ -->
+<section class="s-quote" data-transition="fade">
+  <div class="orbs"><div class="o o1"></div><div class="o o3"></div></div>
+  <div class="qmark">"</div>
+  <blockquote data-anim="chars">The best way to predict the future is to invent it — and AI gives us the tools to do exactly that.</blockquote>
+  <div class="attr" data-anim="fade" data-anim-delay="1.0">
+    <strong style="color:var(--text)">Alan Kay</strong> — Computer Science Pioneer
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     10. COMPARISON — Split reveal
+     ══════════════════════════════════════════════════════ -->
+<section class="s-compare" data-transition="slide">
+  <h2 data-anim="fade">Before & After <span class="gt">AI</span></h2>
+  <div class="cmp-row">
+    <div class="cmp-card glass old" data-anim="slide-left">
+      <h3 class="gt-fire">Yesterday</h3>
+      <ul><li>Manual data entry</li><li>Week-long analysis cycles</li><li>One-size-fits-all solutions</li><li>Reactive decision making</li><li>Limited by human bandwidth</li></ul>
+    </div>
+    <div class="cmp-vs" data-anim="fade" data-anim-delay="0.5">&#8594;</div>
+    <div class="cmp-card glass new" data-anim="slide-right">
+      <h3 class="gt-emerald">Tomorrow</h3>
+      <ul><li>Automated ingestion</li><li>Real-time insights</li><li>Hyper-personalization</li><li>Predictive intelligence</li><li>Infinite scale</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     11. PHONE SHOWCASE — 3D float with neon glow
+     ══════════════════════════════════════════════════════ -->
+<section class="s-product" data-transition="fade">
+  <div class="orbs"><div class="o o2"></div><div class="o o3"></div></div>
+  <div class="pill pill-rose" data-anim="fade" style="position:relative;z-index:1">Mobile AI</div>
+  <h2 data-anim="chars" style="margin-top:20px">Intelligence<br><span class="gt-fire">In Your Pocket</span></h2>
+  <p class="tagline" data-anim="fade" data-anim-delay="0.5">On-device AI. Private. Instant. Always ready.</p>
+  <div class="product-scene" data-anim="float3d">
+    <img src="https://d3u0tzju9qaucj.cloudfront.net/9db28a1f-1874-4596-ac99-5e85470746d5/4d246ad3-e992-41a5-980f-8ce78ce2cf78.png" alt="Smartphone" class="device product-float neon-glow-cyan" style="max-width:280px;border-radius:24px">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     12. TIMELINE — Staggered dots
+     ══════════════════════════════════════════════════════ -->
+<section class="s-timeline" data-transition="slide">
+  <h2 data-anim="fade">The AI <span class="gt">Evolution</span></h2>
+  <div class="tl-row" data-anim="stagger">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2020</div><div class="tl-name">GPT-3 Era</div><div class="tl-desc">Language models prove general intelligence is achievable</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2023</div><div class="tl-name">Multimodal AI</div><div class="tl-desc">Vision, speech, and text unified in single models</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2025</div><div class="tl-name">Agentic AI</div><div class="tl-desc">AI systems that plan, execute, and learn autonomously</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2027</div><div class="tl-name">AI Everywhere</div><div class="tl-desc">Embedded intelligence in every device and workflow</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     13. FULL IMAGE — Ken Burns + glass overlay
+     ══════════════════════════════════════════════════════ -->
+<section class="s-fullimg" data-transition="fade">
+  <div class="bg ken-burns" style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80&fit=crop&auto=format')"></div>
+  <div class="overlay">
+    <div class="pill" data-anim="fade">Our Team</div>
+    <h2 data-anim="chars" style="margin-top:20px">Built by Humans.<br><span class="gt">Powered by AI.</span></h2>
+    <p data-anim="fade" data-anim-delay="0.6">The best teams don't choose between human insight and machine intelligence — they amplify both.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     14. CLOSING — Particle burst + gradient morph
+     ══════════════════════════════════════════════════════ -->
+<section class="s-closing" data-transition="fade">
+  <div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+  <h2 data-anim="chars">The Future Doesn't Wait.<br><span class="gt">Neither Should You.</span></h2>
+  <p class="sub" data-anim="fade" data-anim-delay="0.6">Start your AI transformation today.</p>
+  <a class="cta" href="#" data-anim="fade" data-anim-delay="0.8">Let's Build Together &#8594;</a>
+  <p class="byline" data-anim="fade" data-anim-delay="1.0" style="margin-top:44px">benjamin@example.com &middot; @benjaminthoe</p>
+</section>
+
+</div>
+</div>
+
+<div class="counter"><span id="cur">1</span> / <span id="tot"></span></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   CINEMATIC ANIMATION ENGINE
+   ═══════════════════════════════════════════════════════ */
+
+// ── 1. Particle System ─────────────────────────────────
+(function initParticles(){
+  const c = document.getElementById('particles-canvas');
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){ W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  const particles = Array.from({length:50}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    r: Math.random()*2+0.5,
+    dx: (Math.random()-0.5)*0.3,
+    dy: (Math.random()-0.5)*0.3,
+    o: Math.random()*0.4+0.1
+  }));
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(147,130,255,${p.o})`;
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if(p.x<0||p.x>W) p.dx*=-1;
+      if(p.y<0||p.y>H) p.dy*=-1;
+    });
+    // Subtle connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<150){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle=`rgba(99,102,241,${0.06*(1-dist/150)})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── 2. Character-by-Character Text Split ───────────────
+function splitChars(el){
+  const text = el.textContent;
+  el.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<text.length;i++){
+    const span = document.createElement('span');
+    span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+    span.style.cssText = 'display:inline-block;opacity:0;transform:translateY(110%)';
+    frag.appendChild(span);
+  }
+  el.appendChild(frag);
+  return el.querySelectorAll('span');
+}
+
+// ── 3. Slide Animation Engine ──────────────────────────
+function animateSlide(slide){
+  if(!slide) return;
+
+  // Character reveal — skip gradient text (use wipe), split plain text
+  slide.querySelectorAll('[data-anim="chars"]').forEach(el => {
+    const delay = parseFloat(el.dataset.animDelay||0);
+    // Gradient text: use clip-path wipe reveal (preserves gradient)
+    if(el.classList.contains('gt')||el.classList.contains('gt-ocean')||el.classList.contains('gt-fire')||el.classList.contains('gt-emerald')){
+      gsap.fromTo(el,
+        {clipPath:'inset(0 100% 0 0)', opacity:1},
+        {clipPath:'inset(0 0% 0 0)', duration:1.0, ease:'power3.inOut', delay:0.3+delay, overwrite:true}
+      );
+      return;
+    }
+    // Plain text: character-by-character reveal
+    if(el.dataset._split) { // Re-animate existing splits
+      gsap.fromTo(el.querySelectorAll('span'),
+        {opacity:0, y:60, rotateX:-80},
+        {opacity:1, y:0, rotateX:0, duration:0.65, stagger:0.025, ease:'back.out(1.2)', delay:0.2+delay, overwrite:true}
+      );
+      return;
+    }
+    const chars = splitChars(el);
+    el.dataset._split = '1';
+    gsap.fromTo(chars,
+      {opacity:0, y:60, rotateX:-80},
+      {opacity:1, y:0, rotateX:0, duration:0.65, stagger:0.025, ease:'back.out(1.2)', delay:0.2+delay, overwrite:true}
+    );
+  });
+
+  // Fade animations
+  slide.querySelectorAll('[data-anim="fade"]').forEach(el => {
+    const delay = parseFloat(el.dataset.animDelay||0);
+    gsap.fromTo(el,
+      {opacity:0, y:24},
+      {opacity:1, y:0, duration:0.8, ease:'power3.out', delay:0.15+delay, overwrite:true}
+    );
+  });
+
+  // Scale animations (for images)
+  slide.querySelectorAll('[data-anim="scale"]').forEach(el => {
+    gsap.fromTo(el,
+      {opacity:0, scale:0.88},
+      {opacity:1, scale:1, duration:1.2, ease:'power2.out', delay:0.3, overwrite:true}
+    );
+  });
+
+  // 3D float entrance
+  slide.querySelectorAll('[data-anim="float3d"]').forEach(el => {
+    gsap.fromTo(el,
+      {opacity:0, y:60, rotateX:15, scale:0.9},
+      {opacity:1, y:0, rotateX:0, scale:1, duration:1.4, ease:'power2.out', delay:0.5, overwrite:true}
+    );
+  });
+
+  // Wipe divider
+  slide.querySelectorAll('[data-anim="wipe"]').forEach(el => {
+    gsap.fromTo(el,
+      {scaleX:0, transformOrigin:'left center'},
+      {scaleX:1, duration:0.8, ease:'power2.inOut', delay:0.4, overwrite:true}
+    );
+  });
+
+  // Slide from left
+  slide.querySelectorAll('[data-anim="slide-left"]').forEach(el => {
+    gsap.fromTo(el,
+      {opacity:0, x:-60},
+      {opacity:1, x:0, duration:0.9, ease:'power3.out', delay:0.2, overwrite:true}
+    );
+  });
+
+  // Slide from right
+  slide.querySelectorAll('[data-anim="slide-right"]').forEach(el => {
+    gsap.fromTo(el,
+      {opacity:0, x:60},
+      {opacity:1, x:0, duration:0.9, ease:'power3.out', delay:0.2, overwrite:true}
+    );
+  });
+
+  // Stagger children
+  slide.querySelectorAll('[data-anim="stagger"]').forEach(container => {
+    const kids = Array.from(container.children);
+    gsap.fromTo(kids,
+      {opacity:0, y:30, scale:0.96},
+      {opacity:1, y:0, scale:1, duration:0.7, stagger:0.08, ease:'power2.out', delay:0.35, overwrite:true}
+    );
+  });
+
+  // Spring physics counter animation
+  slide.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = target % 1 !== 0;
+    el.textContent = prefix + '0' + suffix;
+    const obj = {v:0};
+    // Spring overshoot: go 8% past target then settle
+    gsap.to(obj, {
+      v: target * 1.08, duration: 1.2, ease:'power2.out', delay:0.5,
+      onUpdate:()=>{ el.textContent = prefix + (isDecimal ? obj.v.toFixed(1) : Math.round(obj.v)) + suffix; }
+    });
+    gsap.to(obj, {
+      v: target, duration: 0.6, ease:'elastic.out(1,0.4)', delay:1.7,
+      onUpdate:()=>{ el.textContent = prefix + (isDecimal ? obj.v.toFixed(1) : Math.round(obj.v)) + suffix; }
+    });
+  });
+}
+
+// ── 4. Initialize Reveal.js ────────────────────────────
+Reveal.initialize({
+  hash: true,
+  controls: true,
+  controlsLayout: 'edges',
+  progress: true,
+  center: false,
+  transition: 'slide',
+  transitionSpeed: 'default',
+  backgroundTransition: 'fade',
+  autoAnimateEasing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+  autoAnimateDuration: 1.0,
+  autoAnimateUnmatched: true,
+  width: 1280,
+  height: 720,
+  margin: 0,
+  minScale: 0.2,
+  maxScale: 2.0,
+  slideNumber: false,
+  keyboard: true,
+  touch: true,
+  mouseWheel: false,
+  hideInactiveCursor: true,
+  hideCursorTime: 2000,
+}).then(() => {
+  document.getElementById('tot').textContent = Reveal.getTotalSlides();
+
+  // Animate first slide
+  setTimeout(() => animateSlide(Reveal.getCurrentSlide()), 100);
+
+  // Animate on slide change
+  Reveal.on('slidechanged', e => {
+    document.getElementById('cur').textContent = e.indexh + 1;
+    setTimeout(() => animateSlide(e.currentSlide), 100);
+  });
+
+  // Re-animate on auto-animate
+  Reveal.on('autoanimate', e => {
+    setTimeout(() => animateSlide(e.currentSlide), 200);
+  });
+});
+
+// ── 5. Keyboard ────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if((e.key==='f'||e.key==='F')&&!e.ctrlKey&&!e.metaKey){
+    document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(()=>{});
+  }
+});
+</script>
+</body>
+</html>
