@@ -51,10 +51,23 @@
 .price-tag{font-size:72px;font-weight:900;position:relative;z-index:2}
 .price-old{font-size:26px;text-decoration:line-through;color:rgba(255,255,255,0.25);margin-right:14px}
 
-[data-a]{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
-[data-a].v{opacity:1;transform:translateY(0)}
-[data-a="scale"]{transform:scale(0.9);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
-[data-a="scale"].v{opacity:1;transform:scale(1)}
+/* ── CSS Keyframe Animations ──────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
+.present [data-a]{animation:fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) both}
+.present [data-a="scale"]{animation:scaleIn 1.2s cubic-bezier(0.16,1,0.3,1) both}
+.present [data-a][data-d="0.2"]{animation-delay:0.2s}
+.present [data-a][data-d="0.3"]{animation-delay:0.3s}
+.present [data-a][data-d="0.4"]{animation-delay:0.4s}
+.present [data-a][data-d="0.5"]{animation-delay:0.5s}
+.present [data-a][data-d="0.6"]{animation-delay:0.6s}
+.present [data-a][data-d="0.8"]{animation-delay:0.8s}
+.present [data-a-stagger]>*{animation:fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both}
+.present [data-a-stagger]>:nth-child(1){animation-delay:0.3s}
+.present [data-a-stagger]>:nth-child(2){animation-delay:0.42s}
+.present [data-a-stagger]>:nth-child(3){animation-delay:0.54s}
+.present [data-a-stagger]>:nth-child(4){animation-delay:0.66s}
+section:not(.present) [data-a],section:not(.present) [data-a-stagger]>*{opacity:0;animation:none}
 </style>
 </head>
 <body>
@@ -156,38 +169,31 @@
 <script>
 function anim(s){
   if(!s)return;
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    var els=s.querySelectorAll('[data-a]');
-    for(var i=0;i<els.length;i++){els[i].style.transitionDelay=(parseFloat(els[i].dataset.d||0)+i*0.04)+'s';els[i].classList.add('v')}
-    var stg=s.querySelectorAll('[data-a-stagger]');
-    for(var j=0;j<stg.length;j++){gsap.from(stg[j].children,{opacity:0,y:24,scale:0.96,duration:0.8,stagger:0.1,ease:'power2.out',delay:0.3})}
-    // Benchmark bars
-    var bench=s.querySelectorAll('[data-a-bench]');
-    for(var b=0;b<bench.length;b++){
-      var bars=bench[b].querySelectorAll('.bench-bar');
-      for(var bi=0;bi<bars.length;bi++){(function(bar,delay){setTimeout(function(){bar.style.width=bar.dataset.width},delay)})(bars[bi],500+bi*250)}
-    }
-    // Counters
-    var ctrs=s.querySelectorAll('[data-count]');
-    for(var k=0;k<ctrs.length;k++){
-      (function(el){
-        var t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'',dec=t%1!==0;
-        el.textContent=pre+'0'+suf;
-        var o={v:0};
-        gsap.to(o,{v:t,duration:2,ease:'power2.out',delay:0.5,onUpdate:function(){el.textContent=pre+(dec?o.v.toFixed(1):Math.round(o.v))+suf}});
-      })(ctrs[k]);
-    }
-  })});
-}
-function reset(s){
-  if(!s)return;
-  var els=s.querySelectorAll('[data-a]');for(var i=0;i<els.length;i++){els[i].classList.remove('v');els[i].style.transitionDelay='0s'}
-  var bars=s.querySelectorAll('.bench-bar');for(var j=0;j<bars.length;j++){bars[j].style.width='0%'}
+  // Counters via setInterval (rAF-independent)
+  var ctrs=s.querySelectorAll('[data-count]');
+  for(var k=0;k<ctrs.length;k++){
+    (function(el){
+      var t=parseFloat(el.dataset.count),suf=el.dataset.suffix||'',pre=el.dataset.prefix||'',dec=t%1!==0;
+      el.textContent=pre+'0'+suf;
+      var start=Date.now(),dur=2000;
+      var iv=setInterval(function(){
+        var p=Math.min((Date.now()-start)/dur,1);
+        var ease=1-Math.pow(1-p,3);
+        el.textContent=pre+(dec?(t*ease).toFixed(1):Math.round(t*ease))+suf;
+        if(p>=1)clearInterval(iv);
+      },30);
+    })(ctrs[k]);
+  }
+  // Benchmark bars
+  var bars=s.querySelectorAll('.bench-bar');
+  for(var b=0;b<bars.length;b++){
+    (function(bar,d){setTimeout(function(){bar.style.width=bar.dataset.width},d)})(bars[b],600+b*250);
+  }
 }
 Reveal.initialize({hash:true,controls:true,controlsLayout:'edges',progress:true,center:false,transition:'slide',transitionSpeed:'default',width:1280,height:720,margin:0,autoAnimateEasing:'cubic-bezier(0.16,1,0.3,1)',autoAnimateDuration:1.0}).then(function(){
-  setTimeout(function(){anim(Reveal.getCurrentSlide())},400);
-  Reveal.on('slidechanged',function(e){if(e.previousSlide)reset(e.previousSlide);setTimeout(function(){anim(e.currentSlide)},80)});
-  Reveal.on('autoanimate',function(e){setTimeout(function(){anim(e.currentSlide)},150)});
+  setTimeout(function(){anim(Reveal.getCurrentSlide())},600);
+  Reveal.on('slidechanged',function(e){setTimeout(function(){anim(e.currentSlide)},200)});
+  Reveal.on('autoanimate',function(e){setTimeout(function(){anim(e.currentSlide)},300)});
 });
 </script>
 </body></html>
