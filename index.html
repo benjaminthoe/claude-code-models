@@ -426,8 +426,10 @@
             border-radius: var(--radius);
             overflow: hidden;
             transition: all var(--transition);
-            cursor: default;
+            cursor: auto;
             box-shadow: var(--shadow-sm);
+            user-select: text;
+            -webkit-user-select: text;
             border: 0.5px solid var(--border);
         }
 
@@ -783,72 +785,71 @@
             <div class="projects-header">
                 <p class="section-label reveal">Selected Work</p>
                 <h2 class="reveal reveal-delay-1">Projects that<br>move the needle.</h2>
-                <p class="reveal reveal-delay-2">A selection of strategic initiatives and operational transformations.</p>
+                <p class="reveal reveal-delay-2">Tools, apps, and creative systems I've built.</p>
             </div>
             <div class="projects-grid">
 
-                <!-- Featured Project -->
+                <!-- Featured: PPT Studio -->
                 <div class="project-card featured reveal">
                     <div class="project-visual pv-1">
                         <div class="icon-wrapper">
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h4"/><path d="M7 12h8"/>
                             </svg>
                         </div>
                     </div>
                     <div class="project-info">
-                        <span class="project-tag">Operations</span>
-                        <h3>Enterprise Ops Transformation</h3>
-                        <p>Led a full-scale operational redesign across multiple business units, implementing automated workflows and real-time dashboards that reduced overhead by 35% and improved delivery speed.</p>
+                        <span class="project-tag">Creative Tool</span>
+                        <h3>PPT Studio</h3>
+                        <p>An interactive web-based presentation studio with chat-driven slide generation, live preview, and Apple Keynote-quality export. Supports multiple themes including Dark Cinematic, Apple Keynote, Xiaomi, and Light Clean — with HTML and PPTX export.</p>
                     </div>
                 </div>
 
-                <!-- Project 2 -->
+                <!-- ThunderView -->
                 <div class="project-card reveal reveal-delay-1">
                     <div class="project-visual pv-2">
                         <div class="icon-wrapper">
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
                             </svg>
                         </div>
                     </div>
                     <div class="project-info">
-                        <span class="project-tag">Strategy</span>
-                        <h3>Supply Chain Optimization</h3>
-                        <p>Redesigned end-to-end supply chain processes, cutting lead times by 40% through strategic vendor consolidation and predictive analytics.</p>
+                        <span class="project-tag">macOS App</span>
+                        <h3>ThunderView</h3>
+                        <p>A native macOS menu bar app that monitors Thunderbolt and USB bandwidth in real time. Built with Swift for universal compatibility across all Mac hardware.</p>
                     </div>
                 </div>
 
-                <!-- Project 3 -->
+                <!-- SpeedBoost -->
                 <div class="project-card reveal reveal-delay-2">
                     <div class="project-visual pv-3">
                         <div class="icon-wrapper">
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                             </svg>
                         </div>
                     </div>
                     <div class="project-info">
-                        <span class="project-tag">Analytics</span>
-                        <h3>Data-Driven Decision Framework</h3>
-                        <p>Built a comprehensive analytics framework that enabled leadership to make faster, evidence-based decisions across all operational domains.</p>
+                        <span class="project-tag">Chrome Extension</span>
+                        <h3>SpeedBoost</h3>
+                        <p>A Chrome extension that dramatically improves page loading by blocking ads and trackers, lazy-loading media, and optimizing DOM performance across all websites.</p>
                     </div>
                 </div>
 
-                <!-- Project 4 -->
+                <!-- SpeakerSwap -->
                 <div class="project-card reveal reveal-delay-1">
                     <div class="project-visual pv-4">
                         <div class="icon-wrapper">
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
                             </svg>
                         </div>
                     </div>
                     <div class="project-info">
-                        <span class="project-tag">People</span>
-                        <h3>Cross-Functional Team Alignment</h3>
-                        <p>Implemented OKR frameworks and agile ceremonies across 8 departments, improving cross-team collaboration and reducing project cycle times by 25%.</p>
+                        <span class="project-tag">macOS Utility</span>
+                        <h3>SpeakerSwap</h3>
+                        <p>A macOS utility that swaps left and right audio channels using Core Audio APIs, with hotkey volume control via Option+Arrow keys for quick adjustments.</p>
                     </div>
                 </div>
 
